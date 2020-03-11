@@ -52,11 +52,13 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
     private ConstraintLayout colorViewer = null;
     private TextView rgbTextView = null;
     private EditText nameEditText = null;
+    private CheckBox nameValidCheckBox = null;
     private EditText birthdayEditText = null;
     private ToggleButton genderToggleButton = null;
     private CheckBox isNeuteredCheckBox = null;
     private Spinner speciesSpinner = null;
     private EditText weightEditText = null;
+    private CheckBox weightValidCheckBox = null;
     private Button registerButton = null;
 
     @Override
@@ -69,11 +71,13 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
         colorViewer = findViewById(R.id.colorViewer);
         rgbTextView = findViewById(R.id.rgbTextView);
         nameEditText = findViewById(R.id.nameEditText);
+        nameValidCheckBox = findViewById(R.id.nameValidCheckBox);
         birthdayEditText = findViewById(R.id.birthdayEditText);
         genderToggleButton = findViewById(R.id.genderToggleButton);
         isNeuteredCheckBox = findViewById(R.id.isNeuteredCheckBox);
         speciesSpinner = findViewById(R.id.speciesSpinner);
         weightEditText = findViewById(R.id.weightEditText);
+        weightValidCheckBox = findViewById(R.id.weightValidCheckBox);
         registerButton = findViewById(R.id.registerButton);
 
         //
@@ -97,16 +101,10 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public void afterTextChanged(Editable s)
             {
-                if (nameEditText.getText().length() == 0 || weightEditText.getText().length() == 0)
-                {
-                    if (registerButton.isEnabled())
-                    {
-                        registerButton.startAnimation(disable);
-                        registerButton.setEnabled(false);
-                    }
+                nameValidCheckBox.setChecked(nameEditText.getText().length() != 0);
+                weightValidCheckBox.setChecked(weightEditText.getText().length() != 0);
 
-                }
-                else
+                if (weightValidCheckBox.isChecked() && nameValidCheckBox.isChecked())
                 {
                     if (!registerButton.isEnabled())
                     {
@@ -114,6 +112,14 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
                         registerButton.startAnimation(enable);
                     }
 
+                }
+                else
+                {
+                    if (registerButton.isEnabled())
+                    {
+                        registerButton.startAnimation(disable);
+                        registerButton.setEnabled(false);
+                    }
                 }
             }
         };
@@ -129,8 +135,10 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                picker.show(getSupportFragmentManager(), "ABC");
-
+                if (event.getAction() == 1) // Finger up
+                {
+                    picker.show(getSupportFragmentManager(), "ABC");
+                }
                 return false;
             }
         };
@@ -169,7 +177,19 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
         weightEditText.addTextChangedListener(textWatcher);
 
         // registerButton
-        registerButton.setHeight(registerButton.getWidth());
+        registerButton.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (event.getAction() == 1) // Touch up
+                {
+
+                }
+
+                return true;
+            }
+        });
     }
 
     @Override
@@ -216,10 +236,16 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
     {
         try
         {
+            String dateString = birthdayEditText.getText().toString();
+            if (dateString.isEmpty())
+            {
+                dateString = birthdayEditText.getHint().toString();
+            }
+
             return new Cat(
                     ((ColorDrawable)colorViewer.getBackground()).getColor(),
                     nameEditText.getText().toString().trim(),
-                    StringResources.DateFormatter.parse(birthdayEditText.getText().toString()),
+                    StringResources.DateFormatter.parse(dateString),
                     Gender.evaluate(genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()),
                     speciesSpinner.getSelectedItem().toString(),
                     Float.parseFloat(weightEditText.getText().toString())

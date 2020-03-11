@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         // Initialize string resources
         //
         Resources resources = getResources();
-        StringResources.NameExamples = resources.getStringArray(R.array.name_examples);
+        StringResources.NameExamples = resources.getStringArray(R.array.name_examples); 
         StringResources.Species = resources.getStringArray(R.array.species);
 
         getSupportActionBar().hide();

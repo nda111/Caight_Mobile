@@ -115,21 +115,19 @@ public final class Cat
     }
     public Color getColor()
     {
-        int a = color >> 24;
-        int r = (color >> 15) & 0xFF;
+        int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
         int b = color & 0xFF;
 
-        return Color.valueOf(r, g, b, a);
+        return Color.valueOf(r, g, b);
     }
     public void setColor(@NonNull Color color)
     {
-        int a = (int)color.alpha();
         int r = (int)color.red();
         int g = (int)color.green();
         int b = (int)color.blue();
 
-        this.color = (a << 24) & (r << 16) & (g << 8) & b;
+        this.color = /*alpha*/0xFF000000 & (r << 16) & (g << 8) & b;
     }
 
     public String getName()
