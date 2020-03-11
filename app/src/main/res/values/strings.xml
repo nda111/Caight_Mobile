@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Caight</string>
 
-    <string name="attr_profile">Profile</string>
+    <string name="attr_color">Color</string>
     <string name="attr_name">Name</string>
     <string name="attr_birthday">Birthday</string>
     <string name="attr_gender">Gender</string>

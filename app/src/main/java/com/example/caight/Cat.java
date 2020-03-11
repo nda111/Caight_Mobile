@@ -1,6 +1,7 @@
 package com.example.caight;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ public final class Cat
     // public static final Fields
     //
     // Json keys
+    public static final String __JSON_KEY_COLOR__ = "color";
     public static final String __JSON_KEY_NAME__ = "name";
     public static final String __JSON_KEY_BIRTHDAY__ = "birthday";
     public static final String __JSON_KEY_GENDER__ = "gender";
@@ -31,7 +33,7 @@ public final class Cat
     // private Fields
     //
     @Nullable
-    private Bitmap profile = null;
+    private Integer color = null;
     @NonNull
     private String name = null;
     @NonNull
@@ -49,14 +51,25 @@ public final class Cat
     private Cat()
     {
     }
-    public Cat(@Nullable Bitmap profile, @NonNull String name, @NonNull Date birthday, @NonNull Gender gender, @NonNull String species, @NonNull Float weight)
+    public Cat(@Nullable Color color, @NonNull String name, @NonNull Date birthday, @NonNull Gender gender, @NonNull String species, @NonNull Float weight)
     {
-        this.profile = profile;
-        this.name = name;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.species = species;
+        setColor(color);
+        setName(name);
+        setBirthday(birthday);
+        setGender(gender);
+        setSpecies(species);
         this.weights = new TreeMap<Date, Float>();
+        this.weights.put(new Date(), weight);
+    }
+    public Cat(@Nullable Integer color, @NonNull String name, @NonNull Date birthday, @NonNull Gender gender, @NonNull String species, @NonNull Float weight)
+    {
+        this.color = color;
+        setName(name);
+        setBirthday(birthday);
+        setGender(gender);
+        setSpecies(species);
+        this.weights = new TreeMap<Date, Float>();
+        this.weights.put(new Date(), weight);
     }
 
     //
@@ -77,6 +90,7 @@ public final class Cat
             }
 
             JSONObject json = new JSONObject();
+            json.put(__JSON_KEY_COLOR__, color);
             json.put(__JSON_KEY_NAME__, name);
             json.put(__JSON_KEY_BIRTHDAY__, birthday.getTime());
             json.put(__JSON_KEY_GENDER__, gender.toString());
@@ -95,25 +109,27 @@ public final class Cat
     //
     // Getter / Setter
     //
-    public Bitmap getProfile()
+    public int getColorInteger()
     {
-        return profile;
+        return color;
     }
-    public boolean setProfile(@Nullable Bitmap profile)
+    public Color getColor()
     {
-        if (profile.getWidth() != profile.getHeight())
-        {
-            return false;
-        }
-        else
-        {
-            this.profile = profile;
-            return true;
-        }
+        int a = color >> 24;
+        int r = (color >> 15) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+
+        return Color.valueOf(r, g, b, a);
     }
-    public boolean hasProfile()
+    public void setColor(@NonNull Color color)
     {
-        return profile != null;
+        int a = (int)color.alpha();
+        int r = (int)color.red();
+        int g = (int)color.green();
+        int b = (int)color.blue();
+
+        this.color = (a << 24) & (r << 16) & (g << 8) & b;
     }
 
     public String getName()
@@ -260,6 +276,7 @@ public final class Cat
             }
 
             Cat cat = new Cat();
+            cat.color = json.getInt(__JSON_KEY_COLOR__);
             cat.name = json.getString(__JSON_KEY_NAME__);
             cat.birthday = new Date(json.getLong(__JSON_KEY_BIRTHDAY__));
             cat.gender = Gender.parse(json.getString(__JSON_KEY_GENDER__));

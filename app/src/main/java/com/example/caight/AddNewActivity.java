@@ -2,6 +2,7 @@ package com.example.caight;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -9,9 +10,13 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -27,6 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.jaredrummler.android.colorpicker.ColorPickerDialog;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,13 +43,14 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
-public class AddNewActivity extends AppCompatActivity
+public class AddNewActivity extends AppCompatActivity implements ColorPickerDialogListener
 {
     private final Activity This = this;
 
     private static final int __IMAGE_LOADING_REQUEST_CODE__ = 0x0000;
 
-    private ImageView profileImageView = null;
+    private ConstraintLayout colorViewer = null;
+    private TextView rgbTextView = null;
     private EditText nameEditText = null;
     private EditText birthdayEditText = null;
     private ToggleButton genderToggleButton = null;
@@ -50,8 +59,6 @@ public class AddNewActivity extends AppCompatActivity
     private EditText weightEditText = null;
     private Button registerButton = null;
 
-    private Bitmap profileImage = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -59,7 +66,8 @@ public class AddNewActivity extends AppCompatActivity
         setContentView(R.layout.activity_add_new);
         getSupportActionBar().hide();
 
-        profileImageView = findViewById(R.id.profileImageView);
+        colorViewer = findViewById(R.id.colorViewer);
+        rgbTextView = findViewById(R.id.rgbTextView);
         nameEditText = findViewById(R.id.nameEditText);
         birthdayEditText = findViewById(R.id.birthdayEditText);
         genderToggleButton = findViewById(R.id.genderToggleButton);
@@ -68,6 +76,9 @@ public class AddNewActivity extends AppCompatActivity
         weightEditText = findViewById(R.id.weightEditText);
         registerButton = findViewById(R.id.registerButton);
 
+        //
+        // Listeners
+        //
         TextWatcher textWatcher = new TextWatcher()
         {
             private Animation enable = AnimationUtils.loadAnimation(This, R.anim.register_btn_enable);
@@ -107,6 +118,32 @@ public class AddNewActivity extends AppCompatActivity
             }
         };
 
+        View.OnTouchListener colorPickerTrigger = new View.OnTouchListener()
+        {
+            private ColorPickerDialog picker = ColorPickerDialog
+                    .newBuilder()
+                    .setDialogType(ColorPickerDialog.TYPE_PRESETS)
+                    .setColor(Color.WHITE)
+                    .create();
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                picker.show(getSupportFragmentManager(), "ABC");
+
+                return false;
+            }
+        };
+
+        //
+        // Initializing Components
+        //
+        // colorViewer
+        colorViewer.setOnTouchListener(colorPickerTrigger);
+
+        // rgbTextView
+        rgbTextView.setOnTouchListener(colorPickerTrigger);
+
         // nameEditText
         nameEditText.setHint(StringResources.NameExamples[(int)(Math.random() * StringResources.NameExamples.length)]);
         nameEditText.addTextChangedListener(textWatcher);
@@ -135,46 +172,25 @@ public class AddNewActivity extends AppCompatActivity
         registerButton.setHeight(registerButton.getWidth());
     }
 
-    // TODO: figure out why the image loaded doesn't shown on image view.
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void onColorSelected(int dialogId, int color)
     {
-        switch (resultCode)
-        {
-        case __IMAGE_LOADING_REQUEST_CODE__:
-            if (resultCode == RESULT_OK)
-            {
-                try (InputStream in = getContentResolver().openInputStream(data.getData()))
-                {
-                    profileImage = BitmapFactory.decodeStream(in);
-                    profileImageView.setImageBitmap(profileImage);
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
 
-                    Toast.makeText(this, profileImage.getWidth() + ", " + profileImage.getWidth(), Toast.LENGTH_LONG).show();
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(this, "Exception", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-            }
-            else if (resultCode == RESULT_CANCELED)
-            {
-                Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
-            }
-            break;
+        StringBuilder hex = new StringBuilder("#");
+        hex.append(padLeft(Integer.toHexString(r).toUpperCase(), '0', 2));
+        hex.append(padLeft(Integer.toHexString(g).toUpperCase(), '0', 2));
+        hex.append(padLeft(Integer.toHexString(b).toUpperCase(), '0', 2));
 
-        default:
-            new Exception("Unhandled request code").printStackTrace();
-            break;
-        }
+        rgbTextView.setText(hex);
+        colorViewer.setBackgroundColor(color);
     }
 
-    public void loadProfileImage(View view)
+    @Override
+    public void onDialogDismissed(int dialogId)
     {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, __IMAGE_LOADING_REQUEST_CODE__);
     }
 
     public void setBirthDay(View view)
@@ -201,7 +217,7 @@ public class AddNewActivity extends AppCompatActivity
         try
         {
             return new Cat(
-                    profileImage,
+                    ((ColorDrawable)colorViewer.getBackground()).getColor(),
                     nameEditText.getText().toString().trim(),
                     StringResources.DateFormatter.parse(birthdayEditText.getText().toString()),
                     Gender.evaluate(genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()),
@@ -214,5 +230,16 @@ public class AddNewActivity extends AppCompatActivity
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String padLeft(String origin, char pad, int totalLength)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int length = origin.length(); length < totalLength; length++)
+        {
+            builder.append(pad);
+        }
+        builder.append(origin);
+        return builder.toString();
     }
 }
