@@ -1,32 +1,22 @@
 package com.example.caight;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,19 +25,12 @@ import android.widget.ToggleButton;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
 
 public class AddNewActivity extends AppCompatActivity implements ColorPickerDialogListener
 {
     private final Activity This = this;
-
-    private static final int __IMAGE_LOADING_REQUEST_CODE__ = 0x0000;
 
     private ConstraintLayout colorViewer = null;
     private TextView rgbTextView = null;
@@ -85,9 +68,6 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
         //
         TextWatcher textWatcher = new TextWatcher()
         {
-            private Animation enable = AnimationUtils.loadAnimation(This, R.anim.register_btn_enable);
-            private Animation disable = AnimationUtils.loadAnimation(This, R.anim.register_btn_disable);
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
@@ -109,7 +89,6 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
                     if (!registerButton.isEnabled())
                     {
                         registerButton.setEnabled(true);
-                        registerButton.startAnimation(enable);
                     }
 
                 }
@@ -117,7 +96,6 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
                 {
                     if (registerButton.isEnabled())
                     {
-                        registerButton.startAnimation(disable);
                         registerButton.setEnabled(false);
                     }
                 }
@@ -135,10 +113,7 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                if (event.getAction() == 1) // Finger up
-                {
-                    picker.show(getSupportFragmentManager(), "ABC");
-                }
+                picker.show(getSupportFragmentManager(), null);
                 return false;
             }
         };
@@ -157,7 +132,7 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
         nameEditText.addTextChangedListener(textWatcher);
 
         // birthdayEditText
-        String nowString = StringResources.DateFormatter.format(new Date());
+        String nowString = StringResources.DateFormatter.format(Calendar.getInstance());
         birthdayEditText.setHint(nowString);
 
         // speciesSpinner
@@ -182,12 +157,18 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                if (event.getAction() == 1) // Touch up
-                {
+                Calendar date = StringResources.DateFormatter.parse(birthdayEditText.getText().toString());
+                StringBuilder builder = new StringBuilder();
+                builder.append(date.get(Calendar.YEAR));
+                builder.append("년 ");
+                builder.append(date.get(Calendar.MONTH));
+                builder.append("월 ");
+                builder.append(date.get(Calendar.DAY_OF_MONTH));
+                builder.append("일");
 
-                }
+                Toast.makeText(This, builder.toString(), Toast.LENGTH_LONG).show();
 
-                return true;
+                return false;
             }
         });
     }
@@ -220,7 +201,10 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
             {
-                String nowString = StringResources.DateFormatter.format(new Date(year - 1900, month, dayOfMonth));
+                Calendar cal = Calendar.getInstance();
+                cal.set(year, month, dayOfMonth);
+
+                String nowString = StringResources.DateFormatter.format(cal);
                 birthdayEditText.setText(nowString);
             }
         };
@@ -234,28 +218,14 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
 
     public Cat getCatInfo()
     {
-        try
-        {
-            String dateString = birthdayEditText.getText().toString();
-            if (dateString.isEmpty())
-            {
-                dateString = birthdayEditText.getHint().toString();
-            }
-
-            return new Cat(
-                    ((ColorDrawable)colorViewer.getBackground()).getColor(),
-                    nameEditText.getText().toString().trim(),
-                    StringResources.DateFormatter.parse(dateString),
-                    Gender.evaluate(genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()),
-                    speciesSpinner.getSelectedItem().toString(),
-                    Float.parseFloat(weightEditText.getText().toString())
-            );
-        }
-        catch (ParseException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return new Cat(
+                ((ColorDrawable)colorViewer.getBackground()).getColor(),
+                nameEditText.getText().toString().trim(),
+                StringResources.DateFormatter.parse(birthdayEditText.getText().toString()),
+                Gender.evaluate(genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()),
+                Cat.getSpeciesIndexOrNull(speciesSpinner.getSelectedItem().toString()),
+                Float.parseFloat(weightEditText.getText().toString())
+        );
     }
 
     private String padLeft(String origin, char pad, int totalLength)

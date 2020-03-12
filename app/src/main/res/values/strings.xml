@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Caight</string>
 
+    <string name="attr_group">Group</string>
     <string name="attr_color">Color</string>
     <string name="attr_name">Name</string>
     <string name="attr_birthday">Birthday</string>
@@ -15,8 +16,6 @@
 
     <string name="act_register">Register</string>
     <string name="act_cancel">Cancel</string>
-
-    <string name="msg_name_error"></string>
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
