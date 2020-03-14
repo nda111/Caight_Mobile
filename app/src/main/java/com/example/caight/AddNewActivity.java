@@ -19,13 +19,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.icu.util.Calendar;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
-import java.util.Calendar;
 import java.util.Comparator;
 
 public class AddNewActivity extends AppCompatActivity implements ColorPickerDialogListener
@@ -157,16 +156,7 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                Calendar date = StringResources.DateFormatter.parse(birthdayEditText.getText().toString());
-                StringBuilder builder = new StringBuilder();
-                builder.append(date.get(Calendar.YEAR));
-                builder.append("년 ");
-                builder.append(date.get(Calendar.MONTH));
-                builder.append("월 ");
-                builder.append(date.get(Calendar.DAY_OF_MONTH));
-                builder.append("일");
-
-                Toast.makeText(This, builder.toString(), Toast.LENGTH_LONG).show();
+                // TODO: group system
 
                 return false;
             }

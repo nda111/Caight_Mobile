@@ -1,6 +1,6 @@
 package com.example.caight;
 
-import java.util.Calendar;
+import android.icu.util.Calendar;
 
 public class StringResources
 {

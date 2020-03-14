@@ -2,79 +2,51 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contentConstraintLayout"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/groupSearchView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread"
-        app:layout_constraintVertical_weight="25">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.viewpager.widget.ViewPager
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    </androidx.viewpager.widget.ViewPager>
 
-        </androidx.viewpager.widget.ViewPager>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <SearchView
+        android:id="@+id/groupSearchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/entityListView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewPager">
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
+    </SearchView>
+
+    <com.mindorks.placeholderview.ExpandablePlaceHolderView
+        android:id="@+id/entityListView"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contentConstraintLayout"
-        app:layout_constraintVertical_weight="75">
+        app:layout_constraintTop_toBottomOf="@+id/groupSearchView" />
 
-        <LinearLayout
-            android:id="@+id/catListLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <SearchView
-                android:id="@+id/groupSearchView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </SearchView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
-    </ScrollView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/menuDial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
-        android:clickable="true"
-        android:onClick="showAddNewActivity"
-        app:backgroundTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add_new" />
+        app:sdMainFabClosedBackgroundColor="@color/colorAccent"
+        app:sdMainFabClosedSrc="@drawable/ic_add_new"
+        app:sdMainFabOpenedSrc="@drawable/ic_close_x"
+        app:sdUseReverseAnimationOnClose="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

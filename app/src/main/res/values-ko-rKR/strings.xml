@@ -10,9 +10,12 @@
     <string name="attr_gender_female">여자아이</string>
     <string name="attr_species">묘종</string>
     <string name="attr_weight">체중</string>
-    <string name="attr_is_neutered">중성화했어요!</string>
+    <string name="attr_is_neutered">중성화했어요</string>
 
     <string name="act_register">등록하기</string>
     <string name="act_cancel">뒤로 가기</string>
     <string name="attr_group">그룹</string>
+    <string name="act_new_cat">다른 애옹이</string>
+    <string name="act_new_group">새 그룹</string>
+    <string name="act_account">계정 설정</string>
 </resources>

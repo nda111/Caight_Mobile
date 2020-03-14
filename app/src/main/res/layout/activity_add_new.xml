@@ -4,24 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".AddNewActivity">
 
+    <ImageView
+        android:id="@+id/addCatTitleView"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="24dp"
+        android:tint="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_new_cat" />
+
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/addCatTitleView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="24dp"
-            android:paddingBottom="0dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/groupTextView"
@@ -41,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/groupTextView"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/groupTextView"
                 app:layout_constraintTop_toTopOf="@+id/groupTextView" />
 
@@ -148,7 +160,7 @@
                     app:layout_constraintStart_toEndOf="@+id/nameEditText" />
 
                 <TextView
-                    android:id="@+id/birthdayTextView"
+                    android:id="@+id/dateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -170,10 +182,10 @@
                     android:focusableInTouchMode="false"
                     android:inputType="date"
                     android:onClick="setBirthDay"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/birthdayTextView"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/dateTextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/birthdayTextView" />
+                    app:layout_constraintStart_toEndOf="@+id/dateTextView" />
 
                 <TextView
                     android:id="@+id/genderTextView"
@@ -186,7 +198,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/genderToggleButton"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/birthdayTextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
 
                 <ToggleButton
                     android:id="@+id/genderToggleButton"

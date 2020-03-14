@@ -2,31 +2,36 @@ package com.example.caight;
 
 public enum Gender
 {
-    MALE(false, false),
-    FEMALE(true, false),
-    NEUTERED(false, true),
-    SPAYED(true, true);
+    MALE(0),   // 0b000
+    FEMALE(1), // 0b001
+    NEUTERED(2),// 0b010
+    SPAYED(3);  // 0b011
 
-    private boolean gender;
-    private boolean neutered;
+    private int value = -1;
 
-    private Gender(boolean gender, boolean neuteredOrSpayed)
+    private Gender(int value)
     {
-        this.gender = gender;
-        this.neutered = neuteredOrSpayed;
+        this.value = value;
+    }
+
+    public int getValue()
+    {
+        return value;
     }
 
     public boolean isMale()
     {
-        return gender;
+        return value % 2 == 0;
     }
+
     public boolean isFemale()
     {
-        return !gender;
+        return value % 2 == 1;
     }
+
     public boolean isNeuteredOrSpayed()
     {
-        return neutered;
+        return (value >> 1) == 1;
     }
 
     public static Gender parse(String string)
@@ -49,6 +54,28 @@ public enum Gender
             return null;
         }
     }
+
+    public static Gender fromValue(int value)
+    {
+        switch (value)
+        {
+        case 0b00:
+            return MALE;
+
+        case 0b01:
+            return FEMALE;
+
+        case 0b10:
+            return NEUTERED;
+
+        case 0b11:
+            return SPAYED;
+
+        default:
+            return null;
+        }
+    }
+
     public static Gender evaluate(boolean isMale, boolean neuteredOrSpayed)
     {
         if (isMale)

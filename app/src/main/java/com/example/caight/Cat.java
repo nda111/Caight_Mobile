@@ -1,15 +1,19 @@
 package com.example.caight;
 
 import android.graphics.Color;
+import android.icu.util.Calendar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -31,7 +35,7 @@ public final class Cat
     //
     // private Fields
     //
-    @Nullable
+    @NonNull
     private Integer color = null;
     @NonNull
     private String name = null;
@@ -45,13 +49,18 @@ public final class Cat
     private TreeMap<Calendar, Float> weights = null;
 
     //
+    // event Listeners
+    //
+    private LinkedList<OnCatAttributeChangedListener> attrChangedListener = new LinkedList<OnCatAttributeChangedListener>();
+
+    //
     // Constructor
     //
     private Cat()
     {
     }
 
-    public Cat(@Nullable Color color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
+    public Cat(@NonNull Color color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
     {
         setColor(color);
         setName(name);
@@ -62,15 +71,30 @@ public final class Cat
         setWeight(Calendar.getInstance(), weight);
     }
 
-    public Cat(@Nullable Integer color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
+    public Cat(@NonNull Integer color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
     {
-        this.color = color;
+        this.color = color & 0xFF000000;
         setName(name);
         setBirthday(birthday);
         setGender(gender);
         setSpecies(species);
         this.weights = new TreeMap<Calendar, Float>();
         setWeight(Calendar.getInstance(), weight);
+    }
+
+    //
+    // private Methods
+    //
+    private void raiseAttrChangedEvent(int id, Object newValue)
+    {
+        if (attrChangedListener != null)
+        {
+            Iterator<OnCatAttributeChangedListener> iterator = attrChangedListener.listIterator();
+            while (iterator.hasNext())
+            {
+                iterator.next().changed(id, newValue);
+            }
+        }
     }
 
     //
@@ -110,6 +134,15 @@ public final class Cat
     //
     // Getter / Setter
     //
+    public void addAttrChangedListener(OnCatAttributeChangedListener l)
+    {
+        this.attrChangedListener.add(l);
+    }
+    public boolean removeAttrChangedListener(OnCatAttributeChangedListener l)
+    {
+        return this.attrChangedListener.remove(l);
+    }
+
     public int getColorInteger()
     {
         return color;
@@ -117,20 +150,13 @@ public final class Cat
 
     public Color getColor()
     {
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = color & 0xFF;
-
-        return Color.valueOf(r, g, b);
+        return Color.valueOf(color);
     }
 
     public void setColor(@NonNull Color color)
     {
-        int r = (int)color.red();
-        int g = (int)color.green();
-        int b = (int)color.blue();
-
-        this.color = /*alpha*/0xFF000000 & (r << 16) & (g << 8) & b;
+        this.color = color.toArgb() & /*alpha*/0xFF000000;
+        raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_COLOR__, this.color);
     }
 
     public String getName()
@@ -149,6 +175,7 @@ public final class Cat
         else
         {
             this.name = name;
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_NAME__, this.name);
             return true;
         }
     }
@@ -167,17 +194,19 @@ public final class Cat
         else
         {
             this.birthday = birthday;
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_BIRTHDAY__, this.birthday);
             return true;
         }
     }
 
-    public int getAge()
+    public Period getAge()
     {
-        long ageInMs = Calendar.getInstance().getTimeInMillis() - birthday.getTimeInMillis();
-        Calendar age = Calendar.getInstance();
-        age.setTimeInMillis(ageInMs);
-
-        return age.get(Calendar.YEAR);
+        return Period.between(
+                LocalDate.of(
+                        birthday.get(Calendar.YEAR),
+                        birthday.get(Calendar.MONTH),
+                        birthday.get(Calendar.DAY_OF_MONTH)),
+                LocalDate.now());
     }
 
     public Gender getGender()
@@ -188,6 +217,7 @@ public final class Cat
     public void setGender(@NonNull Gender gender)
     {
         this.gender = gender;
+        raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_GENDER__, this.gender);
     }
 
     public boolean isMale()
@@ -217,16 +247,21 @@ public final class Cat
 
     public boolean setSpecies(@NonNull Integer species)
     {
-        if (species < 0 || StringResources.Species.length <= species)
+        if (species < 0)
         {
             return false;
         }
         else
         {
             this.species = species;
-
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_SPECIES__, this.species);
             return true;
         }
+    }
+
+    public Map.Entry<Calendar, Float> getLastWeight()
+    {
+        return weights.lastEntry();
     }
 
     public Float getWeightOrNull(int year, int month, int day)
@@ -257,8 +292,17 @@ public final class Cat
         else
         {
             weights.put(filtered, weight);
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[] { filtered, weight });
             return true;
         }
+    }
+
+    public boolean setWeight(int year, int month, int day, @NonNull Float weight)
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 0, 0, 0);
+
+        return setWeight(calendar, weight);
     }
 
     public boolean replaceWeight(@NonNull Calendar date, @NonNull Float weight)
@@ -276,8 +320,22 @@ public final class Cat
         else
         {
             weights.replace(filtered, weight);
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[] { filtered, weight });
             return true;
         }
+    }
+
+    public boolean replaceWeight(int year, int month, int day, @NonNull Float weight)
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 0, 0, 0);
+
+        return replaceWeight(calendar, weight);
+    }
+
+    public Collection<Float> getAllWeights()
+    {
+        return weights.values();
     }
 
     //

@@ -14,8 +14,11 @@
 
     <string name="unit_kg" translatable="false">(kg)</string>
 
+    <string name="act_new_cat">Add cat</string>
+    <string name="act_new_group">New group</string>
     <string name="act_register">Register</string>
     <string name="act_cancel">Cancel</string>
+    <string name="act_account">Account</string>
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
