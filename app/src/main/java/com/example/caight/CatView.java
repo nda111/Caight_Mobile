@@ -1,11 +1,15 @@
 package com.example.caight;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.view.MotionEvent;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.icu.util.Calendar;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.hrules.charter.CharterLine;
 import com.mindorks.placeholderview.annotations.Layout;
@@ -20,10 +24,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Layout(R.layout.view_cat_view)
-public class CatView
+public class CatView extends EntityListItemViewBase
 {
     private Cat cat = null;
 
+    @View(R.id.rootLayout)
+    private ConstraintLayout rootLayout;
     @View(R.id.colorView)
     private ImageView colorView = null;
     @View(R.id.genderImageView)
@@ -47,8 +53,6 @@ public class CatView
     @ChildPosition
     private int mChildPosition;
 
-    private Context mContext;
-
     private final OnCatAttributeChangedListener attributeChangedListener = new OnCatAttributeChangedListener()
     {
         @Override
@@ -58,22 +62,13 @@ public class CatView
         }
     };
 
+    private OnEntityListItemTouchListener onTouchListener = null;
+    private OnEntityListItemTouchListener onEditListener = null;
+
     public CatView(Context context, Cat cat)
     {
-        mContext = context;
+        super(context);
         setCat(cat);
-    }
-
-    private void init()
-    {
-        //
-        // GUI Components
-        //
-        // weightChart
-        weightChart.setIndicatorVisible(false);
-
-        // editButton
-        editButton.setFocusable(false);
     }
 
     public Cat getCat()
@@ -95,6 +90,16 @@ public class CatView
         }
     }
 
+    public void setOnTouchListener(OnEntityListItemTouchListener l)
+    {
+        onTouchListener = l;
+    }
+
+    public void setOnEditListener(OnEntityListItemTouchListener l)
+    {
+        onEditListener = l;
+    }
+
     private void updateCatAttr(int id, Object newValue)
     {
         switch (id)
@@ -109,11 +114,11 @@ public class CatView
 
         case OnCatAttributeChangedListener.__ID_GENDER__:
             genderImageView.setImageDrawable(
-                    mContext.getResources().getDrawable(
+                    getContext().getResources().getDrawable(
                             this.cat.isMale()
                                     ? R.drawable.ic_gender_male
                                     : R.drawable.ic_gender_female,
-                            mContext.getTheme()));
+                            getContext().getTheme()));
             break;
 
         case OnCatAttributeChangedListener.__ID_BIRTHDAY__:
@@ -171,13 +176,69 @@ public class CatView
         }
     }
 
-    @Resolve
-    private void updateInfo()
+    @Override
+    protected void setGuiComponents()
     {
+        // weightChart
+        weightChart.setIndicatorVisible(false);
+
+        // editButton
+        editButton.setFocusable(false);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    protected void setEventListeners()
+    {
+        rootLayout.setOnTouchListener(new android.view.View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(android.view.View v, MotionEvent event)
+            {
+                if (onTouchListener != null)
+                {
+                    onTouchListener.onTouch(getThisEntity(), event);
+                }
+                return false;
+            }
+        });
+
+        editButton.setOnTouchListener(new android.view.View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(android.view.View v, MotionEvent event)
+            {
+                if (onEditListener != null)
+                {
+                    onEditListener.onTouch(getThisEntity(), event);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    @Resolve
+    protected void onResolve()
+    {
+        super.onResolve();
+
         updateCatAttr(OnCatAttributeChangedListener.__ID_COLOR__, null);
         updateCatAttr(OnCatAttributeChangedListener.__ID_NAME__, null);
         updateCatAttr(OnCatAttributeChangedListener.__ID_GENDER__, null);
         updateCatAttr(OnCatAttributeChangedListener.__ID_BIRTHDAY__, null);
         updateCatAttr(OnCatAttributeChangedListener.__ID_WEIGHTS__, null);
+    }
+
+    @Override
+    protected void onExpand()
+    {
+
+    }
+
+    @Override
+    protected void onCollapse()
+    {
+
     }
 }

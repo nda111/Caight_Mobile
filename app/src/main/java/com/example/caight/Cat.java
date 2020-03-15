@@ -36,7 +36,7 @@ public final class Cat
     // private Fields
     //
     @NonNull
-    private Integer color = null;
+    private int color = -1;
     @NonNull
     private String name = null;
     @NonNull
@@ -44,7 +44,7 @@ public final class Cat
     @NonNull
     private Gender gender = null;
     @NonNull
-    private Integer species = null;
+    private int species = -1;
     @NonNull
     private TreeMap<Calendar, Float> weights = null;
 
@@ -73,13 +73,15 @@ public final class Cat
 
     public Cat(@NonNull Integer color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
     {
-        this.color = color & 0xFF000000;
+        setColor(color);
         setName(name);
         setBirthday(birthday);
         setGender(gender);
         setSpecies(species);
         this.weights = new TreeMap<Calendar, Float>();
         setWeight(Calendar.getInstance(), weight);
+
+        //System.out.println(name + ": " + color);
     }
 
     //
@@ -138,6 +140,7 @@ public final class Cat
     {
         this.attrChangedListener.add(l);
     }
+
     public boolean removeAttrChangedListener(OnCatAttributeChangedListener l)
     {
         return this.attrChangedListener.remove(l);
@@ -145,18 +148,26 @@ public final class Cat
 
     public int getColorInteger()
     {
-        return color;
+        return this.color;
     }
 
     public Color getColor()
     {
-        return Color.valueOf(color);
+        return Color.valueOf(this.color);
     }
 
     public void setColor(@NonNull Color color)
     {
-        this.color = color.toArgb() & /*alpha*/0xFF000000;
+        this.color = color.toArgb() | /*alpha*/0xFF000000;
         raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_COLOR__, this.color);
+    }
+
+    public void setColor(int color)
+    {
+        this.color = color | 0xFF000000;
+        raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_COLOR__, this.color);
+
+        System.out.println(name + ": " + this.color);
     }
 
     public String getName()
@@ -292,7 +303,7 @@ public final class Cat
         else
         {
             weights.put(filtered, weight);
-            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[] { filtered, weight });
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[]{ filtered, weight });
             return true;
         }
     }
@@ -320,7 +331,7 @@ public final class Cat
         else
         {
             weights.replace(filtered, weight);
-            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[] { filtered, weight });
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[]{ filtered, weight });
             return true;
         }
     }
