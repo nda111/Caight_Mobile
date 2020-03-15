@@ -80,8 +80,6 @@ public final class Cat
         setSpecies(species);
         this.weights = new TreeMap<Calendar, Float>();
         setWeight(Calendar.getInstance(), weight);
-
-        //System.out.println(name + ": " + color);
     }
 
     //
@@ -166,8 +164,6 @@ public final class Cat
     {
         this.color = color | 0xFF000000;
         raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_COLOR__, this.color);
-
-        System.out.println(name + ": " + this.color);
     }
 
     public String getName()

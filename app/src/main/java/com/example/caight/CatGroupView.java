@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.MotionEvent;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,12 +44,20 @@ public class CatGroupView extends EntityListItemViewBase
     private TextView idTextView;
     @View(R.id.toggleLayout)
     private LinearLayout toggleLayout;
+    @View(R.id.deleteImageButton)
+    private ImageButton deleteImageButton;
+    @View(R.id.editButton)
+    private ImageButton editButton;
+    @View(R.id.qrButton)
+    private ImageButton qrButton;
 
     @ParentPosition
     private int mParentPosition;
 
     private OnEntityListItemTouchListener onTouchListener = null;
     private OnEntityListItemTouchListener onDeleteListener = null;
+    private OnEntityListItemTouchListener onEditListener = null;
+    private OnEntityListItemTouchListener onShowQrListener = null;
 
     public CatGroupView(Context context, CatGroup group)
     {
@@ -76,6 +85,16 @@ public class CatGroupView extends EntityListItemViewBase
         this.onDeleteListener = l;
     }
 
+    public void setOnEditListener(OnEntityListItemTouchListener l)
+    {
+        this.onEditListener = l;
+    }
+
+    public void setOnShowQrListener(OnEntityListItemTouchListener l)
+    {
+        this.onShowQrListener = l;
+    }
+
     @Override
     protected void setGuiComponents()
     {
@@ -98,7 +117,44 @@ public class CatGroupView extends EntityListItemViewBase
             }
         });
 
-        // TODO: set onDeleteListener
+        deleteImageButton.setOnTouchListener(new android.view.View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(android.view.View v, MotionEvent event)
+            {
+                if (onDeleteListener != null)
+                {
+                    return onDeleteListener.onTouch(getThisEntity(), event);
+                }
+                return false;
+            }
+        });
+
+        editButton.setOnTouchListener(new android.view.View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(android.view.View v, MotionEvent event)
+            {
+                if (onEditListener != null)
+                {
+                    return onEditListener.onTouch(getThisEntity(), event);
+                }
+                return false;
+            }
+        });
+
+        qrButton.setOnTouchListener(new android.view.View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(android.view.View v, MotionEvent event)
+            {
+                if (onShowQrListener != null)
+                {
+                    return onShowQrListener.onTouch(getThisEntity(), event);
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -108,18 +164,7 @@ public class CatGroupView extends EntityListItemViewBase
         super.onResolve();
 
         groupTextView.setText(group.getName());
-
-        String idString = Integer.toString(group.getId(), 16).toUpperCase();
-        StringBuilder idBuilder = new StringBuilder();
-        int cnt0 = 8 - idString.length();
-        idBuilder.append('#');
-        while (cnt0-- > 0)
-        {
-            idBuilder.append('0');
-        }
-        idBuilder.append(idString);
-
-        idTextView.setText(idBuilder.toString());
+        idTextView.setText(StringResources.toHexId(group.getId()));
     }
 
     @Override

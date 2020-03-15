@@ -22,4 +22,6 @@
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
+
+    <string name="errmsg_no_group">Join group to add a cat.</string>
 </resources>

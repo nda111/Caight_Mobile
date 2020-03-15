@@ -44,6 +44,8 @@ public class CatView extends EntityListItemViewBase
     private TextView dateTextView = null;
     @View(R.id.weightChart)
     private CharterLine weightChart = null;
+    @View(R.id.deleteImageButton)
+    private ImageButton deleteButton = null;
     @View(R.id.editButton)
     private ImageButton editButton = null;
 
@@ -63,6 +65,7 @@ public class CatView extends EntityListItemViewBase
     };
 
     private OnEntityListItemTouchListener onTouchListener = null;
+    private OnEntityListItemTouchListener onDeleteListener = null;
     private OnEntityListItemTouchListener onEditListener = null;
 
     public CatView(Context context, Cat cat)
@@ -93,6 +96,11 @@ public class CatView extends EntityListItemViewBase
     public void setOnTouchListener(OnEntityListItemTouchListener l)
     {
         onTouchListener = l;
+    }
+
+    public void setOnDeleteListener(OnEntityListItemTouchListener l)
+    {
+        onDeleteListener = l;
     }
 
     public void setOnEditListener(OnEntityListItemTouchListener l)
@@ -198,6 +206,19 @@ public class CatView extends EntityListItemViewBase
                 if (onTouchListener != null)
                 {
                     onTouchListener.onTouch(getThisEntity(), event);
+                }
+                return false;
+            }
+        });
+
+        deleteButton.setOnTouchListener(new android.view.View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(android.view.View v, MotionEvent event)
+            {
+                if (onDeleteListener != null)
+                {
+                    onDeleteListener.onTouch(getThisEntity(), event);
                 }
                 return false;
             }

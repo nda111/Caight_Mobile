@@ -57,4 +57,19 @@ public class StringResources
             return builder.toString();
         }
     }
+
+    public static String toHexId(int id)
+    {
+        String idString = Integer.toString(id, 16).toUpperCase();
+        StringBuilder idBuilder = new StringBuilder();
+        int cnt0 = 8 - idString.length();
+        idBuilder.append('#');
+        while (cnt0-- > 0)
+        {
+            idBuilder.append('0');
+        }
+        idBuilder.append(idString);
+
+        return idBuilder.toString();
+    }
 }

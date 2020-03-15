@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -25,13 +26,17 @@ import android.icu.util.Calendar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddNewActivity extends AppCompatActivity implements ColorPickerDialogListener
 {
     private final Activity This = this;
 
     private ConstraintLayout colorViewer = null;
+    private Spinner groupSpinner = null;
     private TextView rgbTextView = null;
     private EditText nameEditText = null;
     private CheckBox nameValidCheckBox = null;
@@ -50,6 +55,7 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
         setContentView(R.layout.activity_add_new);
         getSupportActionBar().hide();
 
+        groupSpinner = findViewById(R.id.groupSpinner);
         colorViewer = findViewById(R.id.colorViewer);
         rgbTextView = findViewById(R.id.rgbTextView);
         nameEditText = findViewById(R.id.nameEditText);
@@ -120,6 +126,10 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
         //
         // Initializing Components
         //
+        // groupSpinner
+        GroupSpinnerAdapter adapter = new GroupSpinnerAdapter(this, R.id.groupTextView, StaticResources.groups);
+        groupSpinner.setAdapter(adapter);
+
         // colorViewer
         colorViewer.setOnTouchListener(colorPickerTrigger);
 
@@ -156,8 +166,8 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                // TODO: group system
-
+                // TODO: add column 'password varchar(64) not null' to table 'managing_group'
+                // TODO: request register, 'finish()' if success, 'Toast(error)' if not.
                 return false;
             }
         });

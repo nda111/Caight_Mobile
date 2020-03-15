@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -26,9 +27,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
 {
     private final MainActivity This = this;
-
-    private ArrayList<CatGroup> groups = new ArrayList<CatGroup>();
-    private HashMap<CatGroup, List<CatGroup>> entries = new HashMap<CatGroup, List<CatGroup>>();
 
     private ExpandablePlaceHolderView entityListView = null;
     private SpeedDialView menuDial = null;
@@ -111,17 +109,29 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onActionSelected(SpeedDialActionItem actionItem)
             {
+                Intent intent = null;
+
                 switch (actionItem.getId())
                 {
                 case R.id.sdItemAddGroup:
-                    break;
-
-                case R.id.sdItemAddCat:
-                    Intent intent = new Intent(This, AddNewActivity.class);
+                    intent = new Intent(This, AddGroupActivity.class);
                     startActivity(intent);
                     break;
 
+                case R.id.sdItemAddCat:
+                    if (StaticResources.groups.size() > 0)
+                    {
+                        intent = new Intent(This, AddNewActivity.class);
+                        startActivity(intent);
+                    }
+                    else
+                    {
+                        Toast.makeText(This, R.string.errmsg_no_group, Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
                 case R.id.sdItemAccount:
+                    // TODO
                     break;
 
                 default:
@@ -193,5 +203,22 @@ public class MainActivity extends AppCompatActivity
 
         entityListView.addView(nikoView);
         nikoView.setOnTouchListener(onViewTouchedListener);
+
+        
+        CatGroup yeGroup = yeView.getGroup();
+        ArrayList<Cat> yeCats = new ArrayList<Cat>();
+        StaticResources.groups.add(yeGroup);
+        yeCats.add(peroView.getCat());
+        yeCats.add(surView.getCat());
+        yeCats.add(raonView.getCat());
+        StaticResources.entries.put(yeGroup, yeCats);
+
+        CatGroup soGroup = soView.getGroup();
+        ArrayList<Cat> soCats = new ArrayList<Cat>();
+        StaticResources.groups.add(soGroup);
+        soCats.add(tiniView.getCat());
+        soCats.add(roniView.getCat());
+        soCats.add(nikoView.getCat());
+        StaticResources.entries.put(soGroup, soCats);
     }
 }
