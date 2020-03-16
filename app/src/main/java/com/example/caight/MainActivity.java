@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import tech.gusavila92.websocketclient.WebSocketClient;
+
 public class MainActivity extends AppCompatActivity
 {
     private final MainActivity This = this;
@@ -63,6 +65,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+        /*
+         * TODO
+         * WEB SOCKET TEST
+         */
 
         //
         // Initialize string resources

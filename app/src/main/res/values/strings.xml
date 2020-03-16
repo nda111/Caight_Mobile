@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">Caight</string>
 
+    <string name="title_new_account">Create new account</string>
+
+    <string name="attr_email" translatable="false">Email</string>
+    <string name="attr_password">Password</string>
+    <string name="attr_nickname">Nickname</string>
+
+    <string name="pw_const_lowercase">Lower case</string>
+    <string name="pw_const_uppercase">Upper case</string>
+    <string name="pw_const_digit">Digit</string>
+    <string name="pw_const_special">Special character</string>
+    <string name="pw_const_length">Minimum 8 letters</string>
+
+    <string name="name_const_char">Alphabet, Hangeul, Digits are allowed.</string>
+    <string name="name_const_number">Letters between 2 and 15 are required.</string>
+
     <string name="attr_group">Group</string>
     <string name="attr_color">Color</string>
     <string name="attr_name">Name</string>
@@ -23,5 +38,7 @@
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
 
+    <string name="errmsg_cert_first">Certify your email first.</string>
+    <string name="errmsg_not_email">Invalid email format.</string>
     <string name="errmsg_no_group">Join group to add a cat.</string>
 </resources>

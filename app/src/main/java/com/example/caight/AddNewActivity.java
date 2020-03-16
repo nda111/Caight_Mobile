@@ -166,7 +166,6 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                // TODO: add column 'password varchar(64) not null' to table 'managing_group'
                 // TODO: request register, 'finish()' if success, 'Toast(error)' if not.
                 return false;
             }
