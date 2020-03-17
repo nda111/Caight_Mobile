@@ -3,7 +3,6 @@ package com.example.caight;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,8 +12,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.SSLContext;
 
 public class LoginEntryActivity extends AppCompatActivity
 {
@@ -77,26 +91,82 @@ public class LoginEntryActivity extends AppCompatActivity
     private void nextActivity()
     {
         String email = emailEditText.getText().toString();
-
         ResponseId response = ResponseId.UNKNOWN_EMAIL;
-        // TODO: request validation
 
         switch (response)
         {
-        case UNKNOWN_EMAIL: // unknown
+        case UNKNOWN_EMAIL:
         {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            intent.putExtra(__KEY_REGISTER_EMAIL__, email);
-            startActivity(intent);
+            Executors.newSingleThreadExecutor().execute(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(5000);
+                        SSLContext context = SSLContext.getInstance("TLS");
+                        context.init(null, null, null);
+                        factory.setSSLContext(context);
+                        WebSocket ws = factory.createSocket("wss://caight.herokuapp.com/ws");
+                        ws.addListener(new WebSocketAdapter()
+                        {
+                            @Override
+                            public void onError(WebSocket websocket, WebSocketException cause)
+                            {
+                                Toast.makeText(This, cause.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception
+                            {
+                                System.out.println("Connected");
+                                websocket.sendText("Hello World!!!", true);
+                            }
+
+                            @Override
+                            public void onTextMessage(WebSocket websocket, String text) throws Exception
+                            {
+                                System.out.println(text);
+
+                                websocket.sendClose();
+                            }
+
+                            @Override
+                            public void onBinaryMessage(WebSocket websocket, byte[] binary) throws Exception
+                            {
+                                StringBuilder builder = new StringBuilder();
+                                for (byte b : binary)
+                                {
+                                    builder.append(b);
+                                    builder.append(' ');
+                                }
+                                Toast.makeText(This, builder.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        ws.connect();
+
+                        System.out.println("CONNECTING..."); // TODO: checkout my stack overflow question
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            //Intent intent = new Intent(this, RegisterActivity.class);
+            //intent.putExtra(__KEY_REGISTER_EMAIL__, email);
+            //startActivity(intent);
             break;
         }
 
-        case REGISTERED_EMAIL: // registered
+        case REGISTERED_EMAIL:
         {
             break;
         }
 
-        case CERTIFIED_EMAIL: // certified
+        case CERTIFIED_EMAIL:
         {
             break;
         }

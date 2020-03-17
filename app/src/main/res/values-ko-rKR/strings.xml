@@ -29,6 +29,5 @@
     <string name="pw_const_digit">숫자</string>
     <string name="pw_const_length">8자 이상</string>
     <string name="pw_const_special">특수문자</string>
-    <string name="name_const_char">알파벳, 한글, 숫자만 사용할 수 있습니다.</string>
     <string name="name_const_number">2~15 글자만 사용할 수 있습니다.</string>
 </resources>

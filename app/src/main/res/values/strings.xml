@@ -13,7 +13,6 @@
     <string name="pw_const_special">Special character</string>
     <string name="pw_const_length">Minimum 8 letters</string>
 
-    <string name="name_const_char">Alphabet, Hangeul, Digits are allowed.</string>
     <string name="name_const_number">Letters between 2 and 15 are required.</string>
 
     <string name="attr_group">Group</string>

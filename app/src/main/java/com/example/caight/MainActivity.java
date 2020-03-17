@@ -8,23 +8,14 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
-import com.mindorks.placeholderview.Animation;
 import com.mindorks.placeholderview.ExpandablePlaceHolderView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import tech.gusavila92.websocketclient.WebSocketClient;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -65,11 +56,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-
-        /*
-         * TODO
-         * WEB SOCKET TEST
-         */
 
         //
         // Initialize string resources
