@@ -7,16 +7,16 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +26,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
     private final RegisterActivity This = this;
 
     private final Pattern StrongPasswordPattern = Pattern.compile("((?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z]).{8,})");
-    private final Pattern[] PasswordConstraints = new Pattern[]{
+    private final Pattern[] PasswordConstraints = new Pattern[] {
             Pattern.compile("(.*[a-z].*)"),
             Pattern.compile("(.*[A-Z].*)"),
             Pattern.compile("(.*[0-9].*)"),
@@ -45,6 +45,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
     private EditText nameEditText = null;
     private TextView nameErrTextView = null;
     private ImageView registerButton = null;
+    private ProgressBar progressBar = null;
 
     private boolean passwordValid = false;
     private boolean nameValid = false;
@@ -71,7 +72,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
         Intent intent = getIntent();
         emailTextView = findViewById(R.id.emailTextView);
         pwEditText = findViewById(R.id.passwordEditText);
-        pwConstraintCheckBoxes = new CheckBox[]{
+        pwConstraintCheckBoxes = new CheckBox[] {
                 findViewById(R.id.pwConstraintCheckBox1),
                 findViewById(R.id.pwConstraintCheckBox2),
                 findViewById(R.id.pwConstraintCheckBox3),
@@ -81,6 +82,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
         nameEditText = findViewById(R.id.nameEditText);
         nameErrTextView = findViewById(R.id.nameErrTextView);
         registerButton = findViewById(R.id.registerButton);
+        progressBar = findViewById(R.id.progressBar);
 
         // emailTextView
         emailTextView.setText(intent.getStringExtra(LoginEntryActivity.__KEY_REGISTER_EMAIL__));
@@ -152,7 +154,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                 int length = name.length();
                 if (length < 2 || 15 < length)
                 {
-                    nameErrTextView.setText(R.string.name_const_number);
+                    nameErrTextView.setText(R.string.name_constraint_number);
                     nameErrTextView.setVisibility(View.VISIBLE);
                     nameErrTextView.startAnimation(ShakeAnimation);
                     nameValid = false;
@@ -175,7 +177,76 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
             {
                 if (passwordValid && nameValid)
                 {
-                    // TODO: request register, send validation mail
+                    pwEditText.setEnabled(false);
+                    nameEditText.setEnabled(false);
+                    registerButton.setEnabled(false);
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    try
+                    {
+                        WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    private ResponseId response = ResponseId.UNKNOWN;
+
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        conn.send(StaticMethods.intToByteArray(RequestId.REGISTER_EMAIL.getId()), true);
+
+                                        StringBuilder builder = new StringBuilder();
+                                        builder.append(emailTextView.getText().toString());
+                                        builder.append('\0');
+                                        builder.append(pwEditText.getText().toString());
+                                        builder.append('\0');
+                                        builder.append(nameEditText.getText().toString());
+
+                                        conn.send(builder.toString(), true);
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+                                        switch (response)
+                                        {
+                                            case REGISTER_OK:
+                                            {
+                                                Intent intent = new Intent(This, CertGuidActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                break;
+                                            }
+
+                                            case REGISTER_NO:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_register_no, Toast.LENGTH_LONG).show();
+                                                        This.finish();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                }).connect();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
 
                 return false;

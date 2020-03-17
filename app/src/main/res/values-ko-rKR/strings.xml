@@ -29,5 +29,9 @@
     <string name="pw_const_digit">숫자</string>
     <string name="pw_const_length">8자 이상</string>
     <string name="pw_const_special">특수문자</string>
-    <string name="name_const_number">2~15 글자만 사용할 수 있습니다.</string>
+    <string name="name_constraint_number">2~15 글자만 사용할 수 있습니다.</string>
+    <string name="errmsg_register_no">오류가 발생했습니다. &#10; 다시 시도해주세요.</string>
+    <string name="msg_welcome">환영합니다!</string>
+    <string name="msg_register">인증 링크를 이메일로 전송했습니다. &#10; 이 계정을 사용하기 전에 인증해주세요.</string>
+    <string name="act_back_home">홈으로 가기</string>
 </resources>

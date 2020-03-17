@@ -13,7 +13,7 @@
     <string name="pw_const_special">Special character</string>
     <string name="pw_const_length">Minimum 8 letters</string>
 
-    <string name="name_const_number">Letters between 2 and 15 are required.</string>
+    <string name="name_constraint_number">Letters between 2 and 15 are required.</string>
 
     <string name="attr_group">Group</string>
     <string name="attr_color">Color</string>
@@ -33,11 +33,16 @@
     <string name="act_register">Register</string>
     <string name="act_cancel">Cancel</string>
     <string name="act_account">Account</string>
+    <string name="act_back_home">Back to home</string>
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
 
+    <string name="msg_welcome">Welcome!</string>
+    <string name="msg_register">We sent you a certification link to your email. &#10; Certificate to use this account.</string>
+
     <string name="errmsg_cert_first">Certify your email first.</string>
     <string name="errmsg_not_email">Invalid email format.</string>
     <string name="errmsg_no_group">Join group to add a cat.</string>
+    <string name="errmsg_register_no">Register error occurred. &#10; Please try again.</string>
 </resources>

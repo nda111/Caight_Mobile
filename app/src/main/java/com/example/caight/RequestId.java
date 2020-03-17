@@ -3,12 +3,12 @@ package com.example.caight;
 public enum RequestId
 {
     UNKNOWN(-1),
-    VALIDATE_EMAIL(0);
-
+    EVALUATE_EMAIL(0),
+    REGISTER_EMAIL(1);
 
     private int id = -1;
 
-    private RequestId(int id)
+    RequestId(int id)
     {
         this.id = id;
     }

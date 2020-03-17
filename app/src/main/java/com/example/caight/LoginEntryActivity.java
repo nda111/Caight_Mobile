@@ -9,13 +9,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketAdapter;
-
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +27,7 @@ public class LoginEntryActivity extends AppCompatActivity
 
     private EditText emailEditText = null;
     private TextView errorTextView = null;
+    private ProgressBar progressBar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,6 +46,7 @@ public class LoginEntryActivity extends AppCompatActivity
          */
         emailEditText = findViewById(R.id.emailEditText);
         errorTextView = findViewById(R.id.errTextView);
+        progressBar = findViewById(R.id.progressBar);
 
         // emailEditText
         emailEditText.setOnKeyListener(new View.OnKeyListener()
@@ -62,6 +60,8 @@ public class LoginEntryActivity extends AppCompatActivity
                     if (matcher.matches())
                     {
                         errorTextView.setVisibility(View.GONE);
+                        emailEditText.setEnabled(false);
+                        progressBar.setVisibility(View.VISIBLE);
                         nextActivity();
                     }
                     else
@@ -79,39 +79,80 @@ public class LoginEntryActivity extends AppCompatActivity
 
     private void nextActivity()
     {
-        String email = emailEditText.getText().toString();
         ResponseId response = ResponseId.UNKNOWN_EMAIL;
-
 
         try
         {
             WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
+                        private String email = null;
+                        private ResponseId response = ResponseId.UNKNOWN;
+
                         @Override
                         public void onRequest(WebSocketConnection conn)
                         {
-                            System.out.println("Connected");
-                            conn.send("Hello", true);
-                            conn.send(new byte[]{ 0, 1, 2 }, true);
-                            conn.send("quit", true);
+                            byte[] id = StaticMethods.intToByteArray(RequestId.EVALUATE_EMAIL.getId());
+                            conn.send(id, true);
+
+                            email = emailEditText.getText().toString();
+                            conn.send(email, true);
                         }
 
                         @Override
                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                         {
-                            String text = message.toString();
-                            if (text.equalsIgnoreCase("quit"))
-                            {
-                                conn.close();
-                            }
-                            System.out.println(text);
+                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                            conn.close();
                         }
 
                         @Override
                         public void onClosed()
                         {
-                            System.out.println("Closed");
+                            switch (response)
+                            {
+                                case UNKNOWN_EMAIL:
+                                {
+                                    Intent intent = new Intent(This, RegisterActivity.class);
+                                    intent.putExtra(__KEY_REGISTER_EMAIL__, email);
+                                    startActivity(intent);
+                                    break;
+                                }
+
+                                case REGISTERED_EMAIL:
+                                {
+                                    runOnUiThread(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            errorTextView.setText(R.string.errmsg_cert_first);
+                                            errorTextView.setVisibility(View.VISIBLE);
+                                            errorTextView.startAnimation(ShakeAnimation);
+                                        }
+                                    });
+                                    break;
+                                }
+
+                                case CERTIFIED_EMAIL:
+                                {
+
+                                    break;
+                                }
+
+                                default:
+                                    break;
+                            }
+
+                            runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    emailEditText.setEnabled(true);
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     })
                     .connect();
@@ -119,34 +160,6 @@ public class LoginEntryActivity extends AppCompatActivity
         catch (Exception e)
         {
             e.printStackTrace();
-        }
-
-        switch (response)
-        {
-        case UNKNOWN_EMAIL:
-        {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            intent.putExtra(__KEY_REGISTER_EMAIL__, email);
-            startActivity(intent);
-            break;
-        }
-
-        case REGISTERED_EMAIL:
-        {
-            errorTextView.setText(R.string.errmsg_cert_first);
-            errorTextView.setVisibility(View.VISIBLE);
-            errorTextView.startAnimation(ShakeAnimation);
-            break;
-        }
-
-        case CERTIFIED_EMAIL:
-        {
-            // TODO
-            break;
-        }
-
-        default:
-            break;
         }
     }
 }
