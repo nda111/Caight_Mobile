@@ -4,6 +4,8 @@ import android.icu.util.Calendar;
 
 public class StringResources
 {
+    public static final String __WS_ADDRESS__ = "wss://caight.herokuapp.com/ws";
+
     public static String[] NameExamples = null;
     public static String[] Species = null;
 

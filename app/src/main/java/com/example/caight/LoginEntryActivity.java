@@ -10,25 +10,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketException;
-import com.neovisionaries.ws.client.WebSocketFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.net.ssl.SSLContext;
 
 public class LoginEntryActivity extends AppCompatActivity
 {
@@ -93,81 +82,66 @@ public class LoginEntryActivity extends AppCompatActivity
         String email = emailEditText.getText().toString();
         ResponseId response = ResponseId.UNKNOWN_EMAIL;
 
+
+        try
+        {
+            WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                    .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                    {
+                        @Override
+                        public void onRequest(WebSocketConnection conn)
+                        {
+                            System.out.println("Connected");
+                            conn.send("Hello", true);
+                            conn.send(new byte[]{ 0, 1, 2 }, true);
+                            conn.send("quit", true);
+                        }
+
+                        @Override
+                        public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                        {
+                            String text = message.toString();
+                            if (text.equalsIgnoreCase("quit"))
+                            {
+                                conn.close();
+                            }
+                            System.out.println(text);
+                        }
+
+                        @Override
+                        public void onClosed()
+                        {
+                            System.out.println("Closed");
+                        }
+                    })
+                    .connect();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         switch (response)
         {
         case UNKNOWN_EMAIL:
         {
-            Executors.newSingleThreadExecutor().execute(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(5000);
-                        SSLContext context = SSLContext.getInstance("TLS");
-                        context.init(null, null, null);
-                        factory.setSSLContext(context);
-                        WebSocket ws = factory.createSocket("wss://caight.herokuapp.com/ws");
-                        ws.addListener(new WebSocketAdapter()
-                        {
-                            @Override
-                            public void onError(WebSocket websocket, WebSocketException cause)
-                            {
-                                Toast.makeText(This, cause.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception
-                            {
-                                System.out.println("Connected");
-                                websocket.sendText("Hello World!!!", true);
-                            }
-
-                            @Override
-                            public void onTextMessage(WebSocket websocket, String text) throws Exception
-                            {
-                                System.out.println(text);
-
-                                websocket.sendClose();
-                            }
-
-                            @Override
-                            public void onBinaryMessage(WebSocket websocket, byte[] binary) throws Exception
-                            {
-                                StringBuilder builder = new StringBuilder();
-                                for (byte b : binary)
-                                {
-                                    builder.append(b);
-                                    builder.append(' ');
-                                }
-                                Toast.makeText(This, builder.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        ws.connect();
-
-                        System.out.println("CONNECTING..."); // TODO: checkout my stack overflow question
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            //Intent intent = new Intent(this, RegisterActivity.class);
-            //intent.putExtra(__KEY_REGISTER_EMAIL__, email);
-            //startActivity(intent);
+            Intent intent = new Intent(this, RegisterActivity.class);
+            intent.putExtra(__KEY_REGISTER_EMAIL__, email);
+            startActivity(intent);
             break;
         }
 
         case REGISTERED_EMAIL:
         {
+            errorTextView.setText(R.string.errmsg_cert_first);
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.startAnimation(ShakeAnimation);
             break;
         }
 
         case CERTIFIED_EMAIL:
         {
+            // TODO
             break;
         }
 
