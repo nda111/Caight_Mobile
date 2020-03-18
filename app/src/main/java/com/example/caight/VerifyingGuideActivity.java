@@ -17,6 +17,7 @@ public class VerifyingGuideActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verifying_guide);
+        getSupportActionBar().hide();
 
         /*
          * Initialize GUI Components
