@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Caight</string>
 
-    <string name="title_new_account">Create new account</string>
+    <string name="title_sign_up">Sign Up</string>
 
     <string name="attr_email" translatable="false">Email</string>
     <string name="attr_password">Password</string>
@@ -39,7 +39,7 @@
     <string name="c_bracket_close" translatable="false">)</string>
 
     <string name="msg_welcome">Welcome!</string>
-    <string name="msg_register">We sent you a certification link to your email. &#10; Certificate to use this account.</string>
+    <string name="msg_register">We sent you an verification email.</string>
 
     <string name="errmsg_cert_first">Certify your email first.</string>
     <string name="errmsg_not_email">Invalid email format.</string>

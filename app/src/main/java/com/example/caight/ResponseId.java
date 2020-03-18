@@ -6,10 +6,13 @@ public enum ResponseId
 
     UNKNOWN_EMAIL(0),
     REGISTERED_EMAIL(1),
-    CERTIFIED_EMAIL(2),
+    VERIFIED_EMAIL(2),
 
     REGISTER_OK(3),
-    REGISTER_NO(4);
+    REGISTER_NO(4),
+
+    VERIFY_OK_WEB_ONLY(5),
+    VERIFY_NO_WEB_ONLY(6);
 
     private int id = -1;
 

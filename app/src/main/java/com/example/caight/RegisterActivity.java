@@ -208,6 +208,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
                                         response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
                                     }
 
                                     @Override
@@ -217,7 +218,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                                         {
                                             case REGISTER_OK:
                                             {
-                                                Intent intent = new Intent(This, CertGuidActivity.class);
+                                                Intent intent = new Intent(This, VerifyingGuideActivity.class);
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
                                                 break;

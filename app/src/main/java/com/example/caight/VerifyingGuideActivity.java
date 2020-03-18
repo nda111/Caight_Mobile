@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-public class CertGuidActivity extends AppCompatActivity
+public class VerifyingGuideActivity extends AppCompatActivity
 {
     private Button goLoginButton = null;
 
@@ -16,7 +16,7 @@ public class CertGuidActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cert_guid);
+        setContentView(R.layout.activity_verifying_guide);
 
         /*
          * Initialize GUI Components

@@ -134,9 +134,9 @@ public class LoginEntryActivity extends AppCompatActivity
                                     break;
                                 }
 
-                                case CERTIFIED_EMAIL:
+                                case VERIFIED_EMAIL:
                                 {
-
+                                    // TODO
                                     break;
                                 }
 
