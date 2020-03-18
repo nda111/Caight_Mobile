@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class LoginEntryActivity extends AppCompatActivity
 {
-    public static final String __KEY_REGISTER_EMAIL__ = "__REGISTER_EMAIL__";
+    public static final String __KEY_EMAIL__ = "__EMAIL__";
 
     private static final Pattern EmailRegex = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
@@ -114,7 +114,7 @@ public class LoginEntryActivity extends AppCompatActivity
                                 case UNKNOWN_EMAIL:
                                 {
                                     Intent intent = new Intent(This, RegisterActivity.class);
-                                    intent.putExtra(__KEY_REGISTER_EMAIL__, email);
+                                    intent.putExtra(__KEY_EMAIL__, email);
                                     startActivity(intent);
                                     break;
                                 }
@@ -136,7 +136,9 @@ public class LoginEntryActivity extends AppCompatActivity
 
                                 case VERIFIED_EMAIL:
                                 {
-                                    // TODO
+                                    Intent intent = new Intent(This, LoginPasswordActivity.class);
+                                    intent.putExtra(__KEY_EMAIL__, email);
+                                    startActivity(intent);
                                     break;
                                 }
 

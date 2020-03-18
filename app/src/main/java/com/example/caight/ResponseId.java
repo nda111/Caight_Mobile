@@ -12,7 +12,11 @@ public enum ResponseId
     REGISTER_NO(4),
 
     VERIFY_OK_WEB_ONLY(5),
-    VERIFY_NO_WEB_ONLY(6);
+    VERIFY_NO_WEB_ONLY(6),
+
+    SIGN_IN_OK(7),
+    SIGN_IN_WRONG_PW(8),
+    SING_IN_ERROR(9);
 
     private int id = -1;
 

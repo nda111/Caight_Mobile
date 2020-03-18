@@ -5,7 +5,8 @@ public enum RequestId
     UNKNOWN(-1),
     EVALUATE_EMAIL(0),
     REGISTER_EMAIL(1),
-    VERIFY_EMAIL_WEB_ONLY(2);
+    VERIFY_EMAIL_WEB_ONLY(2),
+    SIGN_IN(3);
 
     private int id = -1;
 

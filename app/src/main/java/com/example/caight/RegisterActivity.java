@@ -85,7 +85,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar);
 
         // emailTextView
-        emailTextView.setText(intent.getStringExtra(LoginEntryActivity.__KEY_REGISTER_EMAIL__));
+        emailTextView.setText(intent.getStringExtra(LoginEntryActivity.__KEY_EMAIL__));
 
         // pwEditText
         pwEditText.addTextChangedListener(new TextWatcher()
@@ -231,7 +231,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                                                     @Override
                                                     public void run()
                                                     {
-                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_register_no, Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_LONG).show();
                                                         This.finish();
                                                     }
                                                 });
