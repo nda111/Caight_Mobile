@@ -47,4 +47,7 @@ dependencies {
     implementation 'com.dsiner.lib:slidelayout:1.0.3'                               // swipe menu
     implementation 'com.neovisionaries:nv-websocket-client:2.9'
     // web socket client
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.2'               // pull refresh
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.2'
+
 }

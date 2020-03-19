@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 public class LoginEntryActivity extends AppCompatActivity
 {
     public static final String __KEY_EMAIL__ = "__EMAIL__";
+    public static final String __KEY_AUTO_LOGIN__ = "__AUTO_LOGIN__";
 
     private static final Pattern EmailRegex = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
@@ -27,6 +29,7 @@ public class LoginEntryActivity extends AppCompatActivity
 
     private EditText emailEditText = null;
     private TextView errorTextView = null;
+    private CheckBox autoLoginCheckBox = null;
     private ProgressBar progressBar = null;
 
     @Override
@@ -46,6 +49,7 @@ public class LoginEntryActivity extends AppCompatActivity
          */
         emailEditText = findViewById(R.id.emailEditText);
         errorTextView = findViewById(R.id.errTextView);
+        autoLoginCheckBox = findViewById(R.id.autoLoginCheckBox);
         progressBar = findViewById(R.id.progressBar);
 
         // emailEditText
@@ -62,6 +66,7 @@ public class LoginEntryActivity extends AppCompatActivity
                         errorTextView.setVisibility(View.GONE);
                         emailEditText.setEnabled(false);
                         progressBar.setVisibility(View.VISIBLE);
+                        autoLoginCheckBox.setEnabled(false);
                         nextActivity();
                     }
                     else
@@ -138,6 +143,7 @@ public class LoginEntryActivity extends AppCompatActivity
                                 {
                                     Intent intent = new Intent(This, LoginPasswordActivity.class);
                                     intent.putExtra(__KEY_EMAIL__, email);
+                                    intent.putExtra(__KEY_AUTO_LOGIN__, autoLoginCheckBox.isChecked());
                                     startActivity(intent);
                                     break;
                                 }
@@ -153,6 +159,7 @@ public class LoginEntryActivity extends AppCompatActivity
                                 {
                                     emailEditText.setEnabled(true);
                                     progressBar.setVisibility(View.GONE);
+                                    autoLoginCheckBox.setEnabled(true);
                                 }
                             });
                         }

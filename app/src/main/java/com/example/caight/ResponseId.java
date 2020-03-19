@@ -16,7 +16,14 @@ public enum ResponseId
 
     SIGN_IN_OK(7),
     SIGN_IN_WRONG_PW(8),
-    SING_IN_ERROR(9);
+    SING_IN_ERROR(9),
+
+    ADD_ENTITY_OK(10),
+    ADD_ENTITY_NO(11),
+
+    ENTITY_GROUP(12),
+    ENTITY_CAT(13),
+    END_OF_ENTITY(14);
 
     private int id = -1;
 

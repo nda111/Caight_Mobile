@@ -1,7 +1,6 @@
 package com.example.caight;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -14,23 +13,15 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.neovisionaries.ws.client.WebSocket;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.regex.Matcher;
-
 public class LoginPasswordActivity extends AppCompatActivity
 {
     private String email = null;
+    private boolean doAutoLogin = false;
 
     private Animation ShakeAnimation = null;
     private AnimatedVectorDrawable ShowPasswordAnimation = null;
@@ -53,6 +44,7 @@ public class LoginPasswordActivity extends AppCompatActivity
          */
         Intent intent = getIntent();
         email = intent.getStringExtra(LoginEntryActivity.__KEY_EMAIL__);
+        doAutoLogin = intent.getBooleanExtra(LoginEntryActivity.__KEY_AUTO_LOGIN__, false);
 
         /*
          * Resources
@@ -124,15 +116,17 @@ public class LoginPasswordActivity extends AppCompatActivity
                                             {
                                                 case SIGN_IN_OK:
                                                 {
-                                                    // TODO
-                                                    runOnUiThread(new Runnable()
+                                                    if (doAutoLogin)
                                                     {
-                                                        @Override
-                                                        public void run()
-                                                        {
-                                                            Toast.makeText(LoginPasswordActivity.this, "SIGN_IN_OK", Toast.LENGTH_LONG).show();
-                                                        }
-                                                    });
+                                                        StaticResources.loginPreferences.edit().putBoolean(StaticResources.LoginPreferenceItemAutoLogin, true).apply();
+                                                        StaticResources.loginPreferences.edit().putString(StaticResources.LogInPreferenceItemEmail, email).apply();
+                                                        StaticResources.loginPreferences.edit().putString(StaticResources.LogInPreferenceItemPassword, pwEditText.getText().toString()).apply();
+                                                    }
+
+                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                    intent.putExtra(LoginEntryActivity.__KEY_EMAIL__, email);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                    startActivity(intent);
                                                     break;
                                                 }
 
@@ -186,7 +180,6 @@ public class LoginPasswordActivity extends AppCompatActivity
                             e.printStackTrace();
                         }
                     }
-
                 }
                 return false;
             }

@@ -5,7 +5,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -26,12 +25,9 @@ import android.icu.util.Calendar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
-public class AddNewActivity extends AppCompatActivity implements ColorPickerDialogListener
+public class AddCatActivity extends AppCompatActivity implements ColorPickerDialogListener
 {
     private final Activity This = this;
 
@@ -52,7 +48,7 @@ public class AddNewActivity extends AppCompatActivity implements ColorPickerDial
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new);
+        setContentView(R.layout.activity_add_cat);
         getSupportActionBar().hide();
 
         groupSpinner = findViewById(R.id.groupSpinner);

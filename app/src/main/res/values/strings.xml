@@ -5,6 +5,7 @@
 
     <string name="attr_email" translatable="false">Email</string>
     <string name="attr_password">Password</string>
+    <string name="attr_auto_login">Keep logged in</string>
     <string name="attr_nickname">Nickname</string>
 
     <string name="pw_const_lowercase">Lower case</string>
@@ -43,6 +44,7 @@
 
     <string name="errmsg_cert_first">Certify your email first.</string>
     <string name="errmsg_not_email">Invalid email format.</string>
+    <string name="errmsg_fail_auto_login">Failed to login automatically.</string>
     <string name="errmsg_no_group">Join group to add a cat.</string>
     <string name="errmsg_wrong_pw">Password not matches.</string>
     <string name="errmsg_enter_pw">Please enter your password.</string>

@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity
     private SpeedDialActionItem menuDialNewGroupItem = null;
     private SpeedDialActionItem menuDialAccountItem = null;
 
+    private String Email = null;
+
     private final EntityListItemViewBase.OnEntityListItemTouchListener onViewTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
     {
         @Override
@@ -56,6 +58,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+        //
+        // Intent
+        //
+        Intent intent = getIntent();
+        Email = intent.getStringExtra(LoginEntryActivity.__KEY_EMAIL__);
 
         //
         // Initialize string resources
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity
                 case R.id.sdItemAddCat:
                     if (StaticResources.groups.size() > 0)
                     {
-                        intent = new Intent(This, AddNewActivity.class);
+                        intent = new Intent(This, AddCatActivity.class);
                         startActivity(intent);
                     }
                     else
@@ -135,7 +143,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        useCatExample();
+        downloadEntities();
+        //useCatExample();
+    }
+
+    private void downloadEntities()
+    {
+        Toast.makeText(this, "LOGGED IN BY\n" + Email, Toast.LENGTH_LONG).show();
     }
 
     private void useCatExample()
