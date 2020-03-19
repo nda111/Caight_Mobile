@@ -4,13 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 public class EntryActivity extends AppCompatActivity
 {
@@ -49,6 +43,7 @@ public class EntryActivity extends AppCompatActivity
                             .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                             {
                                 ResponseId response;
+                                int cnt = 0;
 
                                 @Override
                                 public void onRequest(WebSocketConnection conn)
@@ -65,8 +60,32 @@ public class EntryActivity extends AppCompatActivity
                                 @Override
                                 public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                 {
-                                    response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
-                                    conn.close();
+                                    boolean close = false;
+
+                                    switch (++cnt)
+                                    {
+                                        case 1:
+                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                            close = response != ResponseId.SIGN_IN_OK;
+                                            break;
+
+                                        case 2:
+                                            StaticResources.accountId = message.getBinary();
+                                            break;
+
+                                        case 3:
+                                            StaticResources.authToken = message.getText();
+                                            close = true;
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+
+                                    if (close)
+                                    {
+                                        conn.close();
+                                    }
                                 }
 
                                 @Override

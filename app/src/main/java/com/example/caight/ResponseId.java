@@ -4,26 +4,46 @@ public enum ResponseId
 {
     UNKNOWN(-1),
 
+    /*
+     * EVALUATE_EMAIL(0)
+     */
     UNKNOWN_EMAIL(0),
     REGISTERED_EMAIL(1),
     VERIFIED_EMAIL(2),
 
+    /*
+     * REGISTER_EMAIL(1)
+     */
     REGISTER_OK(3),
     REGISTER_NO(4),
 
+    /*
+     * VERIFY_EMAIL_WEB_ONLY(2)
+     */
     VERIFY_OK_WEB_ONLY(5),
     VERIFY_NO_WEB_ONLY(6),
 
+    /*
+     * SIGN_IN(3)
+     */
     SIGN_IN_OK(7),
     SIGN_IN_WRONG_PW(8),
     SING_IN_ERROR(9),
 
+    /*
+     * NEW_GROUP(4)
+     * NEW_CAT(5)
+     */
     ADD_ENTITY_OK(10),
     ADD_ENTITY_NO(11),
+    ADD_ENTITY_ERROR(12),
 
-    ENTITY_GROUP(12),
-    ENTITY_CAT(13),
-    END_OF_ENTITY(14);
+    /*
+     * DOWNLOAD_ENTITY(7)
+     */
+    ENTITY_GROUP(13),
+    ENTITY_CAT(14),
+    END_OF_ENTITY(15);
 
     private int id = -1;
 

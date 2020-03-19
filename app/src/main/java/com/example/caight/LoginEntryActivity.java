@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,6 +30,7 @@ public class LoginEntryActivity extends AppCompatActivity
     private Animation ShakeAnimation = null;
 
     private EditText emailEditText = null;
+    private ImageView clearTextImageView= null;
     private TextView errorTextView = null;
     private CheckBox autoLoginCheckBox = null;
     private ProgressBar progressBar = null;
@@ -48,6 +51,7 @@ public class LoginEntryActivity extends AppCompatActivity
          * Initialize GUI Components
          */
         emailEditText = findViewById(R.id.emailEditText);
+        clearTextImageView = findViewById(R.id.clearTextImageView);
         errorTextView = findViewById(R.id.errTextView);
         autoLoginCheckBox = findViewById(R.id.autoLoginCheckBox);
         progressBar = findViewById(R.id.progressBar);
@@ -77,6 +81,17 @@ public class LoginEntryActivity extends AppCompatActivity
                     }
                     return true;
                 }
+                return false;
+            }
+        });
+
+        // clearTextImageView
+        clearTextImageView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                emailEditText.setText("");
                 return false;
             }
         });

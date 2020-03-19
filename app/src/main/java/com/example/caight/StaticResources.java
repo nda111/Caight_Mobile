@@ -14,6 +14,11 @@ class StaticResources
     static final String LogInPreferenceItemEmail = "__SHARED_PREFERENCES_LOGIN_EMAIL__";
     static final String LogInPreferenceItemPassword = "__SHARED_PREFERENCES_LOGIN_PASSWORD__";
 
+    static byte[] accountId = null;
+    static String authToken = null;
+
+    static boolean updateEntityList = false;
+
     static ArrayList<CatGroup> groups = new ArrayList<CatGroup>();
     static HashMap<CatGroup, List<Cat>> entries = new HashMap<CatGroup, List<Cat>>();
 }

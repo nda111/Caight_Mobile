@@ -28,6 +28,7 @@ public class LoginPasswordActivity extends AppCompatActivity
     private AnimatedVectorDrawable HidePasswordAnimation = null;
 
     private EditText pwEditText = null;
+    private ImageView clearTextImageView = null;
     private ImageView revealImageButton = null;
     private TextView errTextView = null;
     private ProgressBar progressBar = null;
@@ -58,6 +59,7 @@ public class LoginPasswordActivity extends AppCompatActivity
          * Initialize GUI Components
          */
         pwEditText = findViewById(R.id.pwEditText);
+        clearTextImageView = findViewById(R.id.clearTextImageView);
         revealImageButton = findViewById(R.id.revealImageButton);
         errTextView = findViewById(R.id.errTextView);
         progressBar = findViewById(R.id.progressBar);
@@ -89,6 +91,7 @@ public class LoginPasswordActivity extends AppCompatActivity
                                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                     {
                                         ResponseId response;
+                                        int cnt = 0;
 
                                         @Override
                                         public void onRequest(WebSocketConnection conn)
@@ -105,8 +108,32 @@ public class LoginPasswordActivity extends AppCompatActivity
                                         @Override
                                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                         {
-                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
-                                            conn.close();
+                                            boolean close = false;
+
+                                            switch (++cnt)
+                                            {
+                                                case 1:
+                                                    response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                                    close = response != ResponseId.SIGN_IN_OK;
+                                                    break;
+
+                                                case 2:
+                                                    StaticResources.accountId = message.getBinary();
+                                                    break;
+
+                                                case 3:
+                                                    StaticResources.authToken = message.getText();
+                                                    close = true;
+                                                    break;
+
+                                                default:
+                                                    break;
+                                            }
+
+                                            if (close)
+                                            {
+                                                conn.close();
+                                            }
                                         }
 
                                         @Override
@@ -184,6 +211,19 @@ public class LoginPasswordActivity extends AppCompatActivity
                 return false;
             }
         });
+
+        // clearTextImageView
+        clearTextImageView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                pwEditText.setText("");
+
+                return false;
+            }
+        });
+
         //revealImageButton
         revealImageButton.setOnTouchListener(new View.OnTouchListener()
         {

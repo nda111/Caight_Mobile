@@ -144,12 +144,23 @@ public class MainActivity extends AppCompatActivity
         });
 
         downloadEntities();
-        //useCatExample();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (StaticResources.updateEntityList)
+        {
+            StaticResources.updateEntityList = false;
+            downloadEntities();
+        }
     }
 
     private void downloadEntities()
     {
-        Toast.makeText(this, "LOGGED IN BY\n" + Email, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Update List", Toast.LENGTH_SHORT).show();
     }
 
     private void useCatExample()
@@ -211,7 +222,7 @@ public class MainActivity extends AppCompatActivity
         entityListView.addView(nikoView);
         nikoView.setOnTouchListener(onViewTouchedListener);
 
-        
+
         CatGroup yeGroup = yeView.getGroup();
         ArrayList<Cat> yeCats = new ArrayList<Cat>();
         StaticResources.groups.add(yeGroup);
