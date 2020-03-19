@@ -44,9 +44,9 @@
 
     <string name="errmsg_cert_first">Certify your email first.</string>
     <string name="errmsg_not_email">Invalid email format.</string>
-    <string name="errmsg_fail_auto_login">Failed to login automatically.</string>
     <string name="errmsg_no_group">Join group to add a cat.</string>
     <string name="errmsg_wrong_pw">Password not matches.</string>
     <string name="errmsg_enter_pw">Please enter your password.</string>
     <string name="errmsg_error">Error occurred. &#10; Please try again.</string>
+    <string name="errmsg_other_device_logged_in">Your account logged in on other device.</string>
 </resources>

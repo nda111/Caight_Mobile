@@ -2,6 +2,7 @@ package com.example.caight;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -121,13 +122,31 @@ public class AddGroupActivity extends AppCompatActivity
                                     @Override
                                     public void onClosed()
                                     {
-                                        if (response == ResponseId.ADD_ENTITY_OK)
+                                        switch (response)
                                         {
-                                            StaticResources.updateEntityList = true;
-                                        }
-                                        else
-                                        {
-                                            Toast.makeText(getApplication(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                            case ADD_ENTITY_OK:
+                                            {
+                                                StaticResources.updateEntityList = true;
+                                                break;
+                                            }
+
+                                            case ADD_ENTITY_NO:
+                                            {
+                                                Toast.makeText(getApplication(), R.string.errmsg_other_device_logged_in, Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                break;
+                                            }
+
+                                            case ADD_ENTITY_ERROR:
+                                            {
+                                                Toast.makeText(getApplication(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                break;
+                                            }
+
+                                            default:
+                                                break;
                                         }
 
                                         runOnUiThread(new Runnable()
