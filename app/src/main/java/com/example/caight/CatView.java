@@ -158,7 +158,7 @@ public class CatView extends EntityListItemViewBase
             dateBuilder.append('(');
             dateBuilder.append(lastEntry.getKey().get(Calendar.YEAR));
             dateBuilder.append('.');
-            dateBuilder.append(lastEntry.getKey().get(Calendar.MONTH));
+            dateBuilder.append(lastEntry.getKey().get(Calendar.MONTH) + 1);
             dateBuilder.append('.');
             dateBuilder.append(lastEntry.getKey().get(Calendar.DAY_OF_MONTH));
             dateBuilder.append(')');

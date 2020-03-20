@@ -34,27 +34,6 @@ public enum Gender
         return (value >> 1) == 1;
     }
 
-    public static Gender parse(String string)
-    {
-        switch (string)
-        {
-        case "MALE":
-            return MALE;
-
-        case "FEMALE":
-            return FEMALE;
-
-        case "NEUTERED":
-            return NEUTERED;
-
-        case "SPAYED":
-            return SPAYED;
-
-        default:
-            return null;
-        }
-    }
-
     public static Gender fromValue(int value)
     {
         switch (value)

@@ -39,7 +39,7 @@ public class StringResources
             StringBuilder builder = new StringBuilder();
 
             builder.append(date.get(Calendar.YEAR));
-            builder.append('-');
+            builder.append('.');
 
             int month = date.get(Calendar.MONTH);
             if (month < 10)
@@ -47,7 +47,7 @@ public class StringResources
                 builder.append('0');
             }
             builder.append(month + 1);
-            builder.append('-');
+            builder.append('.');
 
             int day = date.get(Calendar.DAY_OF_MONTH);
             if (day < 10)

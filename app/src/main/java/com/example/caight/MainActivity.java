@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity
                         private ResponseId response = null;
 
                         private CatGroup group = null;
-                        private ArrayList<Cat> cats = new ArrayList<Cat>();
+                        private ArrayList<Cat> cats = null;
 
                         private ArrayList<CatGroup> groups = new ArrayList<CatGroup>();
                         private HashMap<CatGroup, List<Cat>> entries = new HashMap<CatGroup, List<Cat>>();
@@ -223,6 +223,8 @@ public class MainActivity extends AppCompatActivity
                             {
                                 response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
 
+                                System.out.println(response);
+
                                 if (response == ResponseId.END_OF_ENTITY)
                                 {
                                     if (group != null)
@@ -230,6 +232,7 @@ public class MainActivity extends AppCompatActivity
                                         groups.add(group);
                                         entries.put(group, cats);
                                     }
+
                                     conn.close();
                                 }
                             }
@@ -295,6 +298,8 @@ public class MainActivity extends AppCompatActivity
                                 {
                                     Context context = MainActivity.this;
 
+                                    entityListView.removeAllViews();
+
                                     for (CatGroup group : groups)
                                     {
                                         CatGroupView groupView = new CatGroupView(context, group);
@@ -306,7 +311,7 @@ public class MainActivity extends AppCompatActivity
                                         {
                                             CatView catView = new CatView(context, cat);
                                             catView.setOnTouchListener(onCatTouchedListener);
-                                            entityListView.addView(groupView);
+                                            entityListView.addView(catView);
                                         }
                                     }
                                 }
@@ -320,6 +325,8 @@ public class MainActivity extends AppCompatActivity
                                     entityListView.setEnabled(true);
                                     menuDial.setEnabled(true);
                                     progressBar.setVisibility(View.GONE);
+
+                                    entityListView.invalidate();
 
                                     Toast.makeText(MainActivity.this, R.string.msg_list_updated, Toast.LENGTH_SHORT).show();
                                 }

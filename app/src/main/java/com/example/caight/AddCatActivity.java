@@ -242,7 +242,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                if (pwValidCheckBox.isChecked() && nameValidCheckBox.isChecked() && weightValidCheckBox.isChecked())
+                if (event.getAction() == 1 && pwValidCheckBox.isChecked() && nameValidCheckBox.isChecked() && weightValidCheckBox.isChecked())
                 {
                     wrapperLayout.setEnabled(false);
                     progressBar.setVisibility(View.VISIBLE);
@@ -293,8 +293,6 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                     {
                                         response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
                                         conn.close();
-
-                                        // TODO: test cat register
                                     }
 
                                     @Override
@@ -364,6 +362,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                         e.printStackTrace();
                     }
                 }
+
                 return false;
             }
         });

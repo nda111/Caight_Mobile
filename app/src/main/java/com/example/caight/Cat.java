@@ -122,7 +122,7 @@ public final class Cat
             json.put(__JSON_KEY_COLOR__, color);
             json.put(__JSON_KEY_NAME__, name);
             json.put(__JSON_KEY_BIRTHDAY__, birthday.getTimeInMillis());
-            json.put(__JSON_KEY_GENDER__, gender.toString());
+            json.put(__JSON_KEY_GENDER__, gender.getValue());
             json.put(__JSON_KEY_SPECIES__, species);
             json.put(__JSON_KEY_WEIGHTS__, weightArray);
 
@@ -379,7 +379,7 @@ public final class Cat
             cat.color = json.getInt(__JSON_KEY_COLOR__);
             cat.name = json.getString(__JSON_KEY_NAME__);
             cat.birthday = getCalendarInMillis(json.getLong(__JSON_KEY_BIRTHDAY__));
-            cat.gender = Gender.parse(json.getString(__JSON_KEY_GENDER__));
+            cat.gender = Gender.fromValue(json.getInt(__JSON_KEY_GENDER__));
             cat.species = json.getInt(__JSON_KEY_SPECIES__);
             cat.weights = weights;
 
