@@ -71,7 +71,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
          */
         Intent intent = getIntent();
         emailTextView = findViewById(R.id.emailTextView);
-        pwEditText = findViewById(R.id.passwordEditText);
+        pwEditText = findViewById(R.id.pwEditText);
         pwConstraintCheckBoxes = new CheckBox[] {
                 findViewById(R.id.pwConstraintCheckBox1),
                 findViewById(R.id.pwConstraintCheckBox2),

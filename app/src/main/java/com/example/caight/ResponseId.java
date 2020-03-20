@@ -36,14 +36,15 @@ public enum ResponseId
      */
     ADD_ENTITY_OK(10),
     ADD_ENTITY_NO(11),
-    ADD_ENTITY_ERROR(12),
+    ADD_ENTITY_NOT_PW(12),
+    ADD_ENTITY_ERROR(13),
 
     /*
      * DOWNLOAD_ENTITY(7)
      */
-    ENTITY_GROUP(13),
-    ENTITY_CAT(14),
-    END_OF_ENTITY(15);
+    ENTITY_GROUP(14),
+    ENTITY_CAT(15),
+    END_OF_ENTITY(16);
 
     private int id = -1;
 

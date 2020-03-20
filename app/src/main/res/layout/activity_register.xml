@@ -34,7 +34,7 @@
         tools:text="@string/attr_email" />
 
     <EditText
-        android:id="@+id/passwordEditText"
+        android:id="@+id/pwEditText"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
@@ -53,8 +53,8 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:text="@string/pw_const_lowercase"
-        app:layout_constraintStart_toStartOf="@+id/passwordEditText"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+        app:layout_constraintStart_toStartOf="@+id/pwEditText"
+        app:layout_constraintTop_toBottomOf="@+id/pwEditText" />
 
     <CheckBox
         android:id="@+id/pwConstraintCheckBox2"
@@ -108,9 +108,9 @@
         android:ems="10"
         android:hint="@string/attr_nickname"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/passwordEditText"
+        app:layout_constraintEnd_toEndOf="@+id/pwEditText"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/passwordEditText"
+        app:layout_constraintStart_toStartOf="@+id/pwEditText"
         app:layout_constraintTop_toBottomOf="@+id/pwConstraintCheckBox5" />
 
     <TextView

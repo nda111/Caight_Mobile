@@ -1,10 +1,12 @@
 package com.example.caight;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,20 +22,29 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.icu.util.Calendar;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+import com.neovisionaries.ws.client.WebSocket;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AddCatActivity extends AppCompatActivity implements ColorPickerDialogListener
 {
     private final Activity This = this;
 
-    private ConstraintLayout colorViewer = null;
+    private EditText pwEditText = null;
+    private CheckBox pwValidCheckBox = null;
     private Spinner groupSpinner = null;
+    private ConstraintLayout colorViewer = null;
     private TextView rgbTextView = null;
     private EditText nameEditText = null;
     private CheckBox nameValidCheckBox = null;
@@ -44,6 +56,11 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
     private CheckBox weightValidCheckBox = null;
     private Button registerButton = null;
 
+    private CatGroup selectedGroup = null;
+    private int selectedColor = 0;
+    private long selectedBirthday = 0;
+    private int selectedSpecies = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,58 +68,9 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         setContentView(R.layout.activity_add_cat);
         getSupportActionBar().hide();
 
-        groupSpinner = findViewById(R.id.groupSpinner);
-        colorViewer = findViewById(R.id.colorViewer);
-        rgbTextView = findViewById(R.id.rgbTextView);
-        nameEditText = findViewById(R.id.nameEditText);
-        nameValidCheckBox = findViewById(R.id.nameValidCheckBox);
-        birthdayEditText = findViewById(R.id.birthdayEditText);
-        genderToggleButton = findViewById(R.id.genderToggleButton);
-        isNeuteredCheckBox = findViewById(R.id.isNeuteredCheckBox);
-        speciesSpinner = findViewById(R.id.speciesSpinner);
-        weightEditText = findViewById(R.id.weightEditText);
-        weightValidCheckBox = findViewById(R.id.weightValidCheckBox);
-        registerButton = findViewById(R.id.registerButton);
-
-        //
-        // Listeners
-        //
-        TextWatcher textWatcher = new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s)
-            {
-                nameValidCheckBox.setChecked(nameEditText.getText().length() != 0);
-                weightValidCheckBox.setChecked(weightEditText.getText().length() != 0);
-
-                if (weightValidCheckBox.isChecked() && nameValidCheckBox.isChecked())
-                {
-                    if (!registerButton.isEnabled())
-                    {
-                        registerButton.setEnabled(true);
-                    }
-
-                }
-                else
-                {
-                    if (registerButton.isEnabled())
-                    {
-                        registerButton.setEnabled(false);
-                    }
-                }
-            }
-        };
-
+        /*
+         * Listeners
+         */
         View.OnTouchListener colorPickerTrigger = new View.OnTouchListener()
         {
             private ColorPickerDialog picker = ColorPickerDialog
@@ -119,12 +87,60 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
             }
         };
 
-        //
-        // Initializing Components
-        //
+        /*
+         * Initialize GUI Components
+         */
+        pwEditText = findViewById(R.id.pwEditText);
+        pwValidCheckBox = findViewById(R.id.pwValidCheckBox);
+        groupSpinner = findViewById(R.id.groupSpinner);
+        colorViewer = findViewById(R.id.colorViewer);
+        rgbTextView = findViewById(R.id.rgbTextView);
+        nameEditText = findViewById(R.id.nameEditText);
+        nameValidCheckBox = findViewById(R.id.nameValidCheckBox);
+        birthdayEditText = findViewById(R.id.birthdayEditText);
+        genderToggleButton = findViewById(R.id.genderToggleButton);
+        isNeuteredCheckBox = findViewById(R.id.isNeuteredCheckBox);
+        speciesSpinner = findViewById(R.id.speciesSpinner);
+        weightEditText = findViewById(R.id.weightEditText);
+        weightValidCheckBox = findViewById(R.id.weightValidCheckBox);
+        registerButton = findViewById(R.id.registerButton);
+
+        // pwEditText
+        pwEditText.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                pwValidCheckBox.setChecked(s.length() > 0);
+            }
+        });
+
         // groupSpinner
         GroupSpinnerAdapter adapter = new GroupSpinnerAdapter(this, R.id.groupTextView, StaticResources.groups);
         groupSpinner.setAdapter(adapter);
+        groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedGroup = StaticResources.groups.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        });
 
         // colorViewer
         colorViewer.setOnTouchListener(colorPickerTrigger);
@@ -134,14 +150,33 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
 
         // nameEditText
         nameEditText.setHint(StringResources.NameExamples[(int)(Math.random() * StringResources.NameExamples.length)]);
-        nameEditText.addTextChangedListener(textWatcher);
+        nameEditText.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                nameValidCheckBox.setChecked(s.length() > 0);
+            }
+        });
 
         // birthdayEditText
-        String nowString = StringResources.DateFormatter.format(Calendar.getInstance());
-        birthdayEditText.setHint(nowString);
+        Calendar today = Calendar.getInstance();
+        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        birthdayEditText.setHint(StringResources.DateFormatter.format(today));
+        selectedBirthday = today.getTimeInMillis();
 
         // speciesSpinner
-        ArrayAdapter speciesAdapter = ArrayAdapter.createFromResource(this, R.array.species, android.R.layout.simple_spinner_item);
+        final ArrayAdapter speciesAdapter = ArrayAdapter.createFromResource(this, R.array.species, android.R.layout.simple_spinner_item);
         speciesAdapter.sort(new Comparator()
         {
             @Override
@@ -152,9 +187,49 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         });
         speciesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         speciesSpinner.setAdapter(speciesAdapter);
+        speciesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String item = (String)speciesAdapter.getItem(position);
+                for (int idx = 0; idx < StringResources.Species.length; idx++)
+                {
+                    if (item.equals(StringResources.Species[idx]))
+                    {
+                        selectedSpecies = idx;
+                        return;
+                    }
+                }
+
+                selectedSpecies = -1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        });
 
         // weightEditText
-        weightEditText.addTextChangedListener(textWatcher);
+        weightEditText.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                weightValidCheckBox.setChecked(s.length() > 0);
+            }
+        });
 
         // registerButton
         registerButton.setOnTouchListener(new View.OnTouchListener()
@@ -162,7 +237,113 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                // TODO: request register, 'finish()' if success, 'Toast(error)' if not.
+                if (pwValidCheckBox.isChecked() && nameValidCheckBox.isChecked() && weightValidCheckBox.isChecked())
+                {
+                    // TODO: disable gui
+
+                    try
+                    {
+                        WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    ResponseId response;
+
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        Calendar today = Calendar.getInstance();
+                                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+
+                                        int group = selectedGroup.getId();
+                                        String pw = pwEditText.getText().toString();
+                                        int color = selectedColor;
+                                        String name = nameEditText.getText().toString();
+                                        long birthday = selectedBirthday;
+                                        short gender = (short)Gender.evaluate(!genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()).getValue();
+                                        int species = selectedSpecies;
+                                        long todayMillis = today.getTimeInMillis();
+                                        float weight = Float.parseFloat(weightEditText.getText().toString());
+
+                                        StringBuilder builder = new StringBuilder();
+                                        builder.append(group); builder.append('\0');
+                                        builder.append(pw); builder.append('\0');
+                                        builder.append(color); builder.append('\0');
+                                        builder.append(name); builder.append('\0');
+                                        builder.append(birthday); builder.append('\0');
+                                        builder.append(gender); builder.append('\0');
+                                        builder.append(species); builder.append('\0');
+                                        builder.append(todayMillis); builder.append('\0');
+                                        builder.append(weight);
+
+                                        conn.send(StaticMethods.intToByteArray(RequestId.NEW_CAT.getId()), true);
+
+                                        conn.send(StaticResources.accountId, true);
+                                        conn.send(StaticResources.authToken, true);
+                                        conn.send(builder.toString(), true);
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+                                        switch (response)
+                                        {
+                                            case ADD_ENTITY_OK:
+                                            {
+                                                StaticResources.updateEntityList = true;
+                                                break;
+                                            }
+
+                                            case ADD_ENTITY_NO:
+                                            {
+                                                Toast.makeText(getApplication(), R.string.errmsg_other_device_logged_in, Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                break;
+                                            }
+
+                                            case ADD_ENTITY_NOT_PW:
+                                            {
+                                                Toast.makeText(getApplication(), R.string.errmsg_wrong_pw, Toast.LENGTH_SHORT).show();
+                                                break;
+                                            }
+
+                                            case ADD_ENTITY_ERROR:
+                                            {
+                                                Toast.makeText(getApplication(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                break;
+                                            }
+
+                                            default:
+                                                break;
+                                        }
+
+                                        if (response != ResponseId.ADD_ENTITY_NOT_PW)
+                                        {
+                                            runOnUiThread(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    finish();
+                                                }
+                                            });
+                                        }
+                                    }
+                                }).connect();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
                 return false;
             }
         });
@@ -171,6 +352,8 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
     @Override
     public void onColorSelected(int dialogId, int color)
     {
+        selectedColor = color;
+
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
         int b = color & 0xFF;
@@ -199,6 +382,8 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                 Calendar cal = Calendar.getInstance();
                 cal.set(year, month, dayOfMonth);
 
+                selectedBirthday = cal.getTimeInMillis();
+
                 String nowString = StringResources.DateFormatter.format(cal);
                 birthdayEditText.setText(nowString);
             }
@@ -209,18 +394,6 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
-    public Cat getCatInfo()
-    {
-        return new Cat(
-                ((ColorDrawable)colorViewer.getBackground()).getColor(),
-                nameEditText.getText().toString().trim(),
-                StringResources.DateFormatter.parse(birthdayEditText.getText().toString()),
-                Gender.evaluate(genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()),
-                Cat.getSpeciesIndexOrNull(speciesSpinner.getSelectedItem().toString()),
-                Float.parseFloat(weightEditText.getText().toString())
-        );
     }
 
     private String padLeft(String origin, char pad, int totalLength)

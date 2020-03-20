@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         downloadEntities();
+        //useCatExample();
     }
 
     @Override
@@ -160,7 +161,9 @@ public class MainActivity extends AppCompatActivity
 
     private void downloadEntities()
     {
-        Toast.makeText(this, "Update List", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Update List", Toast.LENGTH_SHORT).show();
+
+        
     }
 
     private void useCatExample()

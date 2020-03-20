@@ -34,28 +34,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/groupTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/attr_group"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@+id/groupSpinner"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <Spinner
                 android:id="@+id/groupSpinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:spinnerMode="dialog"
-                app:layout_constraintBottom_toBottomOf="@+id/groupTextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/groupTextView"
-                app:layout_constraintTop_toTopOf="@+id/groupTextView" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/formLayout"
@@ -64,7 +50,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/groupTextView">
+                app:layout_constraintTop_toBottomOf="@+id/pwEditText">
 
                 <TextView
                     android:id="@+id/colorTextView"
@@ -320,21 +306,45 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/kgUnitTextView" />
 
+                <Button
+                    android:id="@+id/registerButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_custom_ripple"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="@string/act_register"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weightEditText" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/registerButton"
+            <CheckBox
+                android:id="@+id/pwValidCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                app:layout_constraintBaseline_toBaselineOf="@+id/pwEditText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/pwEditText" />
+
+            <EditText
+                android:id="@+id/pwEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/ic_custom_ripple"
-                android:enabled="false"
-                android:text="@string/act_register"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:ems="10"
+                android:hint="@string/attr_password"
+                android:inputType="textPassword"
+                app:layout_constraintEnd_toStartOf="@+id/pwValidCheckBox"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/formLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/groupSpinner" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

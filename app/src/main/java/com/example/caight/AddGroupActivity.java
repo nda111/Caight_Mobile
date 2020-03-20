@@ -89,6 +89,7 @@ public class AddGroupActivity extends AppCompatActivity
                 if (nameValidCheckBox.isChecked() && pwValidCheckBox.isChecked())
                 {
                     nameEditText.setEnabled(false);
+                    pwEditText.setEnabled(false);
                     registerButton.setEnabled(false);
                     progressBar.setVisibility(View.VISIBLE);
 
