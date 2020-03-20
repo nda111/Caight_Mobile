@@ -39,4 +39,5 @@
     <string name="attr_auto_login">자동 로그인</string>
     <string name="errmsg_other_device_logged_in">다른 기기에서 로그인되었습니다.</string>
     <string name="msg_list_updated">리스트가 업데이트되었습니다.</string>
+    <string name="title_account">계정 설정</string>
 </resources>

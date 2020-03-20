@@ -2,6 +2,7 @@
     <string name="app_name">Caight</string>
 
     <string name="title_sign_up">Sign Up</string>
+    <string name="title_account">Account</string>
 
     <string name="attr_email" translatable="false">Email</string>
     <string name="attr_password">Password</string>

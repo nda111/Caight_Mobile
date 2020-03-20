@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public RefreshHeader createRefreshHeader(@NonNull Context context, @NonNull RefreshLayout layout)
             {
-                layout.setPrimaryColorsId(R.color.colorPrimary, R.color.colorAccent);
+                layout.setPrimaryColorsId(R.color.colorPrimary, R.color.colorPrimaryDark);
                 return new BezierCircleHeader(context);
             }
         });
@@ -151,19 +151,20 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onActionSelected(SpeedDialActionItem actionItem)
             {
-                Intent intent = null;
-
                 switch (actionItem.getId())
                 {
                     case R.id.sdItemAddGroup:
-                        intent = new Intent(This, AddGroupActivity.class);
+                    {
+                        Intent intent = new Intent(This, AddGroupActivity.class);
                         startActivity(intent);
                         break;
+                    }
 
                     case R.id.sdItemAddCat:
+                    {
                         if (StaticResources.groups.size() > 0)
                         {
-                            intent = new Intent(This, AddCatActivity.class);
+                            Intent intent = new Intent(This, AddCatActivity.class);
                             startActivity(intent);
                         }
                         else
@@ -171,10 +172,14 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(This, R.string.errmsg_no_group, Toast.LENGTH_SHORT).show();
                         }
                         break;
+                    }
 
                     case R.id.sdItemAccount:
-                        // TODO
+                    {
+                        Intent intent = new Intent(This, AccountActivity.class);
+                        startActivity(intent);
                         break;
+                    }
 
                     default:
                         break;
@@ -346,7 +351,7 @@ public class MainActivity extends AppCompatActivity
 
                                     entityListView.invalidate();
 
-                                    Toast.makeText(MainActivity.this, R.string.msg_list_updated, Toast.LENGTH_SHORT).show();
+                                    // Toast.makeText(MainActivity.this, R.string.msg_list_updated, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }

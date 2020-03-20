@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFF8B5</color>
-    <color name="colorPrimaryDark">#C2BA71</color>
-    <color name="colorAccent">#FFEB3B</color>
-
-    <color name="gender_male">#91DAFF</color>
-    <color name="gender_female">#FFDCFC</color>
+    <color name="colorPrimary">#FFC107</color>
+    <color name="colorPrimaryDark">#6A3F00</color>
+    <color name="colorAccent">#FFC97A</color>
 </resources>
