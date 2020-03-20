@@ -1,6 +1,8 @@
 package com.example.caight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +18,15 @@ import android.widget.Toast;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.mindorks.placeholderview.ExpandablePlaceHolderView;
+import com.scwang.smartrefresh.header.BezierCircleHeader;
+import com.scwang.smartrefresh.header.WaveSwipeHeader;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +39,8 @@ public class MainActivity extends AppCompatActivity
 {
     private final MainActivity This = this;
 
+    private ConstraintLayout rootLayout = null;
+    private SmartRefreshLayout refreshLayout = null;
     private ExpandablePlaceHolderView entityListView = null;
     private SpeedDialView menuDial = null;
     private SpeedDialActionItem menuDialNewCatItem = null;
@@ -36,29 +49,6 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progressBar = null;
 
     private String Email = null;
-
-    private final EntityListItemViewBase.OnEntityListItemTouchListener onViewTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
-    {
-        @Override
-        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
-        {
-            String name = null;
-            if (sender instanceof CatView)
-            {
-                CatView view = (CatView)sender;
-                name = Integer.toString(view.getCat().getColorInteger());
-            }
-            else
-            {
-                //CatGroupView view = (CatGroupView)sender;
-                //name = view.getGroup().getName();
-            }
-
-            //Toast.makeText(This, name, Toast.LENGTH_SHORT).show();
-
-            return false;
-        }
-    };
 
     private final EntityListItemViewBase.OnEntityListItemTouchListener onGroupTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
     {
@@ -87,25 +77,47 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        //
-        // Intent
-        //
+        /*
+         * Intent
+         */
         Intent intent = getIntent();
         Email = intent.getStringExtra(LoginEntryActivity.__KEY_EMAIL__);
 
-        //
-        // Initialize string resources
-        //
+        /*
+         * Initialize string resources
+         */
         Resources resources = getResources();
         StringResources.NameExamples = resources.getStringArray(R.array.name_examples);
         StringResources.Species = resources.getStringArray(R.array.species);
 
-        //
-        // Initialize GUI Components
-        //
+        /*
+         * Initialize GUI Components
+         */
+        rootLayout = findViewById(R.id.rootLayout);
+        refreshLayout = findViewById(R.id.refreshLayout);
         entityListView = findViewById(R.id.entityListView);
         menuDial = findViewById(R.id.menuDial);
         progressBar = findViewById(R.id.progressBar);
+
+        // refreshLayout
+        refreshLayout.setOnRefreshListener(new OnRefreshListener()
+        {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout)
+            {
+                downloadEntities(true);
+            }
+        });
+        refreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator()
+        {
+            @NonNull
+            @Override
+            public RefreshHeader createRefreshHeader(@NonNull Context context, @NonNull RefreshLayout layout)
+            {
+                layout.setPrimaryColorsId(R.color.colorPrimary, R.color.colorAccent);
+                return new BezierCircleHeader(context);
+            }
+        });
 
         // menuDialNewGroupItem
         menuDialNewGroupItem = new SpeedDialActionItem.Builder(R.id.sdItemAddGroup, R.drawable.ic_new_group)
@@ -172,7 +184,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        downloadEntities();
+        downloadEntities(false);
         //useCatExample();
     }
 
@@ -184,15 +196,17 @@ public class MainActivity extends AppCompatActivity
         if (StaticResources.updateEntityList)
         {
             StaticResources.updateEntityList = false;
-            downloadEntities();
+            downloadEntities(false);
         }
     }
 
-    private void downloadEntities()
+    private void downloadEntities(final boolean isRefresh)
     {
-        entityListView.setEnabled(false);
-        menuDial.setEnabled(false);
-        progressBar.setVisibility(View.VISIBLE);
+        rootLayout.setEnabled(false);
+        if (!isRefresh)
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
         try
         {
@@ -222,8 +236,6 @@ public class MainActivity extends AppCompatActivity
                             if (message.isBinaryMessage())
                             {
                                 response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
-
-                                System.out.println(response);
 
                                 if (response == ResponseId.END_OF_ENTITY)
                                 {
@@ -322,9 +334,15 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void run()
                                 {
-                                    entityListView.setEnabled(true);
-                                    menuDial.setEnabled(true);
-                                    progressBar.setVisibility(View.GONE);
+                                    rootLayout.setEnabled(true);
+                                    if (isRefresh)
+                                    {
+                                        refreshLayout.finishRefresh();
+                                    }
+                                    else
+                                    {
+                                        progressBar.setVisibility(View.GONE);
+                                    }
 
                                     entityListView.invalidate();
 
@@ -342,6 +360,29 @@ public class MainActivity extends AppCompatActivity
 
     private void useCatExample()
     {
+        EntityListItemViewBase.OnEntityListItemTouchListener onViewTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+        {
+            @Override
+            public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+            {
+                String name = null;
+                if (sender instanceof CatView)
+                {
+                    CatView view = (CatView)sender;
+                    name = Integer.toString(view.getCat().getColorInteger());
+                }
+                else
+                {
+                    //CatGroupView view = (CatGroupView)sender;
+                    //name = view.getGroup().getName();
+                }
+
+                //Toast.makeText(This, name, Toast.LENGTH_SHORT).show();
+
+                return false;
+            }
+        };
+
         final Context context = getApplicationContext();
         Calendar birthday = null;
 
