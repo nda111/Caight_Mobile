@@ -9,13 +9,20 @@ import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.mindorks.placeholderview.ExpandablePlaceHolderView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -26,6 +33,7 @@ public class MainActivity extends AppCompatActivity
     private SpeedDialActionItem menuDialNewCatItem = null;
     private SpeedDialActionItem menuDialNewGroupItem = null;
     private SpeedDialActionItem menuDialAccountItem = null;
+    private ProgressBar progressBar = null;
 
     private String Email = null;
 
@@ -48,6 +56,26 @@ public class MainActivity extends AppCompatActivity
 
             //Toast.makeText(This, name, Toast.LENGTH_SHORT).show();
 
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onGroupTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
+            // TODO
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onCatTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
+            // TODO;
             return false;
         }
     };
@@ -77,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         //
         entityListView = findViewById(R.id.entityListView);
         menuDial = findViewById(R.id.menuDial);
+        progressBar = findViewById(R.id.progressBar);
 
         // menuDialNewGroupItem
         menuDialNewGroupItem = new SpeedDialActionItem.Builder(R.id.sdItemAddGroup, R.drawable.ic_new_group)
@@ -114,29 +143,29 @@ public class MainActivity extends AppCompatActivity
 
                 switch (actionItem.getId())
                 {
-                case R.id.sdItemAddGroup:
-                    intent = new Intent(This, AddGroupActivity.class);
-                    startActivity(intent);
-                    break;
-
-                case R.id.sdItemAddCat:
-                    if (StaticResources.groups.size() > 0)
-                    {
-                        intent = new Intent(This, AddCatActivity.class);
+                    case R.id.sdItemAddGroup:
+                        intent = new Intent(This, AddGroupActivity.class);
                         startActivity(intent);
-                    }
-                    else
-                    {
-                        Toast.makeText(This, R.string.errmsg_no_group, Toast.LENGTH_SHORT).show();
-                    }
-                    break;
+                        break;
 
-                case R.id.sdItemAccount:
-                    // TODO
-                    break;
+                    case R.id.sdItemAddCat:
+                        if (StaticResources.groups.size() > 0)
+                        {
+                            intent = new Intent(This, AddCatActivity.class);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            Toast.makeText(This, R.string.errmsg_no_group, Toast.LENGTH_SHORT).show();
+                        }
+                        break;
 
-                default:
-                    break;
+                    case R.id.sdItemAccount:
+                        // TODO
+                        break;
+
+                    default:
+                        break;
                 }
 
                 return false;
@@ -161,9 +190,147 @@ public class MainActivity extends AppCompatActivity
 
     private void downloadEntities()
     {
-        //Toast.makeText(this, "Update List", Toast.LENGTH_SHORT).show();
+        entityListView.setEnabled(false);
+        menuDial.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
 
-        
+        try
+        {
+            WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                    .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                    {
+                        private ResponseId response = null;
+
+                        private CatGroup group = null;
+                        private ArrayList<Cat> cats = new ArrayList<Cat>();
+
+                        private ArrayList<CatGroup> groups = new ArrayList<CatGroup>();
+                        private HashMap<CatGroup, List<Cat>> entries = new HashMap<CatGroup, List<Cat>>();
+
+                        @Override
+                        public void onRequest(WebSocketConnection conn)
+                        {
+                            conn.send(StaticMethods.intToByteArray(RequestId.DOWNLOAD_ENTITY.getId()), true);
+
+                            conn.send(StaticResources.accountId, true);
+                            conn.send(StaticResources.authToken, true);
+                        }
+
+                        @Override
+                        public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                        {
+                            if (message.isBinaryMessage())
+                            {
+                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+
+                                if (response == ResponseId.END_OF_ENTITY)
+                                {
+                                    if (group != null)
+                                    {
+                                        groups.add(group);
+                                        entries.put(group, cats);
+                                    }
+                                    conn.close();
+                                }
+                            }
+                            else // if (message.isTextMessage())
+                            {
+                                String data = message.getText();
+
+                                switch (response)
+                                {
+                                    case ENTITY_GROUP:
+                                    {
+                                        if (group != null)
+                                        {
+                                            groups.add(group);
+                                            entries.put(group, cats);
+                                        }
+
+                                        try
+                                        {
+                                            JSONObject json = new JSONObject(data);
+
+                                            group = CatGroup.parseJson(json);
+                                            cats = new ArrayList<Cat>();
+                                        }
+                                        catch (JSONException e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                        break;
+                                    }
+
+                                    case ENTITY_CAT:
+                                    {
+                                        try
+                                        {
+                                            JSONObject json = new JSONObject(data);
+                                            Cat cat = Cat.parseJson(json);
+                                            cats.add(cat);
+                                        }
+                                        catch (JSONException e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                        break;
+                                    }
+
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onClosed()
+                        {
+                            StaticResources.groups = groups;
+                            StaticResources.entries = entries;
+
+                            runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    Context context = MainActivity.this;
+
+                                    for (CatGroup group : groups)
+                                    {
+                                        CatGroupView groupView = new CatGroupView(context, group);
+                                        groupView.setOnTouchListener(onGroupTouchedListener);
+                                        entityListView.addView(groupView);
+
+                                        ArrayList<Cat> cats = (ArrayList<Cat>)entries.get(group);
+                                        for (Cat cat : cats)
+                                        {
+                                            CatView catView = new CatView(context, cat);
+                                            catView.setOnTouchListener(onCatTouchedListener);
+                                            entityListView.addView(groupView);
+                                        }
+                                    }
+                                }
+                            });
+
+                            runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    entityListView.setEnabled(true);
+                                    menuDial.setEnabled(true);
+                                    progressBar.setVisibility(View.GONE);
+
+                                    Toast.makeText(MainActivity.this, R.string.msg_list_updated, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).connect();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void useCatExample()

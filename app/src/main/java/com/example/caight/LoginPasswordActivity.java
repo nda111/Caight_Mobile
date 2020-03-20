@@ -150,6 +150,8 @@ public class LoginPasswordActivity extends AppCompatActivity
                                                         StaticResources.loginPreferences.edit().putString(StaticResources.LogInPreferenceItemPassword, pwEditText.getText().toString()).apply();
                                                     }
 
+                                                    StaticResources.myEmail = email;
+
                                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                     intent.putExtra(LoginEntryActivity.__KEY_EMAIL__, email);
                                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
 {
     private final Activity This = this;
 
+    private ConstraintLayout wrapperLayout = null;
     private EditText pwEditText = null;
     private CheckBox pwValidCheckBox = null;
     private Spinner groupSpinner = null;
@@ -55,6 +57,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
     private EditText weightEditText = null;
     private CheckBox weightValidCheckBox = null;
     private Button registerButton = null;
+    private ProgressBar progressBar = null;
 
     private CatGroup selectedGroup = null;
     private int selectedColor = 0;
@@ -90,6 +93,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         /*
          * Initialize GUI Components
          */
+        wrapperLayout = findViewById(R.id.wrapperLayout);
         pwEditText = findViewById(R.id.pwEditText);
         pwValidCheckBox = findViewById(R.id.pwValidCheckBox);
         groupSpinner = findViewById(R.id.groupSpinner);
@@ -104,6 +108,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         weightEditText = findViewById(R.id.weightEditText);
         weightValidCheckBox = findViewById(R.id.weightValidCheckBox);
         registerButton = findViewById(R.id.registerButton);
+        progressBar = findViewById(R.id.progressBar);
 
         // pwEditText
         pwEditText.addTextChangedListener(new TextWatcher()
@@ -239,7 +244,8 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
             {
                 if (pwValidCheckBox.isChecked() && nameValidCheckBox.isChecked() && weightValidCheckBox.isChecked())
                 {
-                    // TODO: disable gui
+                    wrapperLayout.setEnabled(false);
+                    progressBar.setVisibility(View.VISIBLE);
 
                     try
                     {
@@ -287,6 +293,8 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                     {
                                         response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
                                         conn.close();
+
+                                        // TODO: test cat register
                                     }
 
                                     @Override
@@ -333,6 +341,18 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                                 public void run()
                                                 {
                                                     finish();
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            runOnUiThread(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    wrapperLayout.setEnabled(true);
+                                                    progressBar.setVisibility(View.GONE);
                                                 }
                                             });
                                         }

@@ -40,11 +40,12 @@ public enum ResponseId
     ADD_ENTITY_ERROR(13),
 
     /*
-     * DOWNLOAD_ENTITY(7)
+     * DOWNLOAD_ENTITY(6)
      */
     ENTITY_GROUP(14),
     ENTITY_CAT(15),
-    END_OF_ENTITY(16);
+    END_OF_ENTITY(16),
+    DOWNLOAD_REJECTED(17);
 
     private int id = -1;
 

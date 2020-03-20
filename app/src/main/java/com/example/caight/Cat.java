@@ -23,6 +23,7 @@ public final class Cat
     // public static final Fields
     //
     // Json keys
+    public static final String __JSON_KEY_ID__ = "id";
     public static final String __JSON_KEY_COLOR__ = "color";
     public static final String __JSON_KEY_NAME__ = "name";
     public static final String __JSON_KEY_BIRTHDAY__ = "birthday";
@@ -35,6 +36,8 @@ public final class Cat
     //
     // private Fields
     //
+    @NonNull
+    private int id = -1;
     @NonNull
     private int color = -1;
     @NonNull
@@ -115,6 +118,7 @@ public final class Cat
             }
 
             JSONObject json = new JSONObject();
+            json.put(__JSON_KEY_ID__, id);
             json.put(__JSON_KEY_COLOR__, color);
             json.put(__JSON_KEY_NAME__, name);
             json.put(__JSON_KEY_BIRTHDAY__, birthday.getTimeInMillis());
@@ -142,6 +146,11 @@ public final class Cat
     public boolean removeAttrChangedListener(OnCatAttributeChangedListener l)
     {
         return this.attrChangedListener.remove(l);
+    }
+
+    public int getId()
+    {
+        return id;
     }
 
     public int getColorInteger()
@@ -366,6 +375,7 @@ public final class Cat
             }
 
             Cat cat = new Cat();
+            cat.id = json.getInt(__JSON_KEY_ID__);
             cat.color = json.getInt(__JSON_KEY_COLOR__);
             cat.name = json.getString(__JSON_KEY_NAME__);
             cat.birthday = getCalendarInMillis(json.getLong(__JSON_KEY_BIRTHDAY__));
