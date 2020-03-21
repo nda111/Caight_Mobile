@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AccountActivity"
+            android:name=".SettingActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="@android.support.PARENT_ACTIVITY"

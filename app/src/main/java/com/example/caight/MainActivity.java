@@ -19,13 +19,10 @@ import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.mindorks.placeholderview.ExpandablePlaceHolderView;
 import com.scwang.smartrefresh.header.BezierCircleHeader;
-import com.scwang.smartrefresh.header.WaveSwipeHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
-import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONException;
@@ -114,7 +111,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public RefreshHeader createRefreshHeader(@NonNull Context context, @NonNull RefreshLayout layout)
             {
-                layout.setPrimaryColorsId(R.color.colorPrimary, R.color.colorPrimaryDark);
+                layout.setPrimaryColorsId(R.color.colorPrimary, R.color.knownWhite);
                 return new BezierCircleHeader(context);
             }
         });
@@ -122,23 +119,23 @@ public class MainActivity extends AppCompatActivity
         // menuDialNewGroupItem
         menuDialNewGroupItem = new SpeedDialActionItem.Builder(R.id.sdItemAddGroup, R.drawable.ic_new_group)
                 .setFabBackgroundColor(Color.WHITE)
-                .setFabImageTintColor(resources.getColor(R.color.colorAccent, getTheme()))
-                .setLabel(R.string.act_new_group)
+                .setFabImageTintColor(resources.getColor(R.color.colorPrimary, getTheme()))
+                .setLabel(R.string.act_add_group)
                 .setLabelClickable(false)
                 .create();
 
         // menuDialNewCatItem
         menuDialNewCatItem = new SpeedDialActionItem.Builder(R.id.sdItemAddCat, R.drawable.ic_new_cat)
-                .setFabBackgroundColor(resources.getColor(R.color.colorAccent, getTheme()))
-                .setLabel(R.string.act_new_cat)
+                .setFabBackgroundColor(resources.getColor(R.color.colorPrimary, getTheme()))
+                .setLabel(R.string.act_add_cat)
                 .setLabelClickable(false)
                 .create();
 
         // menuDialAccountItem
-        menuDialAccountItem = new SpeedDialActionItem.Builder(R.id.sdItemAccount, R.drawable.ic_account)
+        menuDialAccountItem = new SpeedDialActionItem.Builder(R.id.sdItemAccount, R.drawable.ic_setting)
                 .setFabBackgroundColor(Color.WHITE)
-                .setFabImageTintColor(resources.getColor(R.color.colorAccent, getTheme()))
-                .setLabel(R.string.act_account)
+                .setFabImageTintColor(resources.getColor(R.color.colorPrimary, getTheme()))
+                .setLabel(R.string.act_settings)
                 .setLabelClickable(false)
                 .create();
 
@@ -176,7 +173,7 @@ public class MainActivity extends AppCompatActivity
 
                     case R.id.sdItemAccount:
                     {
-                        Intent intent = new Intent(This, AccountActivity.class);
+                        Intent intent = new Intent(This, SettingActivity.class);
                         startActivity(intent);
                         break;
                     }

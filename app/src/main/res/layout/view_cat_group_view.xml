@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="@color/knownWhite">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
@@ -67,7 +67,6 @@
             android:id="@+id/deleteButtonContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_red_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +79,7 @@
                 android:background="@drawable/ic_custom_ripple"
                 android:backgroundTint="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:tint="@android:color/white"
+                android:tint="@color/colorPrimary"
                 app:srcCompat="@drawable/ic_delete" />
         </FrameLayout>
 
@@ -88,7 +87,6 @@
             android:id="@+id/editContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_orange_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/deleteButtonContainer"
@@ -101,7 +99,7 @@
                 android:background="@drawable/ic_custom_ripple"
                 android:backgroundTint="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:tint="@android:color/white"
+                android:tint="@color/colorPrimary"
                 android:maxWidth="40dp"
                 android:maxHeight="40dp"
                 android:adjustViewBounds="true"
@@ -112,7 +110,6 @@
             android:id="@+id/qrContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/editContainer"
@@ -125,7 +122,7 @@
                 android:background="@drawable/ic_custom_ripple"
                 android:backgroundTint="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:tint="@android:color/white"
+                android:tint="@color/colorPrimary"
                 app:srcCompat="@drawable/ic_qr" />
         </FrameLayout>
 

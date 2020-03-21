@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -50,5 +52,12 @@ dependencies {
     // web socket client
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.2'               // pull refresh
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.2'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+}
+repositories {
+    mavenCentral()
 }
