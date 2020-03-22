@@ -45,7 +45,13 @@ public enum ResponseId
     ENTITY_GROUP(14),
     ENTITY_CAT(15),
     END_OF_ENTITY(16),
-    DOWNLOAD_REJECTED(17);
+    DOWNLOAD_REJECTED(17),
+
+    /*
+     * CHANGE_NAME(7)
+     */
+    CHANGE_NAME_OK(18),
+    CHANGE_NAME_NO(19);
 
     private int id = -1;
 

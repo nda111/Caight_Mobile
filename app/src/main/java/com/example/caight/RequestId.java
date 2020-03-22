@@ -15,7 +15,9 @@ public enum RequestId
     NEW_GROUP(4),
     NEW_CAT(5),
 
-    DOWNLOAD_ENTITY(6);
+    DOWNLOAD_ENTITY(6),
+
+    CHANGE_NAME(7);
 
     private int id = -1;
 
