@@ -15,6 +15,7 @@ class StaticResources
     static final String LogInPreferenceItemPassword = "__SHARED_PREFERENCES_LOGIN_PASSWORD__";
 
     static String myEmail = null;
+    static String myName = null;
     static byte[] accountId = null;
     static String authToken = null;
 

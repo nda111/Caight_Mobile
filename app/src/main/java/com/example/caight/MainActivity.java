@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity
 
                     case R.id.sdItemAccount:
                     {
-                        Intent intent = new Intent(This, SettingActivity.class);
+                        Intent intent = new Intent(This, SettingsActivity.class);
                         startActivity(intent);
                         break;
                     }

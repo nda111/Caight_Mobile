@@ -1,5 +1,6 @@
 package com.example.caight;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -11,9 +12,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import java.util.ArrayList;
-
-public class SettingActivity extends AppCompatActivity
+public class SettingsActivity extends AppCompatActivity
 {
     private ListView settingListView = null;
 
@@ -21,7 +20,7 @@ public class SettingActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+        setContentView(R.layout.activity_settings);
 
         Resources resources = getResources();
         Resources.Theme theme = getTheme();
@@ -52,13 +51,13 @@ public class SettingActivity extends AppCompatActivity
                 {
                     case 0: // Account
                     {
-                        // TODO
+                        Intent intent = new Intent(SettingsActivity.this, AccountActivity.class);
+                        startActivity(intent);
                         break;
                     }
 
                     case 1: // Notifications
                     {
-
                         break;
                     }
 

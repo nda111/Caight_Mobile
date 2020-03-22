@@ -5,6 +5,9 @@
     <string name="title_settings">Settings</string>
 
     <string name="menu_account">Account</string>
+    <string name="menu_account_logout">Logout</string>
+    <string name="menu_account_reset_pw">Reset password</string>
+    <string name="menu_account_delete_account">Delete my account</string>
     <string name="menu_notifications">Notifications</string>
 
     <string name="pw_const_lowercase">Lower case</string>
@@ -34,6 +37,9 @@
     <string name="attr_description">Description</string>
 
     <string name="desc_account">.</string>
+    <string name="desc_account_logout">.</string>
+    <string name="desc_account_reset_pw">.</string>
+    <string name="desc_account_delete_account">.</string>
     <string name="desc_notifications">.</string>
 
     <string name="unit_kg" translatable="false">(kg)</string>

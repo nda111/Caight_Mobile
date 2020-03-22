@@ -123,6 +123,10 @@ public class LoginPasswordActivity extends AppCompatActivity
 
                                                 case 3:
                                                     StaticResources.authToken = message.getText();
+                                                    break;
+
+                                                case 4:
+                                                    StaticResources.myName = message.getText();
                                                     close = true;
                                                     break;
 

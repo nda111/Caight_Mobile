@@ -45,4 +45,10 @@
     <string name="attr_description">상세 설명</string>
     <string name="desc_account">.</string>
     <string name="desc_notifications">.</string>
+    <string name="menu_account_logout">로그아웃</string>
+    <string name="menu_account_reset_pw">비밀번호 변경</string>
+    <string name="menu_account_delete_account">회원 탈퇴</string>
+    <string name="desc_account_logout">.</string>
+    <string name="desc_account_reset_pw">.</string>
+    <string name="desc_account_delete_account">.</string>
 </resources>
