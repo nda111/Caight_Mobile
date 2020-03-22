@@ -1,8 +1,19 @@
 package com.example.caight;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.textclassifier.TextLinks;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 public class StaticMethods
 {
-    public static byte[] intToByteArray(int i)
+    static byte[] intToByteArray(int i)
     {
         return new byte[] {
                 (byte)(i),
@@ -12,7 +23,7 @@ public class StaticMethods
         };
     }
 
-    public static byte[] longToByteArray(long l)
+    static byte[] longToByteArray(long l)
     {
         return new byte[] {
                 (byte)l,
@@ -26,7 +37,7 @@ public class StaticMethods
         };
     }
 
-    public static int byteArrayToInt(byte[] b)
+    static int byteArrayToInt(byte[] b)
     {
         return ((int)b[0]) | ((int)b[1] << 8) | ((int)b[1] << 16) | ((int)b[1] << 24);
     }

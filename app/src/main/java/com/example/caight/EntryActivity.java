@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class EntryActivity extends AppCompatActivity
 {
     private String email, passwd;
@@ -16,8 +19,12 @@ public class EntryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
         getSupportActionBar().hide();
+    }
 
-        // TODO: change logo
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
 
         /*
          * Check auto login
@@ -163,18 +170,32 @@ public class EntryActivity extends AppCompatActivity
         }
         else
         {
-            try
+            Executors.newSingleThreadExecutor().execute(new Runnable()
             {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        Thread.sleep(1500);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
 
-            Intent intent = new Intent(getApplicationContext(), LoginEntryActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            Intent intent = new Intent(getApplicationContext(), LoginEntryActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
+                    });
+                }
+            });
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.caight;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -18,6 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 public class LoginPasswordActivity extends AppCompatActivity
 {
     private String email = null;
@@ -30,6 +37,7 @@ public class LoginPasswordActivity extends AppCompatActivity
     private EditText pwEditText = null;
     private ImageView clearTextImageView = null;
     private ImageView revealImageButton = null;
+    private TextView forgotPwTextView = null;
     private TextView errTextView = null;
     private ProgressBar progressBar = null;
 
@@ -61,8 +69,10 @@ public class LoginPasswordActivity extends AppCompatActivity
         pwEditText = findViewById(R.id.pwEditText);
         clearTextImageView = findViewById(R.id.clearTextImageView);
         revealImageButton = findViewById(R.id.revealImageButton);
+        forgotPwTextView = findViewById(R.id.forgotPwTextView);
         errTextView = findViewById(R.id.errTextView);
         progressBar = findViewById(R.id.progressBar);
+
         // pwEditText
         pwEditText.setOnKeyListener(new View.OnKeyListener()
         {
@@ -170,9 +180,8 @@ public class LoginPasswordActivity extends AppCompatActivity
                                                         @Override
                                                         public void run()
                                                         {
-                                                            errTextView.setText(R.string.errmsg_wrong_pw);
-                                                            errTextView.setVisibility(View.VISIBLE);
-                                                            errTextView.startAnimation(ShakeAnimation);
+                                                            errTextView.setVisibility(View.GONE);
+                                                            forgotPwTextView.setVisibility(View.VISIBLE);
                                                         }
                                                     });
                                                     break;
@@ -250,6 +259,22 @@ public class LoginPasswordActivity extends AppCompatActivity
                     pwEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     revealImageButton.setImageDrawable(HidePasswordAnimation);
                     HidePasswordAnimation.start();
+                }
+
+                return false;
+            }
+        });
+
+        // forgotPwTextView
+        forgotPwTextView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (event.getAction() == 1)
+                {
+
                 }
 
                 return false;

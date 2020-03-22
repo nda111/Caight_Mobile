@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.neovisionaries.ws.client.WebSocket;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -180,12 +184,124 @@ public class AccountActivity extends AppCompatActivity
         ((ImageView)logoutItem.findViewById(R.id.iconImageView)).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_logout_circle));
         ((TextView)logoutItem.findViewById(R.id.nameTextView)).setText(resources.getText(R.string.menu_account_logout));
         ((TextView)logoutItem.findViewById(R.id.descriptionTextView)).setText(resources.getText(R.string.desc_account_logout));
+        logoutItem.setOnTouchListener(new View.OnTouchListener()
+        {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                try
+                {
+                    if (event.getAction() == 1)
+                    {
+                        scrollView.setEnabled(false);
+                        progressBar.setVisibility(View.VISIBLE);
+
+                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    ResponseId response;
+
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        conn.send(StaticMethods.intToByteArray(RequestId.LOGOUT.getId()), true);
+                                        conn.send(StaticResources.accountId, true);
+                                        conn.send(StaticResources.authToken, true);
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+                                        if (response == ResponseId.LOGOUT_OK)
+                                        {
+                                            StaticResources.loginPreferences.edit().clear().apply();
+
+                                            Intent intent = new Intent(getApplicationContext(), LoginEntryActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                        }
+                                        else
+                                        {
+                                            runOnUiThread(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    scrollView.setEnabled(true);
+                                                    progressBar.setVisibility(View.GONE);
+
+                                                    Toast.makeText(AccountActivity.this, R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    }
+                                }).connect();
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                return false;
+            }
+        });
 
         // resetPwItem
         View.inflate(this, R.layout.view_icon_item, resetPwItem);
         ((ImageView)resetPwItem.findViewById(R.id.iconImageView)).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_reset_pw_circle));
         ((TextView)resetPwItem.findViewById(R.id.nameTextView)).setText(resources.getText(R.string.menu_account_reset_pw));
         ((TextView)resetPwItem.findViewById(R.id.descriptionTextView)).setText(resources.getText(R.string.desc_account_reset_pw));
+        resetPwItem.setOnTouchListener(new View.OnTouchListener()
+        {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (event.getAction() == 1)
+                {
+                    try
+                    {
+                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        // TODO: send 'reset password' request
+                                        // TODO: server: receive, send email
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+
+                                    }
+                                }).connect();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                return false;
+            }
+        });
 
         // delAccountItem
         View.inflate(this, R.layout.view_icon_item, delAccountItem);

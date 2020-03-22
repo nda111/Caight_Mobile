@@ -2,7 +2,8 @@
 <resources>
     <color name="knownWhite">#FFFFFF</color>
     <color name="light_gray">#F5F5F5</color>
-    <color name="warning_red">#FF0000</color>
+    <color name="warning_red">#FF0051</color>
+    <color name="info_blue">#0088FF</color>
 
     <color name="colorPrimary">#FFC107</color>
     <color name="colorPrimaryDark">#6A3F00</color>

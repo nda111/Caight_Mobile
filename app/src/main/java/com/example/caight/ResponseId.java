@@ -51,7 +51,13 @@ public enum ResponseId
      * CHANGE_NAME(7)
      */
     CHANGE_NAME_OK(18),
-    CHANGE_NAME_NO(19);
+    CHANGE_NAME_NO(19),
+
+    /*
+     * LOGOUT(8)
+     */
+    LOGOUT_OK(20),
+    LOGOUT_NO(21);
 
     private int id = -1;
 

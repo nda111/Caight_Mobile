@@ -17,7 +17,9 @@ public enum RequestId
 
     DOWNLOAD_ENTITY(6),
 
-    CHANGE_NAME(7);
+    CHANGE_NAME(7),
+
+    LOGOUT(8);
 
     private int id = -1;
 

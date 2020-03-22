@@ -51,4 +51,5 @@
     <string name="desc_account_logout">.</string>
     <string name="desc_account_reset_pw">.</string>
     <string name="desc_account_delete_account">.</string>
+    <string name="msg_forgot_password">비밀번호를 잊으셨나요?</string>
 </resources>
