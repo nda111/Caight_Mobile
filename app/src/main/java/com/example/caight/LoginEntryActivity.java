@@ -75,7 +75,7 @@ public class LoginEntryActivity extends AppCompatActivity
                     }
                     else
                     {
-                        errorTextView.setText(R.string.errmsg_not_email);
+                        errorTextView.setText(R.string.err_not_email);
                         errorTextView.setVisibility(View.VISIBLE);
                         errorTextView.startAnimation(ShakeAnimation);
                     }
@@ -146,7 +146,7 @@ public class LoginEntryActivity extends AppCompatActivity
                                         @Override
                                         public void run()
                                         {
-                                            errorTextView.setText(R.string.errmsg_cert_first);
+                                            errorTextView.setText(R.string.err_cert_first);
                                             errorTextView.setVisibility(View.VISIBLE);
                                             errorTextView.startAnimation(ShakeAnimation);
                                         }

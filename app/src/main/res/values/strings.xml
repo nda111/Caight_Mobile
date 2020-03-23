@@ -3,11 +3,12 @@
 
     <string name="title_sign_up">Sign Up</string>
     <string name="title_settings">Settings</string>
+    <string name="title_del_account">Delete Account</string>
 
     <string name="menu_account">Account</string>
     <string name="menu_account_logout">Logout</string>
     <string name="menu_account_reset_pw">Reset password</string>
-    <string name="menu_account_delete_account">Delete my account</string>
+    <string name="menu_account_delete_account">Delete this account</string>
     <string name="menu_notifications">Notifications</string>
 
     <string name="pw_const_lowercase">Lower case</string>
@@ -36,6 +37,9 @@
 
     <string name="attr_description">Description</string>
 
+    <string name="word_warning">Warning</string>
+    <string name="word_delete_account">Delete Account</string>
+
     <string name="desc_account">.</string>
     <string name="desc_account_logout">.</string>
     <string name="desc_account_reset_pw">.</string>
@@ -59,12 +63,18 @@
     <string name="msg_list_updated">The list has been updated.</string>
     <string name="msg_forgot_password">Did you forget your password?</string>
     <string name="msg_reset_mail_sent">We sent you an email to reset password. &#10; please check spam mails if you can\'t see the email.</string>
+    <string name="msg_del_account">If you write the email address you want to delete and press the \'Delete Account\' button, your account will be deleted.</string>
+    <string name="msg_deleted">Account has been deleted.</string>
 
-    <string name="errmsg_cert_first">Certify your email first.</string>
-    <string name="errmsg_not_email">Invalid email format.</string>
-    <string name="errmsg_no_group">Join group to add a cat.</string>
-    <string name="errmsg_wrong_pw">Password not matches.</string>
-    <string name="errmsg_enter_pw">Please enter your password.</string>
-    <string name="errmsg_error">Error occurred. &#10; Please try again.</string>
-    <string name="errmsg_other_device_logged_in">Your account logged in on other device.</string>
+    <string name="err_occurred">Error occurred. &#10; Please try again.</string>
+    <string name="err_cert_first">Certify your email first.</string>
+    <string name="err_not_email">Invalid email format.</string>
+    <string name="err_no_group">Join group to add a cat.</string>
+    <string name="err_wrong_pw">Password not matches.</string>
+    <string name="err_enter_pw">Please enter your password.</string>
+    <string name="err_other_device_logged_in">Your account logged in on other device.</string>
+    <string name="err_enter_email">Enter your email to delete your account.</string>
+    <string name="err_hand_over_group">You must hand over every groups you own.</string>
+
+    <string name="warn_del_account">If you delete this account, you can NOT revert it.</string>
 </resources>

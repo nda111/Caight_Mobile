@@ -1,6 +1,5 @@
 package com.example.caight;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -19,11 +18,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 public class LoginPasswordActivity extends AppCompatActivity
 {
@@ -84,7 +78,7 @@ public class LoginPasswordActivity extends AppCompatActivity
                     String pw = pwEditText.getText().toString();
                     if (pw.length() == 0)
                     {
-                        errTextView.setText(R.string.errmsg_enter_pw);
+                        errTextView.setText(R.string.err_enter_pw);
                         errTextView.setVisibility(View.VISIBLE);
                         errTextView.startAnimation(ShakeAnimation);
                     }
@@ -194,7 +188,7 @@ public class LoginPasswordActivity extends AppCompatActivity
                                                         @Override
                                                         public void run()
                                                         {
-                                                            Toast.makeText(LoginPasswordActivity.this, R.string.errmsg_error, Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(LoginPasswordActivity.this, R.string.err_occurred, Toast.LENGTH_LONG).show();
                                                         }
                                                     });
                                                     break;
@@ -325,7 +319,7 @@ public class LoginPasswordActivity extends AppCompatActivity
                                                     @Override
                                                     public void run()
                                                     {
-                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                                 break;

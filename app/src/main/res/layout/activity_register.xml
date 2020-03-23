@@ -117,7 +117,7 @@
         android:id="@+id/nameErrTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/errmsg_not_email"
+        android:text="@string/err_not_email"
         android:textColor="@android:color/holo_red_light"
         android:textSize="12sp"
         android:visibility="gone"

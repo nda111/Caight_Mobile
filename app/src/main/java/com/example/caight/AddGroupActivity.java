@@ -133,7 +133,7 @@ public class AddGroupActivity extends AppCompatActivity
 
                                             case ADD_ENTITY_NO:
                                             {
-                                                Toast.makeText(getApplication(), R.string.errmsg_other_device_logged_in, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(), R.string.err_other_device_logged_in, Toast.LENGTH_SHORT).show();
                                                 Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
@@ -142,7 +142,7 @@ public class AddGroupActivity extends AppCompatActivity
 
                                             case ADD_ENTITY_ERROR:
                                             {
-                                                Toast.makeText(getApplication(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                 break;
                                             }
 

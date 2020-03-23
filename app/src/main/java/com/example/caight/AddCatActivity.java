@@ -1,6 +1,5 @@
 package com.example.caight;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -8,7 +7,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,13 +27,7 @@ import android.icu.util.Calendar;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
-import com.neovisionaries.ws.client.WebSocket;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AddCatActivity extends AppCompatActivity implements ColorPickerDialogListener
@@ -308,7 +300,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
 
                                             case ADD_ENTITY_NO:
                                             {
-                                                Toast.makeText(getApplication(), R.string.errmsg_other_device_logged_in, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(), R.string.err_other_device_logged_in, Toast.LENGTH_SHORT).show();
                                                 Intent intent = new Intent(getApplicationContext(), EntryActivity.class);
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
@@ -317,13 +309,13 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
 
                                             case ADD_ENTITY_NOT_PW:
                                             {
-                                                Toast.makeText(getApplication(), R.string.errmsg_wrong_pw, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(), R.string.err_wrong_pw, Toast.LENGTH_SHORT).show();
                                                 break;
                                             }
 
                                             case ADD_ENTITY_ERROR:
                                             {
-                                                Toast.makeText(getApplication(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                 break;
                                             }
 

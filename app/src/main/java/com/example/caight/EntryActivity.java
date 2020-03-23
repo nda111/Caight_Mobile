@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class EntryActivity extends AppCompatActivity
@@ -123,7 +122,7 @@ public class EntryActivity extends AppCompatActivity
                                                 @Override
                                                 public void run()
                                                 {
-                                                    Toast.makeText(getApplicationContext(), R.string.errmsg_wrong_pw, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), R.string.err_wrong_pw, Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                             failed = true;
@@ -137,7 +136,7 @@ public class EntryActivity extends AppCompatActivity
                                                 @Override
                                                 public void run()
                                                 {
-                                                    Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                             failed = true;

@@ -231,7 +231,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                                                     @Override
                                                     public void run()
                                                     {
-                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_LONG).show();
                                                         This.finish();
                                                     }
                                                 });

@@ -18,9 +18,9 @@
     <string name="act_add_cat">다른 애옹이</string>
     <string name="act_add_group">새 그룹</string>
     <string name="act_settings">설정</string>
-    <string name="errmsg_no_group">먼저 그룹에 참가하세요.</string>
-    <string name="errmsg_not_email">사용할 수 없는 이메일입니다.</string>
-    <string name="errmsg_cert_first">먼저 이메일을 인증하세요.</string>
+    <string name="err_no_group">먼저 그룹에 참가하세요.</string>
+    <string name="err_not_email">사용할 수 없는 이메일입니다.</string>
+    <string name="err_cert_first">먼저 이메일을 인증하세요.</string>
     <string name="attr_password">비밀번호</string>
     <string name="attr_nickname">닉네임</string>
     <string name="title_sign_up">새 계정</string>
@@ -30,14 +30,14 @@
     <string name="pw_const_length">8자 이상</string>
     <string name="pw_const_special">특수문자</string>
     <string name="name_constraint_number">2~15 글자만 사용할 수 있습니다.</string>
-    <string name="errmsg_error">오류가 발생했습니다. &#10; 다시 시도해주세요.</string>
+    <string name="err_occurred">오류가 발생했습니다. &#10; 다시 시도해주세요.</string>
     <string name="msg_welcome">환영합니다!</string>
     <string name="msg_register">확인 메일을 전송했습니다.</string>
     <string name="act_back_home">홈으로 가기</string>
-    <string name="errmsg_wrong_pw">비밀번호가 일치하지 않습니다.</string>
-    <string name="errmsg_enter_pw">비밀번호를 입력해주세요.</string>
+    <string name="err_wrong_pw">비밀번호가 일치하지 않습니다.</string>
+    <string name="err_enter_pw">비밀번호를 입력해주세요.</string>
     <string name="attr_auto_login">자동 로그인</string>
-    <string name="errmsg_other_device_logged_in">다른 기기에서 로그인되었습니다.</string>
+    <string name="err_other_device_logged_in">다른 기기에서 로그인되었습니다.</string>
     <string name="msg_list_updated">리스트가 업데이트되었습니다.</string>
     <string name="title_settings">설정</string>
     <string name="menu_account">계정</string>
@@ -53,4 +53,12 @@
     <string name="desc_account_delete_account">.</string>
     <string name="msg_forgot_password">비밀번호를 잊으셨나요?</string>
     <string name="msg_reset_mail_sent">비밀번호 변경 메일을 전송했습니다. &#10; 메일을 받지 못하셨다면 스팸 메일함을 확인해주세요.</string>
+    <string name="warn_del_account">계정을 삭제하면 되돌릴 수 없습니다.</string>
+    <string name="msg_del_account">"삭제하려는 이메일 주소를 쓰고 '회원 탈퇴' 버튼을 누르면 계정이 삭제됩니다. "</string>
+    <string name="title_del_account">회원 탈퇴</string>
+    <string name="word_warning">경고</string>
+    <string name="word_delete_account">회원 탈퇴</string>
+    <string name="err_enter_email">이메일을 입력해주세요.</string>
+    <string name="err_hand_over_group">운영 중인 모든 그룹을 다른 사람에게 넘겨야합니다.</string>
+    <string name="msg_deleted">회원 탈퇴가 완료되었습니다.</string>
 </resources>

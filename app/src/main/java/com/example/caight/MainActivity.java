@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         else
                         {
-                            Toast.makeText(This, R.string.errmsg_no_group, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(This, R.string.err_no_group, Toast.LENGTH_SHORT).show();
                         }
                         break;
                     }

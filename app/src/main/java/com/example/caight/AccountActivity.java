@@ -142,7 +142,7 @@ public class AccountActivity extends AppCompatActivity
                                                     else
                                                     {
                                                         nameEditText.setText(StaticResources.myName);
-                                                        Toast.makeText(AccountActivity.this, R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(AccountActivity.this, R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                     }
 
                                                     scrollView.setEnabled(true);
@@ -229,7 +229,7 @@ public class AccountActivity extends AppCompatActivity
                                                     scrollView.setEnabled(true);
                                                     progressBar.setVisibility(View.GONE);
 
-                                                    Toast.makeText(AccountActivity.this, R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(AccountActivity.this, R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
@@ -308,7 +308,7 @@ public class AccountActivity extends AppCompatActivity
                                                     @Override
                                                     public void run()
                                                     {
-                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                                 break;
@@ -347,5 +347,29 @@ public class AccountActivity extends AppCompatActivity
         ((TextView)delAccountItem.findViewById(R.id.nameTextView)).setTextColor(resources.getColor(R.color.warning_red, theme));
         ((TextView)delAccountItem.findViewById(R.id.descriptionTextView)).setText(resources.getText(R.string.desc_account_delete_account));
         ((TextView)delAccountItem.findViewById(R.id.descriptionTextView)).setTextColor(resources.getColor(R.color.warning_red, theme));
+        delAccountItem.setOnTouchListener(new View.OnTouchListener()
+        {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (event.getAction() == 1)
+                {
+                    for (CatGroup group : StaticResources.groups)
+                    {
+                        if (group.getOwnerName().equals(StaticResources.myEmail))
+                        {
+                            Toast.makeText(AccountActivity.this, R.string.err_hand_over_group, Toast.LENGTH_LONG).show();
+                            return false;
+                        }
+                    }
+
+                    Intent intent = new Intent(AccountActivity.this, DeleteAccountActivity.class);
+                    startActivity(intent);
+                }
+
+                return false;
+            }
+        });
     }
 }
