@@ -19,7 +19,13 @@ public enum RequestId
 
     CHANGE_NAME(7),
 
-    LOGOUT(8);
+    LOGOUT(8),
+
+    REQUEST_RESET_PASSWORD_uri(9),
+
+    RESET_PASSWORD_WEB_ONLY(10),
+
+    RESET_PASSWORD_CONFIRM_WEB_ONLY(11);
 
     private int id = -1;
 

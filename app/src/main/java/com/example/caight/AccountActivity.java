@@ -7,7 +7,6 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,18 +16,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.neovisionaries.ws.client.WebSocket;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 public class AccountActivity extends AppCompatActivity
 {
@@ -270,26 +261,71 @@ public class AccountActivity extends AppCompatActivity
                 {
                     try
                     {
+                        progressBar.setVisibility(View.VISIBLE);
+                        scrollView.setEnabled(false);
+
                         new WebSocketConnection(StringResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
+                                    ResponseId response;
+
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        // TODO: send 'reset password' request
-                                        // TODO: server: receive, send email
+                                        conn.send(StaticMethods.intToByteArray(RequestId.REQUEST_RESET_PASSWORD_uri.getId()), true);
+                                        conn.send(StaticResources.myEmail, true);
                                     }
 
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
                                     }
 
                                     @Override
                                     public void onClosed()
                                     {
+                                        switch (response)
+                                        {
+                                            case RESET_PASSWORD_URI_CREATED:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.msg_reset_mail_sent, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                                break;
+                                            }
 
+                                            case RESET_PASSWORD_URI_ERROR:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            default:
+                                                break;
+                                        }
+                                        runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                progressBar.setVisibility(View.GONE);
+                                                scrollView.setEnabled(true);
+                                            }
+                                        });
                                     }
                                 }).connect();
                     }

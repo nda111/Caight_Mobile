@@ -234,7 +234,6 @@ public class LoginPasswordActivity extends AppCompatActivity
             public boolean onTouch(View v, MotionEvent event)
             {
                 pwEditText.setText("");
-
                 return false;
             }
         });
@@ -274,7 +273,84 @@ public class LoginPasswordActivity extends AppCompatActivity
             {
                 if (event.getAction() == 1)
                 {
+                    try
+                    {
+                        pwEditText.setEnabled(false);
+                        revealImageButton.setEnabled(false);
+                        errTextView.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        forgotPwTextView.setText("");
 
+                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    ResponseId response;
+
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        conn.send(StaticMethods.intToByteArray(RequestId.REQUEST_RESET_PASSWORD_uri.getId()), true);
+                                        conn.send(email, true);
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+                                        switch (response)
+                                        {
+                                            case RESET_PASSWORD_URI_CREATED:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.msg_reset_mail_sent, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            case RESET_PASSWORD_URI_ERROR:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.errmsg_error, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            default:
+                                                break;
+                                        }
+                                        runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                pwEditText.setEnabled(true);
+                                                revealImageButton.setEnabled(true);
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        });
+                                    }
+                                }).connect();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
 
                 return false;

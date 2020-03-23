@@ -52,4 +52,5 @@
     <string name="desc_account_reset_pw">.</string>
     <string name="desc_account_delete_account">.</string>
     <string name="msg_forgot_password">비밀번호를 잊으셨나요?</string>
+    <string name="msg_reset_mail_sent">비밀번호 변경 메일을 전송했습니다. &#10; 메일을 받지 못하셨다면 스팸 메일함을 확인해주세요.</string>
 </resources>

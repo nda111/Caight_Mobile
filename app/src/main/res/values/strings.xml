@@ -58,6 +58,7 @@
     <string name="msg_register">We sent you an verification email.</string>
     <string name="msg_list_updated">The list has been updated.</string>
     <string name="msg_forgot_password">Did you forget your password?</string>
+    <string name="msg_reset_mail_sent">We sent you an email to reset password. &#10; please check spam mails if you can\'t see the email.</string>
 
     <string name="errmsg_cert_first">Certify your email first.</string>
     <string name="errmsg_not_email">Invalid email format.</string>
