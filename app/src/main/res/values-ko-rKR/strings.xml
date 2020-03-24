@@ -61,4 +61,15 @@
     <string name="err_enter_email">이메일을 입력해주세요.</string>
     <string name="err_hand_over_group">운영 중인 모든 그룹을 다른 사람에게 넘겨야합니다.</string>
     <string name="msg_deleted">회원 탈퇴가 완료되었습니다.</string>
+    <string name="menu_create_group">만들기</string>
+    <string name="menu_join_group">참여하기</string>
+    <string name="desc_create_group">.</string>
+    <string name="desc_join_group">.</string>
+    <string name="act_create_group">만들기</string>
+    <string name="act_join_group">참여하기</string>
+    <string name="msg_fill_form">폼을 작성해주세요.</string>
+    <string name="err_join_rejected">참여할 수 없는 그룹입니다.</string>
+    <string name="err_join_wrong_password">비밀번호가 틀렸습니다.</string>
+    <string name="err_join_not_exists">그룹이 존재하지 않습니다.</string>
+    <string name="err_join_joined">이미 참여중인 그룹입니다.</string>
 </resources>

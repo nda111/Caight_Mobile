@@ -2,9 +2,7 @@ package com.example.caight;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.AnimationDrawable;
 import android.view.MotionEvent;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
@@ -26,7 +23,7 @@ import com.mindorks.placeholderview.annotations.expand.SingleTop;
 
 @Parent
 @SingleTop
-@Layout(R.layout.view_cat_group_view)
+@Layout(R.layout.view_group)
 public class CatGroupView extends EntityListItemViewBase
 {
     private final AnimatedVectorDrawable ExpandAnimation = (AnimatedVectorDrawable)ContextCompat.getDrawable(getContext(), R.drawable.ic_anim_expand);

@@ -11,6 +11,9 @@
     <string name="menu_account_delete_account">Delete this account</string>
     <string name="menu_notifications">Notifications</string>
 
+    <string name="menu_create_group">New group</string>
+    <string name="menu_join_group">Join group</string>
+
     <string name="pw_const_lowercase">Lower case</string>
     <string name="pw_const_uppercase">Upper case</string>
     <string name="pw_const_digit">Digit</string>
@@ -37,14 +40,20 @@
 
     <string name="attr_description">Description</string>
 
+    <string name="attr_id" translatable="false">ID</string>
+
     <string name="word_warning">Warning</string>
     <string name="word_delete_account">Delete Account</string>
+    <string name="word_action" translatable="false">Action</string>
 
     <string name="desc_account">.</string>
     <string name="desc_account_logout">.</string>
     <string name="desc_account_reset_pw">.</string>
     <string name="desc_account_delete_account">.</string>
     <string name="desc_notifications">.</string>
+
+    <string name="desc_create_group">Create a new group as a manager.</string>
+    <string name="desc_join_group">Join an existing group as a member.</string>
 
     <string name="unit_kg" translatable="false">(kg)</string>
 
@@ -54,6 +63,9 @@
     <string name="act_cancel">Cancel</string>
     <string name="act_settings">Settings</string>
     <string name="act_back_home">Back to home</string>
+
+    <string name="act_create_group">Create</string>
+    <string name="act_join_group">Join</string>
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
@@ -65,6 +77,7 @@
     <string name="msg_reset_mail_sent">We sent you an email to reset password. &#10; please check spam mails if you can\'t see the email.</string>
     <string name="msg_del_account">If you write the email address you want to delete and press the \'Delete Account\' button, your account will be deleted.</string>
     <string name="msg_deleted">Account has been deleted.</string>
+    <string name="msg_fill_form">Pleases fill the form up.</string>
 
     <string name="err_occurred">Error occurred. &#10; Please try again.</string>
     <string name="err_cert_first">Certify your email first.</string>
@@ -75,6 +88,11 @@
     <string name="err_other_device_logged_in">Your account logged in on other device.</string>
     <string name="err_enter_email">Enter your email to delete your account.</string>
     <string name="err_hand_over_group">You must hand over every groups you own.</string>
+
+    <string name="err_join_joined">You\'ve already joined this group.</string>
+    <string name="err_join_not_exists">There is no such group.</string>
+    <string name="err_join_rejected">This is locked group. You can\'t join this group.</string>
+    <string name="err_join_wrong_password">This is wrong password.</string>
 
     <string name="warn_del_account">If you delete this account, you can NOT revert it.</string>
 </resources>

@@ -27,7 +27,9 @@ public enum RequestId
 
     RESET_PASSWORD_CONFIRM_WEB_ONLY(11),
 
-    DELETE_ACCOUNT(12);
+    DELETE_ACCOUNT(12),
+
+    JOIN_GROUP(13);
 
     private int id = -1;
 

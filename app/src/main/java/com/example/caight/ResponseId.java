@@ -84,7 +84,16 @@ public enum ResponseId
      * DELETE_ACCOUNT(12)
      */
     DELETE_ACCOUNT_OK(31),
-    DELETE_ACCOUNT_NO(32);
+    DELETE_ACCOUNT_NO(32),
+
+    /*
+     * JOIN_GROUP(13)
+     */
+    JOIN_GROUP_OK(33),
+    JOIN_GROUP_NOT_EXISTS(34),
+    JOIN_GROUP_WRONG_PASSWORD(35),
+    JOIN_GROUP_REJECTED(36),
+    JOIN_GROUP_ERROR(37);
 
     private int id = -1;
 

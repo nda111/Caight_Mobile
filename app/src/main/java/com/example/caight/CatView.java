@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-@Layout(R.layout.view_cat_view)
+@Layout(R.layout.view_cat)
 public class CatView extends EntityListItemViewBase
 {
     private Cat cat = null;

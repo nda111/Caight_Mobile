@@ -18,86 +18,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_new_group" />
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
+    <com.mindorks.placeholderview.ExpandablePlaceHolderView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addGroupTitleView"
-        app:layout_constraintVertical_bias="0.0">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/nameEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/attr_name"
-                android:inputType="textPersonName"
-                android:maxLength="20"
-                app:layout_constraintEnd_toStartOf="@+id/nameValidCheckBox"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <CheckBox
-                android:id="@+id/nameValidCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusableInTouchMode="false"
-                app:layout_constraintBaseline_toBaselineOf="@+id/nameEditText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/nameEditText" />
-
-            <Button
-                android:id="@+id/registerButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/ic_custom_ripple"
-                android:text="@string/act_register"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pwEditText" />
-
-            <EditText
-                android:id="@+id/pwEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="@string/attr_password"
-                android:inputType="textPassword"
-                app:layout_constraintEnd_toStartOf="@+id/pwValidCheckBox"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
-
-            <CheckBox
-                android:id="@+id/pwValidCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusableInTouchMode="false"
-                app:layout_constraintBaseline_toBaselineOf="@+id/pwEditText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/pwEditText" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/addGroupTitleView" />
 
     <ProgressBar
         android:id="@+id/progressBar"
