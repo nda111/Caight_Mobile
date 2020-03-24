@@ -33,7 +33,9 @@ public enum RequestId
 
     DOWNLOAD_MEMBER(14),
 
-    UPDATE_GROUP(15);
+    UPDATE_GROUP(15),
+
+    DROP_GROUP(16);
 
     private int id = -1;
 

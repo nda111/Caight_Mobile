@@ -105,7 +105,7 @@ public class EditGroupActivity extends AppCompatActivity
         lockSwitch.setChecked(group.isLocked());
 
         // managerSpinner
-        progressBar.setVisibility(View.VISIBLE);
+        setGuiEnabled(false);
         memberList = new ArrayList<MemberArrayAdapter.Item>();
         try
         {
@@ -169,7 +169,7 @@ public class EditGroupActivity extends AppCompatActivity
                                         managerSpinner.setAdapter(new MemberArrayAdapter(EditGroupActivity.this, R.layout.item_group_spinner, memberList));
                                         managerSpinner.setSelection(managerPosition);
 
-                                        progressBar.setVisibility(View.GONE);
+                                        setGuiEnabled(true);
                                     }
                                     else if (response == ResponseId.DOWNLOAD_MEMBER_ERROR)
                                     {
@@ -194,8 +194,97 @@ public class EditGroupActivity extends AppCompatActivity
             {
                 if (event.getAction() == 1)
                 {
-                    // TODO
+                    setGuiEnabled(false);
 
+                    try
+                    {
+                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    ResponseId response;
+
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        conn.send(StaticMethods.intToByteArray(RequestId.DROP_GROUP.getId()), true);
+                                        conn.send(StaticResources.accountId, true);
+                                        conn.send(StaticResources.authToken, true);
+
+                                        conn.send(StaticMethods.intToByteArray(group.getId()), true);
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+                                        switch (response)
+                                        {
+                                            case DROP_GROUP_OK:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.msg_group_deleted, Toast.LENGTH_LONG).show();
+                                                        StaticResources.updateEntityList = true;
+                                                        finish();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            case DROP_GROUP_MEMBER_EXISTS:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.err_del_group, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            case DROP_GROUP_ERROR:
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                                break;
+                                            }
+
+                                            default:
+                                                break;
+                                        }
+
+                                        runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                setGuiEnabled(true);
+                                            }
+                                        });
+                                    }
+                                }).connect();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
@@ -232,12 +321,7 @@ public class EditGroupActivity extends AppCompatActivity
 
                     if (name != null || password != null || locked != null || manager != null)
                     {
-                        nameEditText.setEnabled(false);
-                        pwEditText.setEnabled(false);
-                        lockSwitch.setEnabled(false);
-                        managerSpinner.setEnabled(false);
-                        deleteButton.setEnabled(false);
-                        saveButton.setEnabled(false);
+                        setGuiEnabled(false);
 
                         try
                         {
@@ -324,12 +408,7 @@ public class EditGroupActivity extends AppCompatActivity
                                                 @Override
                                                 public void run()
                                                 {
-                                                    nameEditText.setEnabled(true);
-                                                    pwEditText.setEnabled(true);
-                                                    lockSwitch.setEnabled(true);
-                                                    managerSpinner.setEnabled(true);
-                                                    deleteButton.setEnabled(true);
-                                                    saveButton.setEnabled(true);
+                                                    setGuiEnabled(false);
                                                 }
                                             });
                                         }
@@ -344,5 +423,16 @@ public class EditGroupActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+    private void setGuiEnabled(boolean enabled)
+    {
+        nameEditText.setEnabled(enabled);
+        pwEditText.setEnabled(enabled);
+        lockSwitch.setEnabled(enabled);
+        managerSpinner.setEnabled(enabled);
+        deleteButton.setEnabled(enabled);
+        saveButton.setEnabled(enabled);
+        progressBar.setVisibility(enabled ? View.GONE : View.VISIBLE);
     }
 }

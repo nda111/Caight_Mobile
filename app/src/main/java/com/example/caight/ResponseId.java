@@ -105,7 +105,14 @@ public enum ResponseId
      * UPDATE_GROUP(15)
      */
     UPDATE_GROUP_OK(40),
-    UPDATE_GROUP_ERROR(41);
+    UPDATE_GROUP_ERROR(41),
+
+    /*
+     * DROP_GROUP(16)
+     */
+    DROP_GROUP_OK(42),
+    DROP_GROUP_MEMBER_EXISTS(43),
+    DROP_GROUP_ERROR(44);
 
     private int id = -1;
 

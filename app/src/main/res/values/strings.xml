@@ -86,6 +86,8 @@
     <string name="msg_deleted">Account has been deleted.</string>
     <string name="msg_fill_form">Pleases fill the form up.</string>
 
+    <string name="msg_group_deleted">Group has deleted successfully.</string>
+
     <string name="err_occurred">Error occurred. &#10; Please try again.</string>
     <string name="err_cert_first">Certify your email first.</string>
     <string name="err_not_email">Invalid email format.</string>
@@ -100,6 +102,8 @@
     <string name="err_join_not_exists">There is no such group.</string>
     <string name="err_join_rejected">This is locked group. You can\'t join this group.</string>
     <string name="err_join_wrong_password">This is wrong password.</string>
+
+    <string name="err_del_group">Group with multiple members cat not be deleted.</string>
 
     <string name="warn_del_account">If you delete this account, you can NOT revert it.</string>
 </resources>
