@@ -79,4 +79,6 @@
     <string name="act_del_group">그룹 삭제하기</string>
     <string name="msg_group_deleted">그룹이 삭제되었습니다.</string>
     <string name="err_del_group">여러 멤버가 참여하는 그룹은 삭제할 수 없습니다.</string>
+    <string name="msg_only_manager">관리자만 할 수 있습니다.</string>
+    <string name="msg_manager_cannot">관리자는 할 수 없습니다.</string>
 </resources>

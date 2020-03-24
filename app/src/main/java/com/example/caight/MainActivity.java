@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progressBar = null;
 
     private String Email = null;
+    private int groupId = -1;
 
     private final EntityListItemViewBase.OnEntityListItemTouchListener onGroupTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
     {
@@ -64,7 +65,80 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
         {
-            // TODO
+            if (e.getAction() == 1)
+            {
+                CatGroup group = ((CatGroupView)sender).getGroup();
+                if (!group.getOwnerName().equals(StaticResources.myEmail))
+                {
+                    groupId = group.getId();
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    try
+                    {
+                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                {
+                                    ResponseId response;
+
+                                    @Override
+                                    public void onRequest(WebSocketConnection conn)
+                                    {
+                                        conn.send(StaticMethods.intToByteArray(RequestId.WITHDRAW_GROUP.getId()), true);
+                                        conn.send(StaticResources.accountId, true);
+                                        conn.send(StaticResources.authToken, true);
+
+                                        conn.send(StaticMethods.intToByteArray(groupId), true);
+                                    }
+
+                                    @Override
+                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                    {
+                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        conn.close();
+                                    }
+
+                                    @Override
+                                    public void onClosed()
+                                    {
+                                        runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                switch (response)
+                                                {
+                                                    case WITHDRAW_GROUP_OK:
+                                                    {
+                                                        downloadEntities(false);
+                                                        break;
+                                                    }
+
+                                                    case WITHDRAW_GROUP_ERROR:
+                                                    {
+                                                        Toast.makeText(MainActivity.this, R.string.err_occurred, Toast.LENGTH_SHORT).show();
+                                                        break;
+                                                    }
+
+                                                    default:
+                                                        break;
+                                                }
+
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        });
+                                    }
+                                }).connect();
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, R.string.msg_manager_cannot, Toast.LENGTH_SHORT).show();
+                }
+            }
             return false;
         }
     };
@@ -82,6 +156,10 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(MainActivity.this, EditGroupActivity.class);
                     intent.putExtra(__EXTRA_GROUP_ID__, group.getId());
                     startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, R.string.msg_only_manager, Toast.LENGTH_SHORT).show();
                 }
             }
             return false;

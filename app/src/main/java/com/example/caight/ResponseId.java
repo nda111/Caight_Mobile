@@ -112,7 +112,13 @@ public enum ResponseId
      */
     DROP_GROUP_OK(42),
     DROP_GROUP_MEMBER_EXISTS(43),
-    DROP_GROUP_ERROR(44);
+    DROP_GROUP_ERROR(44),
+
+    /*
+     * OUT_GROUP(17)
+     */
+    WITHDRAW_GROUP_OK(45),
+    WITHDRAW_GROUP_ERROR(46);
 
     private int id = -1;
 

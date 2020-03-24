@@ -87,6 +87,8 @@
     <string name="msg_fill_form">Pleases fill the form up.</string>
 
     <string name="msg_group_deleted">Group has deleted successfully.</string>
+    <string name="msg_only_manager">Only manager can do this.</string>
+    <string name="msg_manager_cannot">Manager can not do this.</string>
 
     <string name="err_occurred">Error occurred. &#10; Please try again.</string>
     <string name="err_cert_first">Certify your email first.</string>

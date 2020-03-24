@@ -35,7 +35,9 @@ public enum RequestId
 
     UPDATE_GROUP(15),
 
-    DROP_GROUP(16);
+    DROP_GROUP(16),
+
+    WITHDRAW_GROUP(17);
 
     private int id = -1;
 
