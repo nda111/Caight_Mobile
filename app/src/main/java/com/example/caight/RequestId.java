@@ -29,7 +29,11 @@ public enum RequestId
 
     DELETE_ACCOUNT(12),
 
-    JOIN_GROUP(13);
+    JOIN_GROUP(13),
+
+    DOWNLOAD_MEMBER(14),
+
+    UPDATE_GROUP(15);
 
     private int id = -1;
 

@@ -34,6 +34,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+    public static final String __EXTRA_GROUP_ID__ = "__GROUP_ID__";
+    public static final String __EXTRA_CAT_ID__ = "__CAT_ID__";
+
     private final MainActivity This = this;
 
     private ConstraintLayout rootLayout = null;
@@ -52,12 +55,70 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
         {
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onGroupDeleteListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
+            // TODO
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onGroupEditListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
+            if (e.getAction() == 1)
+            {
+                CatGroup group = ((CatGroupView)sender).getGroup();
+                if (group.getOwnerName().equals(StaticResources.myEmail))
+                {
+                    Intent intent = new Intent(MainActivity.this, EditGroupActivity.class);
+                    intent.putExtra(__EXTRA_GROUP_ID__, group.getId());
+                    startActivity(intent);
+                }
+            }
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onGroupShowQRListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
             // TODO
             return false;
         }
     };
 
     private final EntityListItemViewBase.OnEntityListItemTouchListener onCatTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
+            // TODO;
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onCatDeleteListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
+    {
+        @Override
+        public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
+        {
+            // TODO
+            return false;
+        }
+    };
+
+    private final EntityListItemViewBase.OnEntityListItemTouchListener onCatEditListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
     {
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
@@ -318,6 +379,9 @@ public class MainActivity extends AppCompatActivity
                                     {
                                         CatGroupView groupView = new CatGroupView(context, group);
                                         groupView.setOnTouchListener(onGroupTouchedListener);
+                                        groupView.setOnDeleteListener(onGroupDeleteListener);
+                                        groupView.setOnEditListener(onGroupEditListener);
+                                        groupView.setOnShowQrListener(onGroupShowQRListener);
                                         entityListView.addView(groupView);
 
                                         ArrayList<Cat> cats = (ArrayList<Cat>)entries.get(group);
@@ -325,6 +389,8 @@ public class MainActivity extends AppCompatActivity
                                         {
                                             CatView catView = new CatView(context, cat);
                                             catView.setOnTouchListener(onCatTouchedListener);
+                                            catView.setOnDeleteListener(onCatDeleteListener);
+                                            catView.setOnEditListener(onCatEditListener);
                                             entityListView.addView(catView);
                                         }
                                     }
@@ -388,7 +454,7 @@ public class MainActivity extends AppCompatActivity
         final Context context = getApplicationContext();
         Calendar birthday = null;
 
-        CatGroupView yeView = new CatGroupView(context, new CatGroup(15, "오산", "예진"));
+        CatGroupView yeView = new CatGroupView(context, new CatGroup(15, "오산", "예진", false));
 
         birthday = Calendar.getInstance();
         birthday.set(2014, 7, 5, 0, 0, 0);
@@ -403,7 +469,7 @@ public class MainActivity extends AppCompatActivity
         CatView raonView = new CatView(context, new Cat(0xFFEFC146, "라온", birthday, Gender.NEUTERED, 3, 3.4F));
 
 
-        CatGroupView soView = new CatGroupView(context, new CatGroup(20, "동탄", "소진"));
+        CatGroupView soView = new CatGroupView(context, new CatGroup(20, "동탄", "소진", false));
 
         birthday = Calendar.getInstance();
         birthday.set(2014, 7, 5, 0, 0, 0);

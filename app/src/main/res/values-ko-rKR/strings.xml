@@ -72,4 +72,9 @@
     <string name="err_join_wrong_password">비밀번호가 틀렸습니다.</string>
     <string name="err_join_not_exists">그룹이 존재하지 않습니다.</string>
     <string name="err_join_joined">이미 참여중인 그룹입니다.</string>
+    <string name="attr_lock_group">그룹 잠그기</string>
+    <string name="attr_new_password">새 비밀번호</string>
+    <string name="attr_owner">"관리자: "</string>
+    <string name="act_save">저장</string>
+    <string name="act_del_group">그룹 삭제하기</string>
 </resources>

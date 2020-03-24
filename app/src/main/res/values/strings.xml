@@ -42,6 +42,10 @@
 
     <string name="attr_id" translatable="false">ID</string>
 
+    <string name="attr_new_password">New password</string>
+    <string name="attr_lock_group">Lock group</string>
+    <string name="attr_owner">Manager: </string>
+
     <string name="word_warning">Warning</string>
     <string name="word_delete_account">Delete Account</string>
     <string name="word_action" translatable="false">Action</string>
@@ -66,6 +70,9 @@
 
     <string name="act_create_group">Create</string>
     <string name="act_join_group">Join</string>
+
+    <string name="act_del_group">Delete this group</string>
+    <string name="act_save">Save</string>
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>

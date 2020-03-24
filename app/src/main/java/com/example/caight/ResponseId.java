@@ -93,7 +93,19 @@ public enum ResponseId
     JOIN_GROUP_NOT_EXISTS(34),
     JOIN_GROUP_WRONG_PASSWORD(35),
     JOIN_GROUP_REJECTED(36),
-    JOIN_GROUP_ERROR(37);
+    JOIN_GROUP_ERROR(37),
+
+    /*
+     * DOWNLOAD_MEMBER(14)
+     */
+    DOWNLOAD_MEMBER_ERROR(38),
+    END_OF_MEMBER(39),
+
+    /*
+     * UPDATE_GROUP(15)
+     */
+    UPDATE_GROUP_OK(40),
+    UPDATE_GROUP_ERROR(41);
 
     private int id = -1;
 
