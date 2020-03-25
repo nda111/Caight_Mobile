@@ -156,13 +156,12 @@
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@+id/birthdayEditText"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
 
                 <EditText
                     android:id="@+id/birthdayEditText"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:ems="10"
@@ -172,7 +171,6 @@
                     android:onClick="setBirthDay"
                     app:layout_constraintBaseline_toBaselineOf="@+id/dateTextView"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/dateTextView" />
 
                 <TextView
@@ -184,7 +182,6 @@
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@+id/genderToggleButton"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/dateTextView" />
 
@@ -200,7 +197,6 @@
                     android:textSize="14sp"
                     app:layout_constraintBaseline_toBaselineOf="@+id/genderTextView"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/genderTextView" />
 
                 <TextView

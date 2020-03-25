@@ -8,6 +8,7 @@ public class StringResources
 
     public static String[] NameExamples = null;
     public static String[] Species = null;
+    public static String[] SortedSpecies = null;
 
     public static class DateFormatter
     {

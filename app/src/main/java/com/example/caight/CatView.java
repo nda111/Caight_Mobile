@@ -27,6 +27,7 @@ import java.util.Map;
 public class CatView extends EntityListItemViewBase
 {
     private Cat cat = null;
+    private CatGroup group = null;
 
     @View(R.id.rootLayout)
     private ConstraintLayout rootLayout;
@@ -68,10 +69,16 @@ public class CatView extends EntityListItemViewBase
     private OnEntityListItemTouchListener onDeleteListener = null;
     private OnEntityListItemTouchListener onEditListener = null;
 
-    public CatView(Context context, Cat cat)
+    public CatView(Context context, Cat cat, CatGroup group)
     {
         super(context);
         setCat(cat);
+        this.group = group;
+    }
+
+    public CatGroup getGroup()
+    {
+        return group;
     }
 
     public Cat getCat()
@@ -130,18 +137,18 @@ public class CatView extends EntityListItemViewBase
             break;
 
         case OnCatAttributeChangedListener.__ID_BIRTHDAY__:
-            Period age = this.cat.getAge();
+            int[] age = this.cat.getAge();
             StringBuilder ageBuilder = new StringBuilder();
             ageBuilder.append('(');
-            if (age.getYears() == 0)
+            if (age[0] == 0)
             {
-                ageBuilder.append(age.getMonths());
-                ageBuilder.append("개월");
+                ageBuilder.append(age[1]);
+                ageBuilder.append(getContext().getResources().getString(R.string.unit_old_month));
             }
             else
             {
-                ageBuilder.append(age.getYears());
-                ageBuilder.append("살");
+                ageBuilder.append(age[0]);
+                ageBuilder.append(getContext().getResources().getString(R.string.unit_old_year));
             }
             ageBuilder.append(')');
             ageTextView.setText(ageBuilder.toString());
@@ -151,7 +158,7 @@ public class CatView extends EntityListItemViewBase
             StringBuilder weightBuilder = new StringBuilder();
             Map.Entry<Calendar, Float> lastEntry = this.cat.getLastWeight();
             weightBuilder.append(lastEntry.getValue());
-            weightBuilder.append("Kg");
+            weightBuilder.append(getContext().getResources().getString(R.string.unit_kg));
             weightTextView.setText(weightBuilder.toString());
 
             StringBuilder dateBuilder = new StringBuilder();

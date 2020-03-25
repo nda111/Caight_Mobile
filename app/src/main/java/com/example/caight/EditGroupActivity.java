@@ -194,97 +194,111 @@ public class EditGroupActivity extends AppCompatActivity
             {
                 if (event.getAction() == 1)
                 {
-                    setGuiEnabled(false);
-
-                    try
+                    DeletionConfirmDialog dialog = new DeletionConfirmDialog(R.string.word_delete, group.getName());
+                    dialog.setListener(new DeletionConfirmDialog.OnDeletionConfirmListener()
                     {
-                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
-                                .setRequestAdapter(new WebSocketConnection.RequestAdapter()
-                                {
-                                    ResponseId response;
+                        @Override
+                        public void onConfirm()
+                        {
+                            setGuiEnabled(false);
 
-                                    @Override
-                                    public void onRequest(WebSocketConnection conn)
-                                    {
-                                        conn.send(StaticMethods.intToByteArray(RequestId.DROP_GROUP.getId()), true);
-                                        conn.send(StaticResources.accountId, true);
-                                        conn.send(StaticResources.authToken, true);
-
-                                        conn.send(StaticMethods.intToByteArray(group.getId()), true);
-                                    }
-
-                                    @Override
-                                    public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
-                                    {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
-                                        conn.close();
-                                    }
-
-                                    @Override
-                                    public void onClosed()
-                                    {
-                                        switch (response)
+                            try
+                            {
+                                new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                        .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                         {
-                                            case DROP_GROUP_OK:
-                                            {
-                                                runOnUiThread(new Runnable()
-                                                {
-                                                    @Override
-                                                    public void run()
-                                                    {
-                                                        Toast.makeText(getApplicationContext(), R.string.msg_group_deleted, Toast.LENGTH_LONG).show();
-                                                        StaticResources.updateEntityList = true;
-                                                        finish();
-                                                    }
-                                                });
-                                                break;
-                                            }
+                                            ResponseId response;
 
-                                            case DROP_GROUP_MEMBER_EXISTS:
-                                            {
-                                                runOnUiThread(new Runnable()
-                                                {
-                                                    @Override
-                                                    public void run()
-                                                    {
-                                                        Toast.makeText(getApplicationContext(), R.string.err_del_group, Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
-                                                break;
-                                            }
-
-                                            case DROP_GROUP_ERROR:
-                                            {
-                                                runOnUiThread(new Runnable()
-                                                {
-                                                    @Override
-                                                    public void run()
-                                                    {
-                                                        Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                                break;
-                                            }
-
-                                            default:
-                                                break;
-                                        }
-
-                                        runOnUiThread(new Runnable()
-                                        {
                                             @Override
-                                            public void run()
+                                            public void onRequest(WebSocketConnection conn)
                                             {
-                                                setGuiEnabled(true);
+                                                conn.send(StaticMethods.intToByteArray(RequestId.DROP_GROUP.getId()), true);
+                                                conn.send(StaticResources.accountId, true);
+                                                conn.send(StaticResources.authToken, true);
+
+                                                conn.send(StaticMethods.intToByteArray(group.getId()), true);
                                             }
-                                        });
-                                    }
-                                }).connect();
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+
+                                            @Override
+                                            public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                            {
+                                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                                conn.close();
+                                            }
+
+                                            @Override
+                                            public void onClosed()
+                                            {
+                                                switch (response)
+                                                {
+                                                    case DROP_GROUP_OK:
+                                                    {
+                                                        runOnUiThread(new Runnable()
+                                                        {
+                                                            @Override
+                                                            public void run()
+                                                            {
+                                                                Toast.makeText(getApplicationContext(), R.string.msg_group_deleted, Toast.LENGTH_LONG).show();
+                                                                StaticResources.updateEntityList = true;
+                                                                finish();
+                                                            }
+                                                        });
+                                                        break;
+                                                    }
+
+                                                    case DROP_GROUP_MEMBER_EXISTS:
+                                                    {
+                                                        runOnUiThread(new Runnable()
+                                                        {
+                                                            @Override
+                                                            public void run()
+                                                            {
+                                                                Toast.makeText(getApplicationContext(), R.string.err_del_group, Toast.LENGTH_LONG).show();
+                                                            }
+                                                        });
+                                                        break;
+                                                    }
+
+                                                    case DROP_GROUP_ERROR:
+                                                    {
+                                                        runOnUiThread(new Runnable()
+                                                        {
+                                                            @Override
+                                                            public void run()
+                                                            {
+                                                                Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                        break;
+                                                    }
+
+                                                    default:
+                                                        break;
+                                                }
+
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        setGuiEnabled(true);
+                                                    }
+                                                });
+                                            }
+                                        }).connect();
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                        }
+                    });
+                    dialog.show(getSupportFragmentManager(), null);
                 }
                 return false;
             }
@@ -418,6 +432,10 @@ public class EditGroupActivity extends AppCompatActivity
                         {
                             e.printStackTrace();
                         }
+                    }
+                    else
+                    {
+                        finish();
                     }
                 }
                 return false;

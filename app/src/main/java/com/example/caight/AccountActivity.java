@@ -357,7 +357,7 @@ public class AccountActivity extends AppCompatActivity
                 {
                     for (CatGroup group : StaticResources.groups)
                     {
-                        if (group.getOwnerName().equals(StaticResources.myEmail))
+                        if (group.getOwnerEmail().equals(StaticResources.myEmail))
                         {
                             Toast.makeText(AccountActivity.this, R.string.err_hand_over_group, Toast.LENGTH_LONG).show();
                             return false;

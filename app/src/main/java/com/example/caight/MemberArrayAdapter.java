@@ -48,10 +48,10 @@ public class MemberArrayAdapter extends ArrayAdapter<List<MemberArrayAdapter.Ite
     public View getView(int position, View convertView, ViewGroup parent)
     {
         Item item = list.get(position);
-        View view = inflater.inflate(R.layout.item_group_spinner, parent, false);
+        View view = inflater.inflate(R.layout.item_member_spinner, parent, false);
 
-        ((TextView)view.findViewById(R.id.groupTextView)).setText(item.name);
-        ((TextView)view.findViewById(R.id.idTextView)).setText(item.email);
+        ((TextView)view.findViewById(R.id.nameTextView)).setText(item.name);
+        ((TextView)view.findViewById(R.id.emailTextView)).setText(item.email);
 
         return view;
     }

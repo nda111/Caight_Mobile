@@ -67,7 +67,7 @@ public class CatGroup
         this.name = name;
     }
 
-    public String getOwnerName()
+    public String getOwnerEmail()
     {
         return owner;
     }

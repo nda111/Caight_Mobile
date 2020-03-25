@@ -118,7 +118,19 @@ public enum ResponseId
      * OUT_GROUP(17)
      */
     WITHDRAW_GROUP_OK(45),
-    WITHDRAW_GROUP_ERROR(46);
+    WITHDRAW_GROUP_ERROR(46),
+
+    /*
+     * DROP_CAT(18)
+     */
+    DROP_CAT_OK(47),
+    DROP_CAT_ERROR(48),
+
+    /*
+     * EDIT_CAT(19)
+     */
+    EDIT_CAT_OK(49),
+    EDIT_CAT_ERROR(50);
 
     private int id = -1;
 

@@ -215,14 +215,12 @@ public final class Cat
         }
     }
 
-    public Period getAge()
+    public int[] getAge()
     {
-        return Period.between(
-                LocalDate.of(
-                        birthday.get(Calendar.YEAR),
-                        birthday.get(Calendar.MONTH),
-                        birthday.get(Calendar.DAY_OF_MONTH)),
-                LocalDate.now());
+        Calendar age = Calendar.getInstance();
+        age.setTimeInMillis(age.getTimeInMillis() - birthday.getTimeInMillis());
+
+        return new int[] { age.get(Calendar.YEAR) - 1970, age.get(Calendar.MONTH) };
     }
 
     public Gender getGender()

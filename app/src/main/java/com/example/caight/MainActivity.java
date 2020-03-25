@@ -1,6 +1,7 @@
 package com.example.caight;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -28,7 +29,13 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
         {
+            // NOTHING
             return false;
         }
     };
@@ -68,10 +76,11 @@ public class MainActivity extends AppCompatActivity
             if (e.getAction() == 1)
             {
                 CatGroup group = ((CatGroupView)sender).getGroup();
-                if (!group.getOwnerName().equals(StaticResources.myEmail))
+                if (!group.getOwnerEmail().equals(StaticResources.myEmail))
                 {
                     groupId = group.getId();
                     progressBar.setVisibility(View.VISIBLE);
+                    rootLayout.setEnabled(false);
 
                     try
                     {
@@ -124,6 +133,7 @@ public class MainActivity extends AppCompatActivity
                                                 }
 
                                                 progressBar.setVisibility(View.GONE);
+                                                rootLayout.setEnabled(true);
                                             }
                                         });
                                     }
@@ -151,7 +161,7 @@ public class MainActivity extends AppCompatActivity
             if (e.getAction() == 1)
             {
                 CatGroup group = ((CatGroupView)sender).getGroup();
-                if (group.getOwnerName().equals(StaticResources.myEmail))
+                if (group.getOwnerEmail().equals(StaticResources.myEmail))
                 {
                     Intent intent = new Intent(MainActivity.this, EditGroupActivity.class);
                     intent.putExtra(__EXTRA_GROUP_ID__, group.getId());
@@ -191,7 +201,98 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
         {
-            // TODO
+            if (e.getAction() == 1)
+            {
+                final Cat cat = ((CatView)sender).getCat();
+                final CatGroup group = ((CatView)sender).getGroup();
+
+                if (group.getOwnerEmail().equals(StaticResources.myEmail))
+                {
+                    DeletionConfirmDialog dialog = new DeletionConfirmDialog(R.string.word_delete, cat.getName());
+                    dialog.setListener(new DeletionConfirmDialog.OnDeletionConfirmListener()
+                    {
+                        @Override
+                        public void onConfirm()
+                        {
+                            try
+                            {
+                                progressBar.setVisibility(View.VISIBLE);
+                                rootLayout.setEnabled(false);
+
+                                new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                        .setRequestAdapter(new WebSocketConnection.RequestAdapter()
+                                        {
+                                            ResponseId response;
+
+                                            @Override
+                                            public void onRequest(WebSocketConnection conn)
+                                            {
+                                                conn.send(StaticMethods.intToByteArray(RequestId.DROP_CAT.getId()), true);
+                                                conn.send(StaticResources.accountId, true);
+                                                conn.send(StaticResources.authToken, true);
+
+                                                conn.send(StaticMethods.intToByteArray(cat.getId()), true);
+                                            }
+
+                                            @Override
+                                            public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
+                                            {
+                                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                                conn.close();
+                                            }
+
+                                            @Override
+                                            public void onClosed()
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        switch (response)
+                                                        {
+                                                            case DROP_CAT_OK:
+                                                            {
+                                                                downloadEntities(false);
+                                                                break;
+                                                            }
+
+                                                            case DROP_CAT_ERROR:
+                                                            {
+                                                                Toast.makeText(MainActivity.this, R.string.err_occurred, Toast.LENGTH_SHORT).show();
+                                                                break;
+                                                            }
+
+                                                            default:
+                                                                break;
+                                                        }
+
+                                                        progressBar.setVisibility(View.GONE);
+                                                        rootLayout.setEnabled(true);
+                                                    }
+                                                });
+                                            }
+                                        }).connect();
+                            }
+                            catch (Exception ex)
+                            {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onCancel()
+                        {
+                        }
+                    });
+                    dialog.show(getSupportFragmentManager(), null);
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, R.string.msg_only_manager, Toast.LENGTH_LONG).show();
+                }
+            }
+
             return false;
         }
     };
@@ -201,7 +302,17 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
         {
-            // TODO;
+            if (e.getAction() == 1)
+            {
+                final Cat cat = ((CatView)sender).getCat();
+                final CatGroup group = ((CatView)sender).getGroup();
+
+                Intent intent = new Intent(MainActivity.this, EditCatActivity.class);
+                intent.putExtra(__EXTRA_GROUP_ID__, group.getId());
+                intent.putExtra(__EXTRA_CAT_ID__, cat.getId());
+
+                startActivity(intent);
+            }
             return false;
         }
     };
@@ -225,6 +336,15 @@ public class MainActivity extends AppCompatActivity
         Resources resources = getResources();
         StringResources.NameExamples = resources.getStringArray(R.array.name_examples);
         StringResources.Species = resources.getStringArray(R.array.species);
+        StringResources.SortedSpecies = Arrays.copyOf(StringResources.Species, StringResources.Species.length);
+        Arrays.sort(StringResources.SortedSpecies, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                return o1.compareTo(o2);
+            }
+        });
 
         /*
          * Initialize GUI Components
@@ -351,7 +471,7 @@ public class MainActivity extends AppCompatActivity
 
         try
         {
-            WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+            new WebSocketConnection(StringResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
                         private ResponseId response = null;
@@ -465,7 +585,7 @@ public class MainActivity extends AppCompatActivity
                                         ArrayList<Cat> cats = (ArrayList<Cat>)entries.get(group);
                                         for (Cat cat : cats)
                                         {
-                                            CatView catView = new CatView(context, cat);
+                                            CatView catView = new CatView(context, cat, group);
                                             catView.setOnTouchListener(onCatTouchedListener);
                                             catView.setOnDeleteListener(onCatDeleteListener);
                                             catView.setOnEditListener(onCatEditListener);
@@ -504,6 +624,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /*
     private void useCatExample()
     {
         EntityListItemViewBase.OnEntityListItemTouchListener onViewTouchedListener = new EntityListItemViewBase.OnEntityListItemTouchListener()
@@ -536,7 +657,7 @@ public class MainActivity extends AppCompatActivity
 
         birthday = Calendar.getInstance();
         birthday.set(2014, 7, 5, 0, 0, 0);
-        CatView peroView = new CatView(context, new Cat(0xFFC69C6D, "페로", birthday, Gender.NEUTERED, 84, 6.1F));
+        CatView peroView = new CatView(context, new Cat(0xFFC69C6D, "페로", birthday, Gender.NEUTERED, 84, 6.1F), );
 
         birthday = Calendar.getInstance();
         birthday.set(2018, 11, 13, 0, 0, 0);
@@ -603,4 +724,5 @@ public class MainActivity extends AppCompatActivity
         soCats.add(nikoView.getCat());
         StaticResources.entries.put(soGroup, soCats);
     }
+     */
 }

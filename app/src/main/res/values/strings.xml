@@ -49,6 +49,7 @@
     <string name="word_warning">Warning</string>
     <string name="word_delete_account">Delete Account</string>
     <string name="word_action" translatable="false">Action</string>
+    <string name="word_delete">Delete</string>
 
     <string name="desc_account">.</string>
     <string name="desc_account_logout">.</string>
@@ -60,6 +61,8 @@
     <string name="desc_join_group">Join an existing group as a member.</string>
 
     <string name="unit_kg" translatable="false">(kg)</string>
+    <string name="unit_old_month">Months</string>
+    <string name="unit_old_year">Years</string>
 
     <string name="act_add_cat">Add cat</string>
     <string name="act_add_group">Add group</string>
@@ -73,6 +76,8 @@
 
     <string name="act_del_group">Delete this group</string>
     <string name="act_save">Save</string>
+
+    <string name="act_confirm">Confirm</string>
 
     <string name="c_bracket_open" translatable="false">(</string>
     <string name="c_bracket_close" translatable="false">)</string>
@@ -90,6 +95,11 @@
     <string name="msg_only_manager">Only manager can do this.</string>
     <string name="msg_manager_cannot">Manager can not do this.</string>
 
+    <string name="msg_confirm_del1">Enter</string>
+    <string name="msg_confirm_del2">to confirm deletion.</string>
+
+    <string name="warn_deletion">Once you delete, you can\'t revert it.</string>
+
     <string name="err_occurred">Error occurred. &#10; Please try again.</string>
     <string name="err_cert_first">Certify your email first.</string>
     <string name="err_not_email">Invalid email format.</string>
@@ -106,6 +116,4 @@
     <string name="err_join_wrong_password">This is wrong password.</string>
 
     <string name="err_del_group">Group with multiple members cat not be deleted.</string>
-
-    <string name="warn_del_account">If you delete this account, you can NOT revert it.</string>
 </resources>
