@@ -12,11 +12,6 @@ import android.widget.Toast;
 
 import com.mindorks.placeholderview.ExpandablePlaceHolderView;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-
 public class AddGroupActivity extends AppCompatActivity
 {
     private String[] addArgument = null;
@@ -81,7 +76,7 @@ public class AddGroupActivity extends AppCompatActivity
                     {
                         addArgument = joinGroupView.getResult();
 
-                        for (CatGroup group : StaticResources.groups)
+                        for (CatGroup group : StaticResources.Entity.getGroups(AddGroupActivity.this))
                         {
                             if (addArgument[0].equals(String.valueOf(group.getId())))
                             {
@@ -109,7 +104,7 @@ public class AddGroupActivity extends AppCompatActivity
 
         try
         {
-            WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+            WebSocketConnection conn = new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
                         ResponseId response;
@@ -120,17 +115,17 @@ public class AddGroupActivity extends AppCompatActivity
                             String groupName = addArgument[0];
                             String password = addArgument[1];
 
-                            conn.send(StaticMethods.intToByteArray(RequestId.NEW_GROUP.getId()), true);
+                            conn.send(Methods.intToByteArray(RequestId.NEW_GROUP.getId()), true);
 
-                            conn.send(StaticResources.accountId, true);
-                            conn.send(StaticResources.authToken, true);
+                            conn.send(StaticResources.Account.getId(AddGroupActivity.this), true);
+                            conn.send(StaticResources.Account.getAuthenticationToken(AddGroupActivity.this), true);
                             conn.send(groupName + '\0' + password, true);
                         }
 
                         @Override
                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                         {
-                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                             conn.close();
                         }
 
@@ -141,7 +136,7 @@ public class AddGroupActivity extends AppCompatActivity
                             {
                                 case ADD_ENTITY_OK:
                                 {
-                                    StaticResources.updateEntityList = true;
+                                    StaticResources.Entity.setUpdateList(AddGroupActivity.this, true);
                                     break;
                                 }
 
@@ -188,7 +183,7 @@ public class AddGroupActivity extends AppCompatActivity
 
         try
         {
-            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
                         ResponseId response;
@@ -199,17 +194,17 @@ public class AddGroupActivity extends AppCompatActivity
                             String groupId = addArgument[0];
                             String password = addArgument[1];
 
-                            conn.send(StaticMethods.intToByteArray(RequestId.JOIN_GROUP.getId()), true);
+                            conn.send(Methods.intToByteArray(RequestId.JOIN_GROUP.getId()), true);
 
-                            conn.send(StaticResources.accountId, true);
-                            conn.send(StaticResources.authToken, true);
+                            conn.send(StaticResources.Account.getId(AddGroupActivity.this), true);
+                            conn.send(StaticResources.Account.getAuthenticationToken(AddGroupActivity.this), true);
                             conn.send(groupId + '\0' + password, true);
                         }
 
                         @Override
                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                         {
-                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                             conn.close();
                         }
 
@@ -220,7 +215,7 @@ public class AddGroupActivity extends AppCompatActivity
                             {
                                 case JOIN_GROUP_OK:
                                 {
-                                    StaticResources.updateEntityList = true;
+                                    StaticResources.Entity.setUpdateList(AddGroupActivity.this, true);
                                     runOnUiThread(new Runnable()
                                     {
                                         @Override

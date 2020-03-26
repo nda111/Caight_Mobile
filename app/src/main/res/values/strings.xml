@@ -61,8 +61,8 @@
     <string name="desc_join_group">Join an existing group as a member.</string>
 
     <string name="unit_kg" translatable="false">(kg)</string>
-    <string name="unit_old_month">Months</string>
-    <string name="unit_old_year">Years</string>
+    <string name="unit_old_month">&#32;Months</string>
+    <string name="unit_old_year">&#32;Years</string>
 
     <string name="act_add_cat">Add cat</string>
     <string name="act_add_group">Add group</string>

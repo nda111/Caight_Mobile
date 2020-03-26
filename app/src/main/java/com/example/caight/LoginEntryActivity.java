@@ -103,7 +103,7 @@ public class LoginEntryActivity extends AppCompatActivity
 
         try
         {
-            WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+            WebSocketConnection conn = new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
                         private String email = null;
@@ -112,7 +112,7 @@ public class LoginEntryActivity extends AppCompatActivity
                         @Override
                         public void onRequest(WebSocketConnection conn)
                         {
-                            byte[] id = StaticMethods.intToByteArray(RequestId.EVALUATE_EMAIL.getId());
+                            byte[] id = Methods.intToByteArray(RequestId.EVALUATE_EMAIL.getId());
                             conn.send(id, true);
 
                             email = emailEditText.getText().toString();
@@ -122,7 +122,7 @@ public class LoginEntryActivity extends AppCompatActivity
                         @Override
                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                         {
-                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                             conn.close();
                         }
 

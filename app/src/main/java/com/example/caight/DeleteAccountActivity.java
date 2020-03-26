@@ -1,6 +1,5 @@
 package com.example.caight;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -9,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,13 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.neovisionaries.ws.client.WebSocket;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 public class DeleteAccountActivity extends AppCompatActivity
 {
@@ -62,7 +53,7 @@ public class DeleteAccountActivity extends AppCompatActivity
             {
                 if (event.getAction() == 1)
                 {
-                    if (emailEditText.getText().toString().equals(StaticResources.myEmail))
+                    if (emailEditText.getText().toString().equals(StaticResources.Account.getEmail(DeleteAccountActivity.this)))
                     {
                         emailEditText.setEnabled(false);
                         deleteButton.setEnabled(false);
@@ -70,7 +61,7 @@ public class DeleteAccountActivity extends AppCompatActivity
 
                         try
                         {
-                            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                     {
                                         ResponseId response;
@@ -78,15 +69,15 @@ public class DeleteAccountActivity extends AppCompatActivity
                                         @Override
                                         public void onRequest(WebSocketConnection conn)
                                         {
-                                            conn.send(StaticMethods.intToByteArray(RequestId.DELETE_ACCOUNT.getId()), true);
-                                            conn.send(StaticResources.accountId, true);
-                                            conn.send(StaticResources.authToken, true);
+                                            conn.send(Methods.intToByteArray(RequestId.DELETE_ACCOUNT.getId()), true);
+                                            conn.send(StaticResources.Account.getId(DeleteAccountActivity.this), true);
+                                            conn.send(StaticResources.Account.getAuthenticationToken(DeleteAccountActivity.this), true);
                                         }
 
                                         @Override
                                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                         {
-                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                             conn.close();
                                         }
 
@@ -97,7 +88,7 @@ public class DeleteAccountActivity extends AppCompatActivity
                                             {
                                                 case DELETE_ACCOUNT_OK:
                                                 {
-                                                    getSharedPreferences(StaticResources.LoginPreferenceName, MODE_PRIVATE).edit().clear().apply();
+                                                    StaticResources.AutoLogin.clear(DeleteAccountActivity.this);
 
                                                     Toast.makeText(getApplicationContext(), R.string.msg_deleted, Toast.LENGTH_SHORT).show();
 

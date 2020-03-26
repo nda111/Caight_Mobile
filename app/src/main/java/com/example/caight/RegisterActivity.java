@@ -184,7 +184,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
 
                     try
                     {
-                        WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                        WebSocketConnection conn = new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
                                     private ResponseId response = ResponseId.UNKNOWN;
@@ -192,7 +192,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        conn.send(StaticMethods.intToByteArray(RequestId.REGISTER_EMAIL.getId()), true);
+                                        conn.send(Methods.intToByteArray(RequestId.REGISTER_EMAIL.getId()), true);
 
                                         StringBuilder builder = new StringBuilder();
                                         builder.append(emailTextView.getText().toString());
@@ -207,7 +207,7 @@ public class RegisterActivity<EditTExt> extends AppCompatActivity
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                         conn.close();
                                     }
 

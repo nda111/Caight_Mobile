@@ -91,7 +91,7 @@ public class LoginPasswordActivity extends AppCompatActivity
 
                         try
                         {
-                            WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                            WebSocketConnection conn = new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                     {
                                         ResponseId response;
@@ -105,7 +105,7 @@ public class LoginPasswordActivity extends AppCompatActivity
                                             builder.append('\0');
                                             builder.append(pwEditText.getText().toString());
 
-                                            conn.send(StaticMethods.intToByteArray(RequestId.SIGN_IN.getId()), true);
+                                            conn.send(Methods.intToByteArray(RequestId.SIGN_IN.getId()), true);
                                             conn.send(builder.toString(), true);
                                         }
 
@@ -117,20 +117,20 @@ public class LoginPasswordActivity extends AppCompatActivity
                                             switch (++cnt)
                                             {
                                                 case 1:
-                                                    response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                                    response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                                     close = response != ResponseId.SIGN_IN_OK;
                                                     break;
 
                                                 case 2:
-                                                    StaticResources.accountId = message.getBinary();
+                                                    StaticResources.Account.setId(LoginPasswordActivity.this, message.getBinary());
                                                     break;
 
                                                 case 3:
-                                                    StaticResources.authToken = message.getText();
+                                                    StaticResources.Account.setAuthenticationToken(LoginPasswordActivity.this, message.getText());
                                                     break;
 
                                                 case 4:
-                                                    StaticResources.myName = message.getText();
+                                                    StaticResources.Account.setName(LoginPasswordActivity.this, message.getText());
                                                     close = true;
                                                     break;
 
@@ -153,12 +153,10 @@ public class LoginPasswordActivity extends AppCompatActivity
                                                 {
                                                     if (doAutoLogin)
                                                     {
-                                                        StaticResources.loginPreferences.edit().putBoolean(StaticResources.LoginPreferenceItemAutoLogin, true).apply();
-                                                        StaticResources.loginPreferences.edit().putString(StaticResources.LogInPreferenceItemEmail, email).apply();
-                                                        StaticResources.loginPreferences.edit().putString(StaticResources.LogInPreferenceItemPassword, pwEditText.getText().toString()).apply();
+                                                        StaticResources.AutoLogin.set(LoginPasswordActivity.this, true, email, pwEditText.getText().toString());
                                                     }
 
-                                                    StaticResources.myEmail = email;
+                                                    StaticResources.Account.setEmail(LoginPasswordActivity.this, email);
 
                                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                     intent.putExtra(LoginEntryActivity.__KEY_EMAIL__, email);
@@ -275,7 +273,7 @@ public class LoginPasswordActivity extends AppCompatActivity
                         progressBar.setVisibility(View.VISIBLE);
                         forgotPwTextView.setText("");
 
-                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                        new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
                                     ResponseId response;
@@ -283,14 +281,14 @@ public class LoginPasswordActivity extends AppCompatActivity
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        conn.send(StaticMethods.intToByteArray(RequestId.REQUEST_RESET_PASSWORD_uri.getId()), true);
+                                        conn.send(Methods.intToByteArray(RequestId.REQUEST_RESET_PASSWORD_uri.getId()), true);
                                         conn.send(email, true);
                                     }
 
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                         conn.close();
                                     }
 

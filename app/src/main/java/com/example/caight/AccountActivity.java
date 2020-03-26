@@ -63,7 +63,7 @@ public class AccountActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar);
 
         // nameTextView
-        nameTextView.setText(StaticResources.myName);
+        nameTextView.setText(StaticResources.Account.getName(this));
 
         // nameEditImageView
         nameEditImageView.setOnTouchListener(new View.OnTouchListener()
@@ -80,7 +80,7 @@ public class AccountActivity extends AppCompatActivity
         });
 
         // nameEditText
-        nameEditText.setText(StaticResources.myName);
+        nameEditText.setText(StaticResources.Account.getName(this));
         nameEditText.setOnKeyListener(new View.OnKeyListener()
         {
             @Override
@@ -94,14 +94,14 @@ public class AccountActivity extends AppCompatActivity
                     nameEditText.setEnabled(false);
 
                     String newName = nameEditText.getText().toString().trim();
-                    if (newName.length() != 0 && !newName.equals(StaticResources.myName))
+                    if (newName.length() != 0 && !newName.equals(StaticResources.Account.getName(AccountActivity.this)))
                     {
                         scrollView.setEnabled(false);
                         progressBar.setVisibility(View.VISIBLE);
 
                         try
                         {
-                            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                     {
                                         ResponseId response;
@@ -112,9 +112,9 @@ public class AccountActivity extends AppCompatActivity
                                         {
                                             name = nameEditText.getText().toString().trim();
 
-                                            conn.send(StaticMethods.intToByteArray(RequestId.CHANGE_NAME.getId()), true);
-                                            conn.send(StaticResources.accountId, true);
-                                            conn.send(StaticResources.authToken, true);
+                                            conn.send(Methods.intToByteArray(RequestId.CHANGE_NAME.getId()), true);
+                                            conn.send(StaticResources.Account.getId(AccountActivity.this), true);
+                                            conn.send(StaticResources.Account.getAuthenticationToken(AccountActivity.this), true);
 
                                             conn.send(name, true);
                                         }
@@ -122,7 +122,7 @@ public class AccountActivity extends AppCompatActivity
                                         @Override
                                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                         {
-                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                             conn.close();
                                         }
 
@@ -136,12 +136,12 @@ public class AccountActivity extends AppCompatActivity
                                                 {
                                                     if (response == ResponseId.CHANGE_NAME_OK)
                                                     {
-                                                        StaticResources.myName = name;
+                                                        StaticResources.Account.setName(AccountActivity.this, name);
                                                         nameTextView.setText(name);
                                                     }
                                                     else
                                                     {
-                                                        nameEditText.setText(StaticResources.myName);
+                                                        nameEditText.setText(StaticResources.Account.getName(AccountActivity.this));
                                                         Toast.makeText(AccountActivity.this, R.string.err_occurred, Toast.LENGTH_SHORT).show();
                                                     }
 
@@ -159,7 +159,7 @@ public class AccountActivity extends AppCompatActivity
                     }
                     else
                     {
-                        nameEditText.setText(StaticResources.myName);
+                        nameEditText.setText(StaticResources.Account.getName(AccountActivity.this));
                     }
                 }
 
@@ -168,7 +168,7 @@ public class AccountActivity extends AppCompatActivity
         });
 
         // emailTextView
-        emailTextView.setText(StaticResources.myEmail);
+        emailTextView.setText(StaticResources.Account.getEmail(AccountActivity.this));
 
         // logoutItem
         View.inflate(this, R.layout.view_icon_item, logoutItem);
@@ -188,7 +188,7 @@ public class AccountActivity extends AppCompatActivity
                         scrollView.setEnabled(false);
                         progressBar.setVisibility(View.VISIBLE);
 
-                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                        new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
                                     ResponseId response;
@@ -196,15 +196,15 @@ public class AccountActivity extends AppCompatActivity
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        conn.send(StaticMethods.intToByteArray(RequestId.LOGOUT.getId()), true);
-                                        conn.send(StaticResources.accountId, true);
-                                        conn.send(StaticResources.authToken, true);
+                                        conn.send(Methods.intToByteArray(RequestId.LOGOUT.getId()), true);
+                                        conn.send(StaticResources.Account.getId(AccountActivity.this), true);
+                                        conn.send(StaticResources.Account.getAuthenticationToken(AccountActivity.this), true);
                                     }
 
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                         conn.close();
                                     }
 
@@ -213,7 +213,7 @@ public class AccountActivity extends AppCompatActivity
                                     {
                                         if (response == ResponseId.LOGOUT_OK)
                                         {
-                                            StaticResources.loginPreferences.edit().clear().apply();
+                                            StaticResources.AutoLogin.clear(AccountActivity.this);
 
                                             Intent intent = new Intent(getApplicationContext(), LoginEntryActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -264,7 +264,7 @@ public class AccountActivity extends AppCompatActivity
                         progressBar.setVisibility(View.VISIBLE);
                         scrollView.setEnabled(false);
 
-                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                        new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
                                     ResponseId response;
@@ -272,14 +272,14 @@ public class AccountActivity extends AppCompatActivity
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        conn.send(StaticMethods.intToByteArray(RequestId.REQUEST_RESET_PASSWORD_uri.getId()), true);
-                                        conn.send(StaticResources.myEmail, true);
+                                        conn.send(Methods.intToByteArray(RequestId.REQUEST_RESET_PASSWORD_uri.getId()), true);
+                                        conn.send(StaticResources.Account.getEmail(AccountActivity.this), true);
                                     }
 
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                         conn.close();
                                     }
 
@@ -355,9 +355,10 @@ public class AccountActivity extends AppCompatActivity
             {
                 if (event.getAction() == 1)
                 {
-                    for (CatGroup group : StaticResources.groups)
+                    String accountEmail = StaticResources.Account.getEmail(AccountActivity.this);
+                    for (CatGroup group : StaticResources.Entity.getGroups(AccountActivity.this))
                     {
-                        if (group.getOwnerEmail().equals(StaticResources.myEmail))
+                        if (group.getOwnerEmail().equals(accountEmail))
                         {
                             Toast.makeText(AccountActivity.this, R.string.err_hand_over_group, Toast.LENGTH_LONG).show();
                             return false;

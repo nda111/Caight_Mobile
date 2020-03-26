@@ -9,8 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -249,11 +247,6 @@ public final class Cat
         return gender.isNeuteredOrSpayed();
     }
 
-    public String getSpeciesName()
-    {
-        return StringResources.Species[species];
-    }
-
     public Integer getSpecies()
     {
         return species;
@@ -405,18 +398,5 @@ public final class Cat
         cal.setTimeInMillis(ms);
 
         return cal;
-    }
-
-    public static Integer getSpeciesIndexOrNull(String species)
-    {
-        for (int i = 0; i < StringResources.Species.length; i++)
-        {
-            if (StringResources.Species.equals(species))
-            {
-                return i;
-            }
-        }
-
-        return null;
     }
 }

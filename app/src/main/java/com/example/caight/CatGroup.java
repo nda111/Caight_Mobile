@@ -5,10 +5,10 @@ import org.json.JSONObject;
 
 public class CatGroup
 {
-    public static final String __JSON_KEY_GROUP_ID__ = "group_id";
-    public static final String __JSON_KEY_GROUP_NAME__ = "group_name";
-    public static final String __JSON_KEY_GROUP_OWNER__ = "group_owner";
-    public static final String __JSON_KEY_GROUP_LOCKED__ = "group_locked";
+    static final String __JSON_KEY_GROUP_ID__ = "group_id";
+    static final String __JSON_KEY_GROUP_NAME__ = "group_name";
+    static final String __JSON_KEY_GROUP_OWNER__ = "group_owner";
+    static final String __JSON_KEY_GROUP_LOCKED__ = "group_locked";
 
     private Integer id = null;
     private String name = null;

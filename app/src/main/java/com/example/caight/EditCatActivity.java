@@ -32,12 +32,10 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class EditCatActivity extends AppCompatActivity implements ColorPickerDialogListener
 {
@@ -103,11 +101,12 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
             Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
             finish();
         }
-        for (CatGroup group : StaticResources.groups)
+        for (CatGroup group : StaticResources.Entity.getGroups(EditCatActivity.this))
         {
             if (group.getId() == groupId)
             {
-                for (Cat cat : StaticResources.entries.get(group))
+                HashMap<CatGroup, List<Cat>> entries = StaticResources.Entity.getEntries(EditCatActivity.this);
+                for (Cat cat : entries.get(group))
                 {
                     if (cat.getId() == catId)
                     {
@@ -158,7 +157,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
         nameEditText.setText(cat.getName());
 
         // birthdayEditText
-        birthdayEditText.setText(StringResources.DateFormatter.format(cat.getBirthday()));
+        birthdayEditText.setText(Methods.DateFormatter.format(cat.getBirthday()));
         selectedBirthday = cat.getBirthday().getTimeInMillis();
 
         // maleRadioButton, femaleRadioButton, neuteredCheckBox
@@ -166,6 +165,8 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
         isNeuteredCheckBox.setChecked(cat.isNeuteredOrSpayed());
 
         // speciesSpinner
+        final String[] species = StaticResources.StringArrays.getSpecies(EditCatActivity.this);
+        final String[] sortedSpecies = StaticResources.StringArrays.getSortedSpecies(EditCatActivity.this);
         final ArrayAdapter speciesAdapter = ArrayAdapter.createFromResource(this, R.array.species, android.R.layout.simple_spinner_item);
         speciesAdapter.sort(new Comparator()
         {
@@ -183,9 +184,9 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
                 String item = (String)speciesAdapter.getItem(position);
-                for (int idx = 0; idx < StringResources.Species.length; idx++)
+                for (int idx = 0; idx < species.length; idx++)
                 {
-                    if (item.equals(StringResources.Species[idx]))
+                    if (item.equals(species[idx]))
                     {
                         selectedSpecies = idx;
                         return;
@@ -200,7 +201,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
             {
             }
         });
-        selectedSpecies = Arrays.binarySearch(StringResources.SortedSpecies, StringResources.Species[cat.getSpecies()]);
+        selectedSpecies = Arrays.binarySearch(sortedSpecies, species[cat.getSpecies()]);
         speciesSpinner.setSelection(selectedSpecies);
 
         // saveButton
@@ -262,7 +263,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
 
                         try
                         {
-                            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                     {
                                         ResponseId response;
@@ -270,9 +271,9 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
                                         @Override
                                         public void onRequest(WebSocketConnection conn)
                                         {
-                                            conn.send(StaticMethods.intToByteArray(RequestId.EDIT_CAT.getId()), true);
-                                            conn.send(StaticResources.accountId, true);
-                                            conn.send(StaticResources.authToken, true);
+                                            conn.send(Methods.intToByteArray(RequestId.EDIT_CAT.getId()), true);
+                                            conn.send(StaticResources.Account.getId(EditCatActivity.this), true);
+                                            conn.send(StaticResources.Account.getAuthenticationToken(EditCatActivity.this), true);
 
                                             conn.send(json.toString(), true);
                                         }
@@ -280,7 +281,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
                                         @Override
                                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                         {
-                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                             conn.close();
                                         }
 
@@ -296,7 +297,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
                                                     {
                                                         case EDIT_CAT_OK:
                                                         {
-                                                            StaticResources.updateEntityList = true;
+                                                            StaticResources.Entity.setUpdateList(EditCatActivity.this, true);
                                                             finish();
                                                             break;
                                                         }
@@ -359,7 +360,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
 
                 selectedBirthday = cal.getTimeInMillis();
 
-                String nowString = StringResources.DateFormatter.format(cal);
+                String nowString = Methods.DateFormatter.format(cal);
                 birthdayEditText.setText(nowString);
             }
         };
@@ -371,7 +372,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
                 now.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private String colorToHexString(Color color) // TODO: birthday dialog, species selection
+    private String colorToHexString(Color color)
     {
         int argb = color.toArgb();
         String hex = Integer.toString(argb, 16).substring(2).toUpperCase();

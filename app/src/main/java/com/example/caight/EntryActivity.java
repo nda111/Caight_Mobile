@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class EntryActivity extends AppCompatActivity
@@ -17,23 +18,20 @@ public class EntryActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
-        getSupportActionBar().hide();
-    }
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
+        /*
+         * Initialize string resources
+         */
+        StaticResources.StringArrays.initializeIfNotExists(this);
 
         /*
          * Check auto login
          */
-        StaticResources.loginPreferences = getSharedPreferences(StaticResources.LoginPreferenceName, MODE_PRIVATE);
-        boolean autoLogin = StaticResources.loginPreferences.getBoolean(StaticResources.LoginPreferenceItemAutoLogin, false);
-        if (autoLogin)
+        if (StaticResources.AutoLogin.getDoAutoLogin(EntryActivity.this))
         {
-            email = StaticResources.loginPreferences.getString(StaticResources.LogInPreferenceItemEmail, null);
-            passwd = StaticResources.loginPreferences.getString(StaticResources.LogInPreferenceItemPassword, null);
+            email = StaticResources.AutoLogin.getEmail(EntryActivity.this);
+            passwd = StaticResources.AutoLogin.getPassword(EntryActivity.this);
 
             if (email == null || passwd == null)
             {
@@ -45,7 +43,7 @@ public class EntryActivity extends AppCompatActivity
             {
                 try
                 {
-                    WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                    WebSocketConnection conn = new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                             .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                             {
                                 ResponseId response;
@@ -59,7 +57,7 @@ public class EntryActivity extends AppCompatActivity
                                     builder.append('\0');
                                     builder.append(passwd);
 
-                                    conn.send(StaticMethods.intToByteArray(RequestId.SIGN_IN.getId()), true);
+                                    conn.send(Methods.intToByteArray(RequestId.SIGN_IN.getId()), true);
                                     conn.send(builder.toString(), true);
                                 }
 
@@ -71,20 +69,20 @@ public class EntryActivity extends AppCompatActivity
                                     switch (++cnt)
                                     {
                                         case 1:
-                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                             close = response != ResponseId.SIGN_IN_OK;
                                             break;
 
                                         case 2:
-                                            StaticResources.accountId = message.getBinary();
+                                            StaticResources.Account.setId(EntryActivity.this, message.getBinary());
                                             break;
 
                                         case 3:
-                                            StaticResources.authToken = message.getText();
+                                            StaticResources.Account.setAuthenticationToken(EntryActivity.this, message.getText());
                                             break;
 
                                         case 4:
-                                            StaticResources.myName = message.getText();
+                                            StaticResources.Account.setName(EntryActivity.this, message.getText());
                                             close = true;
                                             break;
 
@@ -106,7 +104,7 @@ public class EntryActivity extends AppCompatActivity
                                     {
                                         case SIGN_IN_OK:
                                         {
-                                            StaticResources.myEmail = email;
+                                            StaticResources.Account.setEmail(EntryActivity.this, email);
 
                                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                             intent.putExtra(LoginEntryActivity.__KEY_EMAIL__, email);
@@ -149,9 +147,7 @@ public class EntryActivity extends AppCompatActivity
 
                                     if (failed)
                                     {
-                                        StaticResources.loginPreferences.edit().putBoolean(StaticResources.LoginPreferenceItemAutoLogin, false).apply();
-                                        StaticResources.loginPreferences.edit().remove(StaticResources.LogInPreferenceItemEmail).apply();
-                                        StaticResources.loginPreferences.edit().remove(StaticResources.LogInPreferenceItemPassword).apply();
+                                        StaticResources.AutoLogin.set(EntryActivity.this, false, null, null);
 
                                         Intent intent = new Intent(getApplicationContext(), LoginEntryActivity.class);
                                         intent.putExtra(LoginEntryActivity.__KEY_EMAIL__, email);

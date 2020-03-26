@@ -20,10 +20,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class EditGroupActivity extends AppCompatActivity
@@ -65,7 +61,7 @@ public class EditGroupActivity extends AppCompatActivity
         Intent intent = getIntent();
         int groupId = intent.getIntExtra(MainActivity.__EXTRA_GROUP_ID__, -1);
 
-        for (CatGroup group : StaticResources.groups)
+        for (CatGroup group : StaticResources.Entity.getGroups(EditGroupActivity.this))
         {
             if (groupId == group.getId())
             {
@@ -75,7 +71,7 @@ public class EditGroupActivity extends AppCompatActivity
         }
         if (group == null)
         {
-            StaticResources.updateEntityList = true;
+            StaticResources.Entity.setUpdateList(EditGroupActivity.this, true);
             Toast.makeText(getApplicationContext(), R.string.err_occurred, Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -109,7 +105,7 @@ public class EditGroupActivity extends AppCompatActivity
         memberList = new ArrayList<MemberArrayAdapter.Item>();
         try
         {
-            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
                         ResponseId response;
@@ -118,8 +114,8 @@ public class EditGroupActivity extends AppCompatActivity
                         @Override
                         public void onRequest(WebSocketConnection conn)
                         {
-                            conn.send(StaticMethods.intToByteArray(RequestId.DOWNLOAD_MEMBER.getId()), true);
-                            conn.send(StaticMethods.intToByteArray(group.getId()), true);
+                            conn.send(Methods.intToByteArray(RequestId.DOWNLOAD_MEMBER.getId()), true);
+                            conn.send(Methods.intToByteArray(group.getId()), true);
                         }
 
                         @Override
@@ -129,7 +125,7 @@ public class EditGroupActivity extends AppCompatActivity
                             {
                                 String[] args = message.getText().split("\0");
 
-                                if (args[1].equals(StaticResources.myEmail))
+                                if (args[1].equals(StaticResources.Account.getEmail(EditGroupActivity.this)))
                                 {
                                     managerPosition = memberList.size();
                                 }
@@ -137,7 +133,7 @@ public class EditGroupActivity extends AppCompatActivity
                             }
                             else
                             {
-                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
 
                                 switch (response)
                                 {
@@ -204,7 +200,7 @@ public class EditGroupActivity extends AppCompatActivity
 
                             try
                             {
-                                new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                         .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                         {
                                             ResponseId response;
@@ -212,17 +208,17 @@ public class EditGroupActivity extends AppCompatActivity
                                             @Override
                                             public void onRequest(WebSocketConnection conn)
                                             {
-                                                conn.send(StaticMethods.intToByteArray(RequestId.DROP_GROUP.getId()), true);
-                                                conn.send(StaticResources.accountId, true);
-                                                conn.send(StaticResources.authToken, true);
+                                                conn.send(Methods.intToByteArray(RequestId.DROP_GROUP.getId()), true);
+                                                conn.send(StaticResources.Account.getId(EditGroupActivity.this), true);
+                                                conn.send(StaticResources.Account.getAuthenticationToken(EditGroupActivity.this), true);
 
-                                                conn.send(StaticMethods.intToByteArray(group.getId()), true);
+                                                conn.send(Methods.intToByteArray(group.getId()), true);
                                             }
 
                                             @Override
                                             public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                             {
-                                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                                response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                                 conn.close();
                                             }
 
@@ -239,7 +235,7 @@ public class EditGroupActivity extends AppCompatActivity
                                                             public void run()
                                                             {
                                                                 Toast.makeText(getApplicationContext(), R.string.msg_group_deleted, Toast.LENGTH_LONG).show();
-                                                                StaticResources.updateEntityList = true;
+                                                                StaticResources.Entity.setUpdateList(EditGroupActivity.this, true);
                                                                 finish();
                                                             }
                                                         });
@@ -328,7 +324,7 @@ public class EditGroupActivity extends AppCompatActivity
                         locked = null;
                     }
                     manager = memberList.get(managerSpinner.getSelectedItemPosition());
-                    if (manager.email.equals(StaticResources.myEmail))
+                    if (manager.email.equals(StaticResources.Account.getEmail(EditGroupActivity.this)))
                     {
                         manager = null;
                     }
@@ -339,7 +335,7 @@ public class EditGroupActivity extends AppCompatActivity
 
                         try
                         {
-                            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                     {
                                         ResponseId response;
@@ -374,9 +370,9 @@ public class EditGroupActivity extends AppCompatActivity
                                                 e.printStackTrace();
                                             }
 
-                                            conn.send(StaticMethods.intToByteArray(RequestId.UPDATE_GROUP.getId()), true);
-                                            conn.send(StaticResources.accountId, true);
-                                            conn.send(StaticResources.authToken, true);
+                                            conn.send(Methods.intToByteArray(RequestId.UPDATE_GROUP.getId()), true);
+                                            conn.send(StaticResources.Account.getId(EditGroupActivity.this), true);
+                                            conn.send(StaticResources.Account.getAuthenticationToken(EditGroupActivity.this), true);
 
                                             conn.send(json.toString(), true);
                                         }
@@ -384,7 +380,7 @@ public class EditGroupActivity extends AppCompatActivity
                                         @Override
                                         public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                         {
-                                            response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                            response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                             conn.close();
                                         }
 
@@ -400,7 +396,7 @@ public class EditGroupActivity extends AppCompatActivity
                                                         @Override
                                                         public void run()
                                                         {
-                                                            StaticResources.updateEntityList = true;
+                                                            StaticResources.Entity.setUpdateList(EditGroupActivity.this, true);
                                                             finish();
                                                         }
                                                     });

@@ -28,6 +28,7 @@ import android.icu.util.Calendar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AddCatActivity extends AppCompatActivity implements ColorPickerDialogListener
@@ -123,14 +124,14 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         });
 
         // groupSpinner
-        GroupSpinnerAdapter adapter = new GroupSpinnerAdapter(this, R.id.groupTextView, StaticResources.groups);
+        GroupSpinnerAdapter adapter = new GroupSpinnerAdapter(this, R.id.groupTextView, StaticResources.Entity.getGroups(AddCatActivity.this));
         groupSpinner.setAdapter(adapter);
         groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                selectedGroup = StaticResources.groups.get(position);
+                selectedGroup = StaticResources.Entity.getGroups(AddCatActivity.this).get(position);
             }
 
             @Override
@@ -146,7 +147,9 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         rgbTextView.setOnTouchListener(colorPickerTrigger);
 
         // nameEditText
-        nameEditText.setHint(StringResources.NameExamples[(int)(Math.random() * StringResources.NameExamples.length)]);
+
+        String[] names = StaticResources.StringArrays.getNameExamples(AddCatActivity.this);
+        nameEditText.setHint(names[(int)(Math.random() * names.length)]);
         nameEditText.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -169,7 +172,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         // birthdayEditText
         Calendar today = Calendar.getInstance();
         today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-        birthdayEditText.setHint(StringResources.DateFormatter.format(today));
+        birthdayEditText.setHint(Methods.DateFormatter.format(today));
         selectedBirthday = today.getTimeInMillis();
 
         // speciesSpinner
@@ -189,10 +192,12 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
+                String[] species = StaticResources.StringArrays.getSpecies(AddCatActivity.this);
+
                 String item = (String)speciesAdapter.getItem(position);
-                for (int idx = 0; idx < StringResources.Species.length; idx++)
+                for (int idx = 0; idx < species.length; idx++)
                 {
-                    if (item.equals(StringResources.Species[idx]))
+                    if (item.equals(species[idx]))
                     {
                         selectedSpecies = idx;
                         return;
@@ -241,7 +246,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
 
                     try
                     {
-                        WebSocketConnection conn = new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                        WebSocketConnection conn = new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
                                     ResponseId response;
@@ -263,27 +268,35 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                         float weight = Float.parseFloat(weightEditText.getText().toString());
 
                                         StringBuilder builder = new StringBuilder();
-                                        builder.append(group); builder.append('\0');
-                                        builder.append(pw); builder.append('\0');
-                                        builder.append(color); builder.append('\0');
-                                        builder.append(name); builder.append('\0');
-                                        builder.append(birthday); builder.append('\0');
-                                        builder.append(gender); builder.append('\0');
-                                        builder.append(species); builder.append('\0');
-                                        builder.append(todayMillis); builder.append('\0');
+                                        builder.append(group);
+                                        builder.append('\0');
+                                        builder.append(pw);
+                                        builder.append('\0');
+                                        builder.append(color);
+                                        builder.append('\0');
+                                        builder.append(name);
+                                        builder.append('\0');
+                                        builder.append(birthday);
+                                        builder.append('\0');
+                                        builder.append(gender);
+                                        builder.append('\0');
+                                        builder.append(species);
+                                        builder.append('\0');
+                                        builder.append(todayMillis);
+                                        builder.append('\0');
                                         builder.append(weight);
 
-                                        conn.send(StaticMethods.intToByteArray(RequestId.NEW_CAT.getId()), true);
+                                        conn.send(Methods.intToByteArray(RequestId.NEW_CAT.getId()), true);
 
-                                        conn.send(StaticResources.accountId, true);
-                                        conn.send(StaticResources.authToken, true);
+                                        conn.send(StaticResources.Account.getId(AddCatActivity.this), true);
+                                        conn.send(StaticResources.Account.getAuthenticationToken(AddCatActivity.this), true);
                                         conn.send(builder.toString(), true);
                                     }
 
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                         conn.close();
                                     }
 
@@ -294,7 +307,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                         {
                                             case ADD_ENTITY_OK:
                                             {
-                                                StaticResources.updateEntityList = true;
+                                                StaticResources.Entity.setUpdateList(AddCatActivity.this, true);
                                                 break;
                                             }
 
@@ -395,7 +408,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
 
                 selectedBirthday = cal.getTimeInMillis();
 
-                String nowString = StringResources.DateFormatter.format(cal);
+                String nowString = Methods.DateFormatter.format(cal);
                 birthdayEditText.setText(nowString);
             }
         };

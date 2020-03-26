@@ -161,7 +161,7 @@ public class CatGroupView extends EntityListItemViewBase
         super.onResolve();
 
         groupTextView.setText(group.getName());
-        idTextView.setText(StringResources.toHexId(group.getId()));
+        idTextView.setText(Methods.toHexId(group.getId()));
     }
 
     @Override

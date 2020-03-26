@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,7 @@ public class GroupSpinnerAdapter extends ArrayAdapter<List<CatGroup>>
         View view = inflater.inflate(R.layout.item_group_spinner, parent, false);
 
         ((TextView)view.findViewById(R.id.groupTextView)).setText(item.getName());
-        ((TextView)view.findViewById(R.id.idTextView)).setText('(' + StringResources.toHexId(item.getId()) + ')');
+        ((TextView)view.findViewById(R.id.idTextView)).setText('(' + Methods.toHexId(item.getId()) + ')');
 
         return view;
     }

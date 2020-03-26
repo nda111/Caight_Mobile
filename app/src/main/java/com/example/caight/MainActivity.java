@@ -1,7 +1,6 @@
 package com.example.caight;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,10 +27,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -76,7 +70,7 @@ public class MainActivity extends AppCompatActivity
             if (e.getAction() == 1)
             {
                 CatGroup group = ((CatGroupView)sender).getGroup();
-                if (!group.getOwnerEmail().equals(StaticResources.myEmail))
+                if (!group.getOwnerEmail().equals(StaticResources.Account.getEmail(MainActivity.this)))
                 {
                     groupId = group.getId();
                     progressBar.setVisibility(View.VISIBLE);
@@ -84,7 +78,7 @@ public class MainActivity extends AppCompatActivity
 
                     try
                     {
-                        new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                        new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                 .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                 {
                                     ResponseId response;
@@ -92,17 +86,17 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        conn.send(StaticMethods.intToByteArray(RequestId.WITHDRAW_GROUP.getId()), true);
-                                        conn.send(StaticResources.accountId, true);
-                                        conn.send(StaticResources.authToken, true);
+                                        conn.send(Methods.intToByteArray(RequestId.WITHDRAW_GROUP.getId()), true);
+                                        conn.send(StaticResources.Account.getId(MainActivity.this), true);
+                                        conn.send(StaticResources.Account.getAuthenticationToken(MainActivity.this), true);
 
-                                        conn.send(StaticMethods.intToByteArray(groupId), true);
+                                        conn.send(Methods.intToByteArray(groupId), true);
                                     }
 
                                     @Override
                                     public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                     {
-                                        response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                        response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                         conn.close();
                                     }
 
@@ -161,7 +155,7 @@ public class MainActivity extends AppCompatActivity
             if (e.getAction() == 1)
             {
                 CatGroup group = ((CatGroupView)sender).getGroup();
-                if (group.getOwnerEmail().equals(StaticResources.myEmail))
+                if (group.getOwnerEmail().equals(StaticResources.Account.getEmail(MainActivity.this)))
                 {
                     Intent intent = new Intent(MainActivity.this, EditGroupActivity.class);
                     intent.putExtra(__EXTRA_GROUP_ID__, group.getId());
@@ -206,7 +200,7 @@ public class MainActivity extends AppCompatActivity
                 final Cat cat = ((CatView)sender).getCat();
                 final CatGroup group = ((CatView)sender).getGroup();
 
-                if (group.getOwnerEmail().equals(StaticResources.myEmail))
+                if (group.getOwnerEmail().equals(StaticResources.Account.getEmail(MainActivity.this)))
                 {
                     DeletionConfirmDialog dialog = new DeletionConfirmDialog(R.string.word_delete, cat.getName());
                     dialog.setListener(new DeletionConfirmDialog.OnDeletionConfirmListener()
@@ -219,7 +213,7 @@ public class MainActivity extends AppCompatActivity
                                 progressBar.setVisibility(View.VISIBLE);
                                 rootLayout.setEnabled(false);
 
-                                new WebSocketConnection(StringResources.__WS_ADDRESS__)
+                                new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                                         .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                                         {
                                             ResponseId response;
@@ -227,17 +221,17 @@ public class MainActivity extends AppCompatActivity
                                             @Override
                                             public void onRequest(WebSocketConnection conn)
                                             {
-                                                conn.send(StaticMethods.intToByteArray(RequestId.DROP_CAT.getId()), true);
-                                                conn.send(StaticResources.accountId, true);
-                                                conn.send(StaticResources.authToken, true);
+                                                conn.send(Methods.intToByteArray(RequestId.DROP_CAT.getId()), true);
+                                                conn.send(StaticResources.Account.getId(MainActivity.this), true);
+                                                conn.send(StaticResources.Account.getAuthenticationToken(MainActivity.this), true);
 
-                                                conn.send(StaticMethods.intToByteArray(cat.getId()), true);
+                                                conn.send(Methods.intToByteArray(cat.getId()), true);
                                             }
 
                                             @Override
                                             public void onResponse(WebSocketConnection conn, WebSocketConnection.Message message)
                                             {
-                                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                                response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
                                                 conn.close();
                                             }
 
@@ -324,27 +318,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+        Resources resources = getResources();
+
         /*
          * Intent
          */
         Intent intent = getIntent();
         Email = intent.getStringExtra(LoginEntryActivity.__KEY_EMAIL__);
-
-        /*
-         * Initialize string resources
-         */
-        Resources resources = getResources();
-        StringResources.NameExamples = resources.getStringArray(R.array.name_examples);
-        StringResources.Species = resources.getStringArray(R.array.species);
-        StringResources.SortedSpecies = Arrays.copyOf(StringResources.Species, StringResources.Species.length);
-        Arrays.sort(StringResources.SortedSpecies, new Comparator<String>()
-        {
-            @Override
-            public int compare(String o1, String o2)
-            {
-                return o1.compareTo(o2);
-            }
-        });
 
         /*
          * Initialize GUI Components
@@ -364,7 +344,7 @@ public class MainActivity extends AppCompatActivity
                 downloadEntities(true);
             }
         });
-        refreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator()
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator()
         {
             @NonNull
             @Override
@@ -418,7 +398,7 @@ public class MainActivity extends AppCompatActivity
 
                     case R.id.sdItemAddCat:
                     {
-                        if (StaticResources.groups.size() > 0)
+                        if (StaticResources.Entity.getGroups(MainActivity.this).size() > 0)
                         {
                             Intent intent = new Intent(This, AddCatActivity.class);
                             startActivity(intent);
@@ -454,11 +434,20 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
 
-        if (StaticResources.updateEntityList)
+        if (StaticResources.Entity.getUpdateList(this))
         {
-            StaticResources.updateEntityList = false;
+            StaticResources.Entity.setUpdateList(this, false);
             downloadEntities(false);
         }
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        StaticResources.Account.clear(this);
+        StaticResources.Entity.clear(this);
     }
 
     private void downloadEntities(final boolean isRefresh)
@@ -471,7 +460,7 @@ public class MainActivity extends AppCompatActivity
 
         try
         {
-            new WebSocketConnection(StringResources.__WS_ADDRESS__)
+            new WebSocketConnection(StaticResources.__WS_ADDRESS__)
                     .setRequestAdapter(new WebSocketConnection.RequestAdapter()
                     {
                         private ResponseId response = null;
@@ -485,10 +474,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onRequest(WebSocketConnection conn)
                         {
-                            conn.send(StaticMethods.intToByteArray(RequestId.DOWNLOAD_ENTITY.getId()), true);
-
-                            conn.send(StaticResources.accountId, true);
-                            conn.send(StaticResources.authToken, true);
+                            conn.send(Methods.intToByteArray(RequestId.DOWNLOAD_ENTITY.getId()), true);
+                            conn.send(StaticResources.Account.getId(MainActivity.this), true);
+                            conn.send(StaticResources.Account.getAuthenticationToken(MainActivity.this), true);
                         }
 
                         @Override
@@ -496,7 +484,7 @@ public class MainActivity extends AppCompatActivity
                         {
                             if (message.isBinaryMessage())
                             {
-                                response = ResponseId.fromId(StaticMethods.byteArrayToInt(message.getBinary()));
+                                response = ResponseId.fromId(Methods.byteArrayToInt(message.getBinary()));
 
                                 if (response == ResponseId.END_OF_ENTITY)
                                 {
@@ -561,8 +549,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClosed()
                         {
-                            StaticResources.groups = groups;
-                            StaticResources.entries = entries;
+                            StaticResources.Entity.setEntries(MainActivity.this, groups, entries);
 
                             runOnUiThread(new Runnable()
                             {
