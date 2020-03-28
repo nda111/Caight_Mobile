@@ -41,7 +41,9 @@ public enum RequestId
 
     DROP_CAT(18),
 
-    EDIT_CAT(19);
+    EDIT_CAT(19),
+
+    UPLOAD_WEIGHT(20);
 
     private int id = -1;
 

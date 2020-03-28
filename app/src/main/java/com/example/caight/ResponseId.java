@@ -130,7 +130,13 @@ public enum ResponseId
      * EDIT_CAT(19)
      */
     EDIT_CAT_OK(49),
-    EDIT_CAT_ERROR(50);
+    EDIT_CAT_ERROR(50),
+
+    /*
+     * UPLOAD_WEIGHT(20)
+     */
+    UPLOAD_WEIGHT_OK(51),
+    UPLOAD_WEIGHT_ERROR(52);
 
     private int id = -1;
 

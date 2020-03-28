@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -158,7 +157,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
 
         // birthdayEditText
         birthdayEditText.setText(Methods.DateFormatter.format(cat.getBirthday()));
-        selectedBirthday = cat.getBirthday().getTimeInMillis();
+        selectedBirthday = cat.getBirthday().toLong();
 
         // maleRadioButton, femaleRadioButton, neuteredCheckBox
         (cat.isMale() ? maleRadioButton : femaleRadioButton).setChecked(true);
@@ -236,7 +235,7 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
                             changed = true;
                             json.put(__JSON_KEY_NAME__, name);
                         }
-                        if (cat.getBirthday().getTimeInMillis() != birthday)
+                        if (cat.getBirthday().toLong() != birthday)
                         {
                             changed = true;
                             json.put(__JSON_KEY_BIRTHDAY__, birthday);
@@ -355,21 +354,20 @@ public class EditCatActivity extends AppCompatActivity implements ColorPickerDia
             @Override
             public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth)
             {
-                Calendar cal = Calendar.getInstance();
-                cal.set(year, month, dayOfMonth);
+                Date cal = new Date(year, month, dayOfMonth);
 
-                selectedBirthday = cal.getTimeInMillis();
+                selectedBirthday = cal.toLong();
 
                 String nowString = Methods.DateFormatter.format(cal);
                 birthdayEditText.setText(nowString);
             }
         };
 
-        Calendar now = Calendar.getInstance();
+        Date now = Date.getToday();
         new DatePickerDialog(this, DatePicker,
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)).show();
+                now.getYear(),
+                now.getMonth(),
+                now.getDay()).show();
     }
 
     private String colorToHexString(Color color)

@@ -263,13 +263,13 @@
                     android:text="@string/attr_weight"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    app:layout_constraintEnd_toStartOf="@+id/weightEditText"
+                    app:layout_constraintEnd_toStartOf="@+id/newWeightEditText"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/speciesTextView" />
 
                 <EditText
-                    android:id="@+id/weightEditText"
+                    android:id="@+id/newWeightEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -287,10 +287,10 @@
                     android:layout_height="wrap_content"
                     android:text="@string/unit_kg"
                     android:textSize="16sp"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/weightEditText"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/newWeightEditText"
                     app:layout_constraintEnd_toStartOf="@+id/weightValidCheckBox"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/weightEditText" />
+                    app:layout_constraintStart_toEndOf="@+id/newWeightEditText" />
 
                 <CheckBox
                     android:id="@+id/weightValidCheckBox"
@@ -315,7 +315,7 @@
                     android:text="@string/act_register"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/weightEditText" />
+                    app:layout_constraintTop_toBottomOf="@+id/newWeightEditText" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

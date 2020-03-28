@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.icu.util.Calendar;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -119,75 +118,84 @@ public class CatView extends EntityListItemViewBase
     {
         switch (id)
         {
-        case OnCatAttributeChangedListener.__ID_COLOR__:
-            colorView.setImageTintList(ColorStateList.valueOf(this.cat.getColorInteger()));
-            break;
+            case OnCatAttributeChangedListener.__ID_COLOR__:
+                colorView.setImageTintList(ColorStateList.valueOf(this.cat.getColorInteger()));
+                break;
 
-        case OnCatAttributeChangedListener.__ID_NAME__:
-            nameTextView.setText(this.cat.getName());
-            break;
+            case OnCatAttributeChangedListener.__ID_NAME__:
+                nameTextView.setText(this.cat.getName());
+                break;
 
-        case OnCatAttributeChangedListener.__ID_GENDER__:
-            genderImageView.setImageDrawable(
-                    getContext().getResources().getDrawable(
-                            this.cat.isMale()
-                                    ? R.drawable.ic_gender_male
-                                    : R.drawable.ic_gender_female,
-                            getContext().getTheme()));
-            break;
+            case OnCatAttributeChangedListener.__ID_GENDER__:
+                genderImageView.setImageDrawable(
+                        getContext().getResources().getDrawable(
+                                this.cat.isMale()
+                                        ? R.drawable.ic_gender_male
+                                        : R.drawable.ic_gender_female,
+                                getContext().getTheme()));
+                break;
 
-        case OnCatAttributeChangedListener.__ID_BIRTHDAY__:
-            int[] age = this.cat.getAge();
-            StringBuilder ageBuilder = new StringBuilder();
-            ageBuilder.append('(');
-            if (age[0] == 0)
-            {
-                ageBuilder.append(age[1]);
-                ageBuilder.append(getContext().getResources().getString(R.string.unit_old_month));
-            }
-            else
-            {
-                ageBuilder.append(age[0]);
-                ageBuilder.append(getContext().getResources().getString(R.string.unit_old_year));
-            }
-            ageBuilder.append(')');
-            ageTextView.setText(ageBuilder.toString());
-            break;
+            case OnCatAttributeChangedListener.__ID_BIRTHDAY__:
+                int[] age = this.cat.getAge();
+                StringBuilder ageBuilder = new StringBuilder();
+                ageBuilder.append('(');
+                if (age[0] == 0)
+                {
+                    ageBuilder.append(age[1]);
+                    ageBuilder.append(getContext().getResources().getString(R.string.unit_old_month));
+                }
+                else
+                {
+                    ageBuilder.append(age[0]);
+                    ageBuilder.append(getContext().getResources().getString(R.string.unit_old_year));
+                }
+                ageBuilder.append(')');
+                ageTextView.setText(ageBuilder.toString());
+                break;
 
-        case OnCatAttributeChangedListener.__ID_WEIGHTS__:
-            StringBuilder weightBuilder = new StringBuilder();
-            Map.Entry<Calendar, Float> lastEntry = this.cat.getLastWeight();
-            weightBuilder.append(lastEntry.getValue());
-            weightBuilder.append(getContext().getResources().getString(R.string.unit_kg));
-            weightTextView.setText(weightBuilder.toString());
+            case OnCatAttributeChangedListener.__ID_WEIGHTS__:
+                if (this.cat.getAllWeights().size() > 0)
+                {
+                    StringBuilder weightBuilder = new StringBuilder();
+                    Map.Entry<Date, Float> lastEntry = this.cat.getLastWeight();
+                    weightBuilder.append(lastEntry.getValue());
+                    weightBuilder.append(getContext().getResources().getString(R.string.unit_kg));
+                    weightTextView.setText(weightBuilder.toString());
 
-            StringBuilder dateBuilder = new StringBuilder();
-            dateBuilder.append('(');
-            dateBuilder.append(lastEntry.getKey().get(Calendar.YEAR));
-            dateBuilder.append('.');
-            dateBuilder.append(lastEntry.getKey().get(Calendar.MONTH) + 1);
-            dateBuilder.append('.');
-            dateBuilder.append(lastEntry.getKey().get(Calendar.DAY_OF_MONTH));
-            dateBuilder.append(')');
-            dateTextView.setText(dateBuilder.toString());
+                    StringBuilder dateBuilder = new StringBuilder();
+                    dateBuilder.append('(');
+                    dateBuilder.append(lastEntry.getKey().getYear());
+                    dateBuilder.append('.');
+                    dateBuilder.append(lastEntry.getKey().getMonth());
+                    dateBuilder.append('.');
+                    dateBuilder.append(lastEntry.getKey().getDay());
+                    dateBuilder.append(')');
+                    dateTextView.setText(dateBuilder.toString());
 
-            Collection<Float> wCollections = this.cat.getAllWeights();
-            float[] weights = new float[wCollections.size()];
-            Iterator<Float> iterator = wCollections.iterator();
-            int idx = 0;
-            while (iterator.hasNext())
-            {
-                weights[idx++] = iterator.next();
-            }
+                    Collection<Float> wCollections = this.cat.getAllWeights().values();
+                    float[] weights = new float[wCollections.size()];
+                    Iterator<Float> iterator = wCollections.iterator();
+                    int idx = 0;
+                    while (iterator.hasNext())
+                    {
+                        weights[idx++] = iterator.next();
+                    }
 
-            weightChart.setValues(weights.length == 1 ? new float[]{ weights[0], weights[0] } : weights);
-            break;
+                    weightChart.setValues(weights.length == 1 ? new float[] { weights[0], weights[0] } : weights);
+                }
+                else
+                {
+                    weightTextView.setText(null);
+                    dateTextView.setText(null);
+                    weightChart.setValues(new float[0]);
+                }
+                break;
 
-        case OnCatAttributeChangedListener.__ID_SPECIES__:
-            break;
+            case OnCatAttributeChangedListener.__ID_SPECIES__:
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
     }
 

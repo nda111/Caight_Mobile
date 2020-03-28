@@ -1,7 +1,8 @@
 package com.example.caight;
 
 import android.graphics.Color;
-import android.icu.util.Calendar;
+
+import android.util.JsonToken;
 
 import androidx.annotation.NonNull;
 
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,6 +32,7 @@ public final class Cat
     public static final String __JSON_KEY_WEIGHTS__ = "weights";
     public static final String __JSON_KEY_WEIGHTS_WHEN__ = "when";
     public static final String __JSON_KEY_WEIGHTS_VALUE__ = "weight";
+    public static final String __JSON_KEY_ATTRIBUTES__ = "attributes";
 
     //
     // private Fields
@@ -41,13 +44,14 @@ public final class Cat
     @NonNull
     private String name = null;
     @NonNull
-    private Calendar birthday = null;
+    private Date birthday = null;
     @NonNull
     private Gender gender = null;
     @NonNull
     private int species = -1;
     @NonNull
-    private TreeMap<Calendar, Float> weights = null;
+    private TreeMap<Date, Float> weights = null;
+    private String[] attributes = null;
 
     //
     // event Listeners
@@ -61,26 +65,26 @@ public final class Cat
     {
     }
 
-    public Cat(@NonNull Color color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
+    public Cat(@NonNull Color color, @NonNull String name, @NonNull Date birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
     {
         setColor(color);
         setName(name);
         setBirthday(birthday);
         setGender(gender);
         setSpecies(species);
-        this.weights = new TreeMap<Calendar, Float>();
-        setWeight(Calendar.getInstance(), weight);
+        this.weights = new TreeMap<Date, Float>();
+        setWeight(Date.getToday(), weight);
     }
 
-    public Cat(@NonNull Integer color, @NonNull String name, @NonNull Calendar birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
+    public Cat(@NonNull Integer color, @NonNull String name, @NonNull Date birthday, @NonNull Gender gender, @NonNull Integer species, @NonNull Float weight)
     {
         setColor(color);
         setName(name);
         setBirthday(birthday);
         setGender(gender);
         setSpecies(species);
-        this.weights = new TreeMap<Calendar, Float>();
-        setWeight(Calendar.getInstance(), weight);
+        this.weights = new TreeMap<Date, Float>();
+        setWeight(Date.getToday(), weight);
     }
 
     //
@@ -106,23 +110,33 @@ public final class Cat
         try
         {
             JSONArray weightArray = new JSONArray();
-            for (Map.Entry<Calendar, Float> entry : new TreeMap<Calendar, Float>(weights).entrySet())
+            for (Map.Entry<Date, Float> entry : new TreeMap<Date, Float>(weights).entrySet())
             {
                 JSONObject weight = new JSONObject();
-                weight.put(__JSON_KEY_WEIGHTS_WHEN__, entry.getKey().getTimeInMillis());
+                weight.put(__JSON_KEY_WEIGHTS_WHEN__, entry.getKey().toLong());
                 weight.put(__JSON_KEY_WEIGHTS_VALUE__, entry.getValue());
 
                 weightArray.put(weight);
+            }
+
+            JSONArray attributes = new JSONArray();
+            if (this.attributes != null)
+            {
+                for (String attr : this.attributes)
+                {
+                    attributes.put(attr);
+                }
             }
 
             JSONObject json = new JSONObject();
             json.put(__JSON_KEY_ID__, id);
             json.put(__JSON_KEY_COLOR__, color);
             json.put(__JSON_KEY_NAME__, name);
-            json.put(__JSON_KEY_BIRTHDAY__, birthday.getTimeInMillis());
+            json.put(__JSON_KEY_BIRTHDAY__, birthday.toLong());
             json.put(__JSON_KEY_GENDER__, gender.getValue());
             json.put(__JSON_KEY_SPECIES__, species);
             json.put(__JSON_KEY_WEIGHTS__, weightArray);
+            json.put(__JSON_KEY_ATTRIBUTES__, attributes);
 
             return json;
         }
@@ -194,14 +208,14 @@ public final class Cat
         }
     }
 
-    public Calendar getBirthday()
+    public Date getBirthday()
     {
         return birthday;
     }
 
-    public boolean setBirthday(@NonNull Calendar birthday)
+    public boolean setBirthday(@NonNull Date birthday)
     {
-        if (birthday.getTimeInMillis() > Calendar.getInstance().getTimeInMillis())
+        if (birthday.toLong() > Date.getToday().toLong())
         {
             return false;
         }
@@ -215,10 +229,9 @@ public final class Cat
 
     public int[] getAge()
     {
-        Calendar age = Calendar.getInstance();
-        age.setTimeInMillis(age.getTimeInMillis() - birthday.getTimeInMillis());
+        Date age = Date.getPeriod(birthday, Date.getToday());
 
-        return new int[] { age.get(Calendar.YEAR) - 1970, age.get(Calendar.MONTH) };
+        return new int[] { age.getYear() - 1970, age.getMonth() - 1 };
     }
 
     public Gender getGender()
@@ -266,29 +279,40 @@ public final class Cat
         }
     }
 
-    public Map.Entry<Calendar, Float> getLastWeight()
+    public Map.Entry<Date, Float> getLastWeight()
     {
         return weights.lastEntry();
     }
 
     public Float getWeightOrNull(int year, int month, int day)
     {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day);
+        Date cal = new Date(year, month, day);
 
-        return weights.get(cal);
+        for (Map.Entry<Date, Float> entry : weights.entrySet())
+        {
+            Date date = entry.getKey();
+            if (date.equals(new Date(year, month, day)))
+            {
+                return entry.getValue();
+            }
+        }
+
+        return null;
     }
 
-    public Float getWeightOrNull(Calendar date)
+    public Float getWeightOrNull(Date date)
     {
-        return weights.get(getFilteredCalendar(date));
+        return weights.get(date);
     }
 
-    public boolean setWeight(@NonNull Calendar date, @NonNull Float weight)
+    public void setWeights(TreeMap<Date, Float> weights)
     {
-        Calendar filtered = getFilteredCalendar(date);
+        this.weights = weights;
+    }
 
-        if (weights.containsKey(filtered))
+    public boolean setWeight(@NonNull Date date, @NonNull Float weight)
+    {
+        if (weights.containsKey(date))
         {
             return false;
         }
@@ -298,25 +322,36 @@ public final class Cat
         }
         else
         {
-            weights.put(filtered, weight);
-            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[]{ filtered, weight });
+            weights.put(date, weight);
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[] { date, weight });
             return true;
         }
     }
 
     public boolean setWeight(int year, int month, int day, @NonNull Float weight)
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, 0, 0, 0);
-
-        return setWeight(calendar, weight);
+        Date date = new Date(year, month, day);
+        return setWeight(date, weight);
     }
 
-    public boolean replaceWeight(@NonNull Calendar date, @NonNull Float weight)
+    public boolean deleteWeight(int year, int month, int day)
     {
-        Calendar filtered = getFilteredCalendar(date);
+        for (Map.Entry<Date, Float> entry : weights.entrySet())
+        {
+            Date date = entry.getKey();
+            if (date.equals(new Date(year, month, day)))
+            {
+                weights.remove(date);
+                return true;
+            }
+        }
 
-        if (!weights.containsKey(filtered))
+        return false;
+    }
+
+    public boolean replaceWeight(@NonNull Date date, @NonNull Float weight)
+    {
+        if (!weights.containsKey(date))
         {
             return false;
         }
@@ -326,23 +361,85 @@ public final class Cat
         }
         else
         {
-            weights.replace(filtered, weight);
-            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[]{ filtered, weight });
+            weights.replace(date, weight);
+            raiseAttrChangedEvent(OnCatAttributeChangedListener.__ID_WEIGHTS__, new Object[] { date, weight });
             return true;
         }
     }
 
     public boolean replaceWeight(int year, int month, int day, @NonNull Float weight)
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, 0, 0, 0);
+        Date key = null;
+        for (Map.Entry<Date, Float> entry : weights.entrySet())
+        {
+            Date date = entry.getKey();
+            if (date.equals(new Date(year, month, day)))
+            {
+                key = entry.getKey();
+            }
+        }
 
-        return replaceWeight(calendar, weight);
+        if (key != null)
+        {
+            weights.replace(key, weight);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public Collection<Float> getAllWeights()
+    public TreeMap<Date, Float> getWeightsInRange(Date from, Date to)
     {
-        return weights.values();
+        long f = from.toLong();
+        long t = from.toLong();
+
+        TreeMap<Date, Float> result = new TreeMap<Date, Float>();
+        Iterator<Map.Entry<Date, Float>> iterator = weights.entrySet().iterator();
+        while (iterator.hasNext())
+        {
+            Map.Entry<Date, Float> entry = iterator.next();
+            if (entry.getKey().toLong() >= f)
+            {
+                result.put(entry.getKey(), entry.getValue());
+                break;
+            }
+        }
+        while (iterator.hasNext())
+        {
+            Map.Entry<Date, Float> entry = iterator.next();
+            if (entry.getKey().toLong() <= t)
+            {
+                result.put(entry.getKey(), entry.getValue());
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    public TreeMap<Date, Float> getAllWeights()
+    {
+        return weights;
+    }
+
+    public boolean hasAttributes()
+    {
+        return attributes != null && attributes.length != 0;
+    }
+
+    public String[] getAttributes()
+    {
+        return attributes;
+    }
+
+    public void setAttributes(String[] attributes)
+    {
+        this.attributes = attributes;
     }
 
     //
@@ -353,26 +450,34 @@ public final class Cat
         try
         {
             JSONArray weightArray = json.getJSONArray(__JSON_KEY_WEIGHTS__);
-            TreeMap<Calendar, Float> weights = new TreeMap<Calendar, Float>();
+            TreeMap<Date, Float> weights = new TreeMap<Date, Float>();
             int length = weightArray.length();
             for (int i = 0; i < length; i++)
             {
                 JSONObject weight = weightArray.getJSONObject(i);
 
                 weights.put(
-                        getCalendarInMillis(weight.getLong(__JSON_KEY_WEIGHTS_WHEN__)),
+                        Date.fromBigInt(weight.getLong(__JSON_KEY_WEIGHTS_WHEN__)),
                         new Float(weight.getDouble(__JSON_KEY_WEIGHTS_VALUE__))
                 );
+            }
+
+            JSONArray attributes = json.getJSONArray(__JSON_KEY_ATTRIBUTES__);
+            String[] attrArray = new String[attributes.length()];
+            for (int i = 0; i < attrArray.length; i++)
+            {
+                attrArray[i] = attributes.getString(i);
             }
 
             Cat cat = new Cat();
             cat.id = json.getInt(__JSON_KEY_ID__);
             cat.color = json.getInt(__JSON_KEY_COLOR__);
             cat.name = json.getString(__JSON_KEY_NAME__);
-            cat.birthday = getCalendarInMillis(json.getLong(__JSON_KEY_BIRTHDAY__));
+            cat.birthday = Date.fromBigInt(json.getLong(__JSON_KEY_BIRTHDAY__));
             cat.gender = Gender.fromValue(json.getInt(__JSON_KEY_GENDER__));
             cat.species = json.getInt(__JSON_KEY_SPECIES__);
             cat.weights = weights;
+            cat.attributes = attrArray;
 
             return cat;
         }
@@ -381,22 +486,5 @@ public final class Cat
             e.printStackTrace();
             return null;
         }
-    }
-
-    private static Calendar getFilteredCalendar(Calendar calendar)
-    {
-        Calendar cal = calendar.getInstance();
-        cal.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
-
-        return cal;
-    }
-
-    private static Calendar getCalendarInMillis(long ms)
-    {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(ms);
-
-        return cal;
     }
 }

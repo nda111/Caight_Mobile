@@ -23,12 +23,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.icu.util.Calendar;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AddCatActivity extends AppCompatActivity implements ColorPickerDialogListener
@@ -98,7 +96,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         genderToggleButton = findViewById(R.id.genderToggleButton);
         isNeuteredCheckBox = findViewById(R.id.isNeuteredCheckBox);
         speciesSpinner = findViewById(R.id.speciesSpinner);
-        weightEditText = findViewById(R.id.weightEditText);
+        weightEditText = findViewById(R.id.newWeightEditText);
         weightValidCheckBox = findViewById(R.id.weightValidCheckBox);
         registerButton = findViewById(R.id.registerButton);
         progressBar = findViewById(R.id.progressBar);
@@ -170,10 +168,9 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
         });
 
         // birthdayEditText
-        Calendar today = Calendar.getInstance();
-        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        Date today = Date.getToday();
         birthdayEditText.setHint(Methods.DateFormatter.format(today));
-        selectedBirthday = today.getTimeInMillis();
+        selectedBirthday = today.toLong();
 
         // speciesSpinner
         final ArrayAdapter speciesAdapter = ArrayAdapter.createFromResource(this, R.array.species, android.R.layout.simple_spinner_item);
@@ -254,8 +251,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                     @Override
                                     public void onRequest(WebSocketConnection conn)
                                     {
-                                        Calendar today = Calendar.getInstance();
-                                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+                                        Date today = Date.getToday();
 
                                         int group = selectedGroup.getId();
                                         String pw = pwEditText.getText().toString();
@@ -264,7 +260,7 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
                                         long birthday = selectedBirthday;
                                         short gender = (short)Gender.evaluate(!genderToggleButton.isChecked(), isNeuteredCheckBox.isChecked()).getValue();
                                         int species = selectedSpecies;
-                                        long todayMillis = today.getTimeInMillis();
+                                        long todayMillis = today.toLong();
                                         float weight = Float.parseFloat(weightEditText.getText().toString());
 
                                         StringBuilder builder = new StringBuilder();
@@ -403,21 +399,19 @@ public class AddCatActivity extends AppCompatActivity implements ColorPickerDial
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
             {
-                Calendar cal = Calendar.getInstance();
-                cal.set(year, month, dayOfMonth);
-
-                selectedBirthday = cal.getTimeInMillis();
+                Date cal = new Date(year, month, dayOfMonth);
+                selectedBirthday = cal.toLong();
 
                 String nowString = Methods.DateFormatter.format(cal);
                 birthdayEditText.setText(nowString);
             }
         };
 
-        Calendar now = Calendar.getInstance();
+        Date now = Date.getToday();
         new DatePickerDialog(this, DatePicker,
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)).show();
+                now.getYear(),
+                now.getMonth(),
+                now.getDay()).show();
     }
 
     private String padLeft(String origin, char pad, int totalLength)

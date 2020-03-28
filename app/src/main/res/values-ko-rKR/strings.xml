@@ -87,4 +87,11 @@
     <string name="word_delete">삭제</string>
     <string name="unit_old_month">개월</string>
     <string name="unit_old_year">살</string>
+    <string name="word_neutered">중성화했어요</string>
+    <string name="word_spayed">중성화했어요</string>
+    <string name="title_overwriting">덮어쓰기</string>
+    <string name="warn_overwriting">이미 이 날의 체중이 입력되었습니다. &#10;바꾸시겠습니까?</string>
+    <string name="act_overwrite">덮어쓰기</string>
+    <string name="msg_upload_complete">업로드되었습니다.</string>
+    \
 </resources>

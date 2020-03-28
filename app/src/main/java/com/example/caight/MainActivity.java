@@ -185,7 +185,16 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onTouch(EntityListItemViewBase sender, MotionEvent e)
         {
-            // TODO;
+            if (e.getAction() == 1)
+            {
+                final Cat cat = ((CatView)sender).getCat();
+                final CatGroup group = ((CatView)sender).getGroup();
+
+                Intent intent = new Intent(MainActivity.this, CatDetailActivity.class);
+                intent.putExtra(__EXTRA_GROUP_ID__, group.getId());
+                intent.putExtra(__EXTRA_CAT_ID__, cat.getId());
+                startActivity(intent);
+            }
             return false;
         }
     };
@@ -445,6 +454,8 @@ public class MainActivity extends AppCompatActivity
     public void onDestroy()
     {
         super.onDestroy();
+
+        System.out.println("MAIN_ACTIVITY_ON_DESTROY");
 
         StaticResources.Account.clear(this);
         StaticResources.Entity.clear(this);

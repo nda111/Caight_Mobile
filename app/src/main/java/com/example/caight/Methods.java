@@ -3,7 +3,6 @@ package com.example.caight;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.view.textclassifier.TextLinks;
 import android.widget.Toast;
 
@@ -52,7 +51,7 @@ public class Methods
     {
         private static String str;
 
-        public static Calendar parse(String str)
+        public static Date parse(String str)
         {
             DateFormatter.str = str;
             String[] part = str.split("-");
@@ -67,28 +66,25 @@ public class Methods
                     Integer.parseInt(part[2]),
             };
 
-            Calendar result = Calendar.getInstance();
-            result.set(parsed[0], parsed[1], parsed[2]);
-
-            return result;
+            return new Date(parsed[0], parsed[1], parsed[2]);
         }
 
-        public static String format(Calendar date)
+        public static String format(Date date)
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.append(date.get(Calendar.YEAR));
-            builder.append('.');
+            builder.append(date.getYear());
+            builder.append(". ");
 
-            int month = date.get(Calendar.MONTH);
+            int month = date.getMonth();
             if (month < 10)
             {
                 builder.append('0');
             }
-            builder.append(month + 1);
-            builder.append('.');
+            builder.append(month);
+            builder.append(". ");
 
-            int day = date.get(Calendar.DAY_OF_MONTH);
+            int day = date.getDay();
             if (day < 10)
             {
                 builder.append('0');
